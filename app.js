@@ -9,6 +9,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 async function initApp() {
     await TokenBountyStore.fetchProjects(); // Gerçek veritabanından projeleri çeker
+    await TokenBountyStore.syncUserProfile();
     renderTokenTable("all");
     setupFilterTabs();
     setupSearchInput();
@@ -49,6 +50,8 @@ function updateWalletUI() {
     }
 }
 
+let streakInterval = null;
+
 function updateStreakUI() {
     const isConnected = !!TokenBountyStore.userState.isLoggedIn;
     const streakBtn = document.getElementById("claimStreakBtn");
@@ -57,7 +60,7 @@ function updateStreakUI() {
     
     // Ensure config exists (fallback if needed)
     const rewards = TokenBountyStore.systemConfig?.dailyStreakRewardsUSD || [0.10, 0.20, 0.30, 0.40, 0.50, 1.00, 2.00];
-    const currentStreak = TokenBountyStore.userState.streakCount || 1;
+    const currentStreak = TokenBountyStore.userState.streakDays || 1;
 
     // Render Grid Dynamically
     if (gridContainer) {
@@ -88,16 +91,57 @@ function updateStreakUI() {
         // Gated state when wallet is NOT connected
         if (streakBadge) streakBadge.innerHTML = `<i class="fa-solid fa-lock"></i> Kilitli`;
         if (streakBtn) {
-            streakBtn.innerHTML = `<i class="fa-solid fa-wallet"></i> Bonusu Açmak İçin Cüzdan Bağlayın`;
-            streakBtn.onclick = openLoginModal; // It's better to open login modal instead of wallet modal now
+            streakBtn.innerHTML = `<i class="fa-solid fa-wallet"></i> Bonusu Açmak İçin Giriş Yapın`;
+            streakBtn.onclick = openLoginModal; 
+            streakBtn.classList.remove("disabled");
         }
+        if (streakInterval) clearInterval(streakInterval);
     } else {
         // Unlocked state when wallet IS connected
         if (streakBadge) streakBadge.innerText = `${currentStreak} Gün Seri 🔥`;
+        
         if (streakBtn) {
-            const todayReward = rewards[currentStreak - 1] || 0.10;
-            streakBtn.innerHTML = `<i class="fa-solid fa-bolt"></i> Bugünkü Bonusu Al (+$${todayReward.toFixed(2)})`;
-            streakBtn.onclick = claimDailyStreak;
+            const lastClaimed = TokenBountyStore.userState.streakLastClaimed;
+            let timeDiff = 25 * 3600 * 1000; // Default past 24h
+            if (lastClaimed) {
+                timeDiff = new Date().getTime() - new Date(lastClaimed).getTime();
+            }
+
+            if (streakInterval) clearInterval(streakInterval);
+
+            if (timeDiff < 24 * 3600 * 1000) {
+                // Already claimed within 24 hours -> Countdown
+                streakBtn.classList.add("disabled");
+                streakBtn.onclick = null;
+                
+                const updateCountdown = () => {
+                    const now = new Date().getTime();
+                    const diff = now - new Date(lastClaimed).getTime();
+                    const remainingMs = (24 * 3600 * 1000) - diff;
+                    
+                    if (remainingMs <= 0) {
+                        clearInterval(streakInterval);
+                        updateStreakUI(); // Re-render to unlock
+                        return;
+                    }
+
+                    const h = Math.floor(remainingMs / (1000 * 60 * 60));
+                    const m = Math.floor((remainingMs % (1000 * 60 * 60)) / (1000 * 60));
+                    const s = Math.floor((remainingMs % (1000 * 60)) / 1000);
+                    
+                    streakBtn.innerHTML = `<i class="fa-solid fa-clock"></i> Ödül Alındı (${h}s ${m}d ${s}sn)`;
+                };
+
+                updateCountdown(); // Run immediately
+                streakInterval = setInterval(updateCountdown, 1000);
+                
+            } else {
+                // Ready to claim
+                const todayReward = rewards[currentStreak - 1] || 0.10;
+                streakBtn.innerHTML = `<i class="fa-solid fa-bolt"></i> Bugünkü Bonusu Al (+$${todayReward.toFixed(2)})`;
+                streakBtn.classList.remove("disabled");
+                streakBtn.onclick = claimDailyStreak;
+            }
         }
     }
 }
@@ -479,14 +523,10 @@ async function claimDailyStreak() {
         
         if (data.success) {
             TokenBountyStore.userState.streakDays = data.streak.count;
-            TokenBountyStore.saveToStorage();
+            TokenBountyStore.userState.streakLastClaimed = data.streak.lastClaimed;
+            TokenBountyStore.saveLocalSession();
             updateStreakUI();
             showToast(data.message, "success");
-            
-            if (btn) {
-                btn.innerHTML = `<i class="fa-solid fa-clock"></i> Ödül Alındı (24 Saat Bekleyin)`;
-                btn.classList.add("disabled");
-            }
         } else {
             showToast(data.error, "warning");
             if (btn) {

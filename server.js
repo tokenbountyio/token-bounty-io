@@ -224,7 +224,8 @@ app.get('/api/user/profile', async (req, res) => {
             isVerified: user.isVerified,
             wallets: user.wallets,
             balances: user.balances || {},
-            completedProjects: user.completedProjects || []
+            completedProjects: user.completedProjects || [],
+            streak: user.streak || { count: 0, lastClaimed: null }
         }
     });
 });

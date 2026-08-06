@@ -82,6 +82,24 @@ const TokenBountyStore = {
         }
     },
 
+    async syncUserProfile() {
+        if (!this.userState.isLoggedIn || !this.userState.email) return;
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/user/profile`, {
+                headers: { 'x-user-email': this.userState.email }
+            });
+            const data = await res.json();
+            if (data && data.success) {
+                if (data.user.streak) {
+                    this.userState.streakDays = data.user.streak.count || 1;
+                    this.userState.streakLastClaimed = data.user.streak.lastClaimed;
+                }
+            }
+        } catch (err) {
+            console.error("Failed to sync user profile:", err);
+        }
+    },
+
     // DexScreener API live price updater
     async fetchLivePrice(contractAddress) {
         try {

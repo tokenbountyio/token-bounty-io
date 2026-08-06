@@ -67,10 +67,10 @@
                             <img src="https://phantom.app/img/phantom-logo.png" alt="Phantom" style="width: 36px; height: 36px; border-radius: 8px;" onerror="this.src='https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png'">
                             <div>
                                 <div style="font-weight: 800; font-size: 15px;">Phantom (Solana)</div>
-                                <div id="phantomBindStatus" style="font-size: 12px; color: var(--neon-green); font-weight: 700;">● Bağlı: 5K9x...89a2</div>
+                                <div id="phantomBindStatus" style="font-size: 12px; color: var(--text-tertiary); font-weight: 700;">Henüz Bağlanmadı</div>
                             </div>
                         </div>
-                        <button onclick="bindWallet('phantom')" class="btn-secondary" style="padding: 8px 18px; font-size: 12px;">Değiştir</button>
+                        <button id="phantomBindBtn" onclick="bindWallet('phantom')" class="btn-main" style="padding: 8px 18px; font-size: 12px;">Cüzdan Bağla</button>
                     </div>
 
                     <!-- MetaMask Wallet -->
@@ -82,19 +82,7 @@
                                 <div id="metamaskBindStatus" style="font-size: 12px; color: var(--text-tertiary); font-weight: 700;">Henüz Bağlanmadı</div>
                             </div>
                         </div>
-                        <button onclick="bindWallet('metamask')" class="btn-main" style="padding: 8px 18px; font-size: 12px;">Cüzdan Bağla</button>
-                    </div>
-
-                    <!-- Trust Wallet -->
-                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
-                        <div style="display: flex; align-items: center; gap: 14px;">
-                            <div style="width: 36px; height: 36px; background: #0500ff; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800;"><i class="fa-solid fa-shield-halved"></i></div>
-                            <div>
-                                <div style="font-weight: 800; font-size: 15px;">Trust Wallet</div>
-                                <div style="font-size: 12px; color: var(--text-tertiary); font-weight: 700;">Henüz Bağlanmadı</div>
-                            </div>
-                        </div>
-                        <button onclick="bindWallet('trust')" class="btn-main" style="padding: 8px 18px; font-size: 12px;">Cüzdan Bağla</button>
+                        <button id="metamaskBindBtn" onclick="bindWallet('metamask')" class="btn-main" style="padding: 8px 18px; font-size: 12px;">Cüzdan Bağla</button>
                     </div>
 
                 </div>
@@ -107,44 +95,13 @@
                     <button onclick="withdrawAllTokens()" class="btn-withdraw-single"><i class="fa-solid fa-arrow-up-right-from-square"></i> Tümünü Çek ($8.50)</button>
                 </div>
 
-                <div style="display: flex; flex-direction: column; gap: 12px;">
-                    
-                    <!-- Token Item 1 -->
-                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 36px; height: 36px; background: var(--gradient-brand); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 800;">⚡</div>
-                            <div>
-                                <div style="font-weight: 800; font-size: 14px;">Yeni Token ($NEW)</div>
-                                <div style="font-size: 12px; color: var(--neon-green); font-weight: 700;">35,000 $NEW ($3.50 USD)</div>
-                            </div>
-                        </div>
-                        <button onclick="withdrawSingle('$NEW', '$3.50')" class="btn-withdraw-single">Çek</button>
+                <div id="tokenBalancesContainer" style="display: flex; flex-direction: column; gap: 12px;">
+                    <!-- Placeholder when no tokens exist -->
+                    <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+                        <i class="fa-solid fa-ghost" style="font-size: 32px; margin-bottom: 15px; opacity: 0.5;"></i>
+                        <p>Henüz herhangi bir airdrop görevini tamamlamadınız veya ödül kazanmadınız.</p>
+                        <a href="index.html" class="btn-main" style="display: inline-block; margin-top: 15px; font-size: 13px;">Görevlere Göz At</a>
                     </div>
-
-                    <!-- Token Item 2 -->
-                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 36px; height: 36px; background: var(--gradient-gold); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 800;">🔥</div>
-                            <div>
-                                <div style="font-weight: 800; font-size: 14px;">Aura Final Boss ($KIMCHI)</div>
-                                <div style="font-size: 12px; color: var(--neon-green); font-weight: 700;">12,500 $KIMCHI ($3.00 USD)</div>
-                            </div>
-                        </div>
-                        <button onclick="withdrawSingle('$KIMCHI', '$3.00')" class="btn-withdraw-single">Çek</button>
-                    </div>
-
-                    <!-- Token Item 3 -->
-                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
-                        <div style="display: flex; align-items: center; gap: 12px;">
-                            <div style="width: 36px; height: 36px; background: rgba(0,242,254,0.2); border: 1px solid var(--neon-cyan); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--neon-cyan); font-weight: 800;">💧</div>
-                            <div>
-                                <div style="font-weight: 800; font-size: 14px;">Günlük Giriş Bonusu (USD)</div>
-                                <div style="font-size: 12px; color: var(--neon-green); font-weight: 700;">$2.00 USD Nakit Bakiye</div>
-                            </div>
-                        </div>
-                        <button onclick="withdrawSingle('Nakit Bakiye', '$2.00')" class="btn-withdraw-single">Çek</button>
-                    </div>
-
                 </div>
             </div>
 
@@ -155,43 +112,74 @@
     <script src="store.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            // ROUTE GUARD: Prevent access to profile if not logged in
             if (!TokenBountyStore.userState.isLoggedIn) {
                 window.location.replace("index.html");
-                return; // Stop execution
+                return; 
             }
 
             const email = TokenBountyStore.userState.email || "Kullanıcı";
             const title = document.getElementById("profileEmailTitle");
             if (title) title.innerText = email;
 
-            const wallet = TokenBountyStore.userState.connectedWallet;
-            const status = document.getElementById("phantomBindStatus");
-            if (wallet && status) {
-                status.innerText = `● Bağlı: ${wallet}`;
-            }
+            renderWalletUI();
         });
+
+        function renderWalletUI() {
+            const wallet = TokenBountyStore.userState.connectedWallet;
+            const type = TokenBountyStore.userState.walletType;
+            
+            const phantomStatus = document.getElementById("phantomBindStatus");
+            const phantomBtn = document.getElementById("phantomBindBtn");
+            const metamaskStatus = document.getElementById("metamaskBindStatus");
+            const metamaskBtn = document.getElementById("metamaskBindBtn");
+
+            if(phantomStatus) { phantomStatus.innerText = "Henüz Bağlanmadı"; phantomStatus.style.color = "var(--text-tertiary)"; }
+            if(phantomBtn) { phantomBtn.innerText = "Cüzdan Bağla"; phantomBtn.className = "btn-main"; phantomBtn.onclick = () => bindWallet('phantom'); }
+            
+            if(metamaskStatus) { metamaskStatus.innerText = "Henüz Bağlanmadı"; metamaskStatus.style.color = "var(--text-tertiary)"; }
+            if(metamaskBtn) { metamaskBtn.innerText = "Cüzdan Bağla"; metamaskBtn.className = "btn-main"; metamaskBtn.onclick = () => bindWallet('metamask'); }
+
+            if (wallet) {
+                if (type === 'phantom' && phantomStatus) {
+                    phantomStatus.innerText = `● Bağlı: ${wallet.substring(0,4)}...${wallet.substring(wallet.length-4)}`;
+                    phantomStatus.style.color = "var(--neon-green)";
+                    if(phantomBtn) { phantomBtn.innerText = "Bağlantıyı Kes"; phantomBtn.className = "btn-secondary"; phantomBtn.onclick = disconnectWallet; }
+                } else if (type === 'metamask' && metamaskStatus) {
+                    metamaskStatus.innerText = `● Bağlı: ${wallet.substring(0,4)}...${wallet.substring(wallet.length-4)}`;
+                    metamaskStatus.style.color = "var(--neon-green)";
+                    if(metamaskBtn) { metamaskBtn.innerText = "Bağlantıyı Kes"; metamaskBtn.className = "btn-secondary"; metamaskBtn.onclick = disconnectWallet; }
+                }
+            }
+        }
 
         function logoutFromProfile() {
             TokenBountyStore.disconnectWallet();
-            showToast("🚪 Cüzdan bağlantınız kesildi ve hesaptan çıkış yapıldı!", "info");
+            TokenBountyStore.userState.isLoggedIn = false;
+            TokenBountyStore.saveToStorage();
+            showToast("🚪 Hesaptan çıkış yapıldı!", "info");
             setTimeout(() => window.location.href = "index.html", 800);
         }
 
+        function disconnectWallet() {
+            TokenBountyStore.disconnectWallet();
+            showToast("🚪 Cüzdan bağlantısı kesildi!", "info");
+            renderWalletUI();
+        }
+
         function bindWallet(type) {
-            TokenBountyStore.userState.connectedWallet = "5K9x...89a2";
+            TokenBountyStore.userState.connectedWallet = type === 'phantom' ? "5K9xABCDEF89a2" : "0xABCD1234EFGH5678";
             TokenBountyStore.userState.walletType = type;
             TokenBountyStore.saveToStorage();
             showToast(`🎉 ${type.toUpperCase()} Cüzdanınız Profilinize Bağlandı!`, "success");
-            setTimeout(() => window.location.reload(), 600);
+            renderWalletUI();
         }
 
         function withdrawSingle(ticker, val) {
-            showToast(`🎉 Tebrikler! ${val} değerindeki ${ticker} tokenınız bağlı soğuk cüzdanınıza doğrudan transfer edildi!`, "success");
+            showToast(`🎉 Tebrikler! Çekim talebi oluşturuldu!`, "success");
         }
 
         function withdrawAllTokens() {
-            showToast("🎉 TEBRİKLER! Toplam $8.50 USD değerindeki tüm tokenlarınız bağlı cüzdanınıza aktarıldı!", "success");
+            showToast("Bakiye bulunmuyor.", "warning");
         }
     </script>
 </body>

@@ -79,51 +79,63 @@ function renderTokenTable(networkFilter = "all", searchQuery = "") {
         const formattedPrice = proj.price < 0.01 ? `$${proj.price.toFixed(5)}` : `$${proj.price.toFixed(2)}`;
         
         let rankDisplay = index + 1;
-        if (index === 0) rankDisplay = '🥇 1';
-        else if (index === 1) rankDisplay = '🥈 2';
-        else if (index === 2) rankDisplay = '🥉 3';
+    tableBody.innerHTML = projects.map((item, index) => {
+        const rankBadge = index < 3 ? ['🥇 1', '🥈 2', '🥉 3'][index] : index + 1;
+        const progressPercent = Math.round((item.bountyRemainingUSD / item.bountyTotalUSD) * 100);
+        const timeAgo = item.addedTimeText;
+        const isUp = item.change24h >= 0;
+        const changeClass = isUp ? "up" : "down";
+        const changeIcon = isUp ? '<i class="fa-solid fa-caret-up"></i>' : '<i class="fa-solid fa-caret-down"></i>';
+        const changeSign = isUp ? "+" : "";
+
+        // Generate dynamic SVG sparkline curve
+        const sparklineColor = isUp ? "#10b981" : "#f43f5e";
+        const sparklineSvg = isUp 
+            ? `<svg width="80" height="26" viewBox="0 0 80 26"><path d="M0,20 Q20,24 40,10 T80,4" fill="none" stroke="${sparklineColor}" stroke-width="2.2" stroke-linecap="round"/></svg>`
+            : `<svg width="80" height="26" viewBox="0 0 80 26"><path d="M0,4 Q20,10 40,20 T80,24" fill="none" stroke="${sparklineColor}" stroke-width="2.2" stroke-linecap="round"/></svg>`;
 
         return `
-            <tr class="token-row" onclick="openTokenDetail('${proj.id}')">
-                <td class="th-rank"><span class="rank-badge">${rankDisplay}</span></td>
+            <tr class="token-row" onclick="openTokenDetail('${item.id}')">
+                <td class="th-rank"><span class="rank-badge">${rankBadge}</span></td>
                 <td class="th-token">
                     <div class="token-meta-cell">
-                        <img src="${proj.logo}" alt="${proj.name}" class="token-logo-img" onerror="this.src='https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png'">
+                        <img src="${item.logo}" alt="${item.name}" class="token-logo-img" onerror="this.src='https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png'">
                         <div class="token-names">
-                            <span class="token-title">${proj.name}</span>
-                            <span class="token-ticker-text">${proj.ticker}</span>
+                            <span class="token-title">${item.name}</span>
+                            <span class="token-ticker-text">${item.ticker}</span>
                         </div>
                     </div>
                 </td>
                 <td class="th-network">
-                    <span class="network-badge ${proj.network}">${proj.network}</span>
+                    <span class="network-badge ${item.network}">${item.network}</span>
                 </td>
                 <td class="th-time">
-                    <span class="time-text"><i class="fa-regular fa-clock"></i> ${proj.addedTimeText}</span>
+                    <span class="time-text"><i class="fa-regular fa-clock"></i> ${timeAgo}</span>
                 </td>
                 <td class="th-price">
-                    <span class="price-text">${formattedPrice}</span>
+                    <span class="price-text">$${item.price}</span>
                 </td>
                 <td class="th-change">
-                    <span class="change-pill ${changeClass}">
-                        <i class="fa-solid ${changeIcon}"></i> ${Math.abs(proj.change24h)}%
-                    </span>
+                    <div style="display:flex;align-items:center;gap:8px;">
+                        <span class="change-pill ${changeClass}">${changeIcon} ${changeSign}${item.change24h}%</span>
+                        ${sparklineSvg}
+                    </div>
                 </td>
                 <td class="th-bounty">
                     <div class="bounty-pool-box">
-                        <span class="bounty-amount">$${proj.bountyRemainingUSD} / $${proj.bountyTotalUSD}</span>
+                        <span class="bounty-amount">$${item.bountyRemainingUSD} / $${item.bountyTotalUSD}</span>
                         <div class="progress-bar-bg">
-                            <div class="progress-bar-fill" style="width: ${progressPct}%;"></div>
+                            <div class="progress-bar-fill" style="width: ${progressPercent}%;"></div>
                         </div>
                     </div>
                 </td>
                 <td class="th-quests">
-                    <span style="font-weight: 700; color: var(--primary-cyan);">${proj.tasks.length} Görev</span>
+                    <span style="font-weight: 700; color: var(--primary-cyan);">${item.tasks.length} Görev</span>
                 </td>
                 <td class="th-actions">
                     <div class="action-btns" style="display: flex; gap: 8px; white-space: nowrap;" onclick="event.stopPropagation();">
-                        <a href="coin-detail.html?id=${proj.id}" class="btn-table-quest"><i class="fa-solid fa-gift"></i> Görev Yap (${proj.tasks ? proj.tasks.length : 2})</a>
-                        <a href="${proj.buyUrl || 'https://raydium.io'}" target="_blank" onclick="event.stopPropagation();" class="btn-table-buy"><i class="fa-solid fa-cart-shopping"></i> Satın Al</a>
+                        <a href="coin-detail.html?id=${item.id}" class="btn-table-quest"><i class="fa-solid fa-gift"></i> Görev Yap (${item.tasks ? item.tasks.length : 2})</a>
+                        <a href="${item.buyUrl || 'https://raydium.io'}" target="_blank" onclick="event.stopPropagation();" class="btn-table-buy"><i class="fa-solid fa-cart-shopping"></i> Satın Al</a>
                     </div>
                 </td>
             </tr>

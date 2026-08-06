@@ -109,7 +109,7 @@
 
     </main>
 
-    <script src="store.js"></script>
+    <script src="store.js?v=5"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
             if (!TokenBountyStore.userState.isLoggedIn) {
@@ -122,7 +122,65 @@
             if (title) title.innerText = email;
 
             renderWalletUI();
+            loadUserBalances();
         });
+
+        async function loadUserBalances() {
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/user/profile`, {
+                    headers: { 'x-user-email': TokenBountyStore.userState.email }
+                });
+                const data = await res.json();
+                
+                if (data.success && data.user.balances) {
+                    const balances = data.user.balances;
+                    const container = document.getElementById("tokenBalancesContainer");
+                    
+                    const keys = Object.keys(balances);
+                    if (keys.length === 0) {
+                        container.innerHTML = `
+                            <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
+                                <i class="fa-solid fa-ghost" style="font-size: 32px; margin-bottom: 15px; opacity: 0.5;"></i>
+                                <p>Henüz herhangi bir airdrop görevini tamamlamadınız veya ödül kazanmadınız.</p>
+                                <a href="index.html" class="btn-main" style="display: inline-block; margin-top: 15px; font-size: 13px;">Görevlere Göz At</a>
+                            </div>
+                        `;
+                        return;
+                    }
+
+                    let totalUsd = 0;
+                    let html = '';
+                    
+                    keys.forEach(ticker => {
+                        const bal = balances[ticker];
+                        totalUsd += bal.valueUSD;
+                        html += `
+                            <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; align-items: center; gap: 12px;">
+                                    <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg-surface-elevated); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--neon-cyan);">
+                                        $${ticker.substring(0,3)}
+                                    </div>
+                                    <div>
+                                        <div style="font-weight: 700; font-size: 16px;">${ticker} Airdrop Ödülü</div>
+                                        <div style="font-size: 13px; color: var(--text-secondary);">Mevcut Değer: $${bal.valueUSD.toFixed(2)}</div>
+                                    </div>
+                                </div>
+                                <button onclick="withdrawSingle('${ticker}', ${bal.valueUSD})" class="btn-verify-task" style="background: rgba(0, 242, 254, 0.1); color: var(--neon-cyan); border: 1px solid var(--border-highlight); padding: 8px 16px;"><i class="fa-solid fa-arrow-right-arrow-left"></i> Çek / Swap</button>
+                            </div>
+                        `;
+                    });
+
+                    container.innerHTML = html;
+                    
+                    const withdrawAllBtn = document.querySelector('.btn-withdraw-single');
+                    if (withdrawAllBtn) {
+                        withdrawAllBtn.innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square"></i> Tümünü Çek ($${totalUsd.toFixed(2)})`;
+                    }
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
 
         function renderWalletUI() {
             const wallet = TokenBountyStore.userState.connectedWallet;
@@ -166,12 +224,11 @@
             renderWalletUI();
         }
 
-        function bindWallet(type) {
-            TokenBountyStore.userState.connectedWallet = type === 'phantom' ? "5K9xABCDEF89a2" : "0xABCD1234EFGH5678";
-            TokenBountyStore.userState.walletType = type;
-            TokenBountyStore.saveToStorage();
-            showToast(`🎉 ${type.toUpperCase()} Cüzdanınız Profilinize Bağlandı!`, "success");
-            renderWalletUI();
+        async function bindWallet(type) {
+            const result = await TokenBountyStore.connectWeb3Wallet(type);
+            if (result) {
+                renderWalletUI();
+            }
         }
 
         function withdrawSingle(ticker, val) {

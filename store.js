@@ -111,7 +111,33 @@ const TokenBountyStore = {
     },
 
     // Connect Web3 Wallet & Sync to DB
-    async connectWallet(walletAddr, type = "Phantom") {
+    async connectWeb3Wallet(type = "phantom") {
+        let walletAddr = null;
+
+        try {
+            if (type === 'phantom') {
+                if (!window.solana || !window.solana.isPhantom) {
+                    showToast("Phantom cüzdanı bulunamadı. Lütfen uzantıyı yükleyin.", "error");
+                    return null;
+                }
+                const response = await window.solana.connect();
+                walletAddr = response.publicKey.toString();
+            } else if (type === 'metamask') {
+                if (!window.ethereum) {
+                    showToast("MetaMask cüzdanı bulunamadı. Lütfen uzantıyı yükleyin.", "error");
+                    return null;
+                }
+                const accounts = await window.ethereum.request({ method: 'eth_requestAccounts' });
+                walletAddr = accounts[0];
+            }
+        } catch (err) {
+            console.error("Wallet connection error:", err);
+            showToast("Cüzdan bağlama işlemi iptal edildi veya başarısız oldu.", "warning");
+            return null;
+        }
+
+        if (!walletAddr) return null;
+
         this.userState.connectedWallet = walletAddr;
         this.userState.walletType = type;
         this.saveLocalSession();
@@ -125,6 +151,8 @@ const TokenBountyStore = {
                 });
             } catch (err) { console.error("Wallet DB Sync Failed:", err); }
         }
+        
+        showToast(`🎉 ${type.toUpperCase()} Cüzdanınız Başarıyla Bağlandı!`, "success");
         return this.userState;
     },
 
@@ -143,6 +171,7 @@ const TokenBountyStore = {
                 });
             } catch (err) { console.error("Wallet DB Sync Failed:", err); }
         }
+        showToast("🚪 Cüzdan bağlantısı kesildi!", "info");
     },
 
     // Completely Logout User

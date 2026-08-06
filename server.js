@@ -181,6 +181,65 @@ app.post('/api/user/wallet', async (req, res) => {
     res.json({ success: true, wallets: user.wallets });
 });
 
+app.get('/api/user/profile', async (req, res) => {
+    // In a real app, use JWT. For MVP, we pass email in header for quick auth.
+    const email = req.headers['x-user-email'];
+    if (!email) return res.status(401).json({ success: false, error: "Unauthorized" });
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) return res.status(404).json({ success: false, error: "Kullanıcı bulunamadı" });
+
+    res.json({
+        success: true,
+        user: {
+            email: user.email,
+            isVerified: user.isVerified,
+            wallets: user.wallets,
+            balances: user.balances || {},
+            completedProjects: user.completedProjects || []
+        }
+    });
+});
+
+app.post('/api/user/complete-project', async (req, res) => {
+    const { email, projectId } = req.body;
+    if (!email || !projectId) return res.status(400).json({ success: false, error: "Eksik bilgi" });
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) return res.status(404).json({ success: false, error: "Kullanıcı bulunamadı" });
+
+    if (user.completedProjects && user.completedProjects.includes(projectId)) {
+        return res.status(400).json({ success: false, error: "Bu projenin ödülünü zaten aldınız!" });
+    }
+
+    const project = await Project.findById(projectId);
+    if (!project || project.status !== 'active') {
+        return res.status(404).json({ success: false, error: "Proje aktif değil veya bulunamadı" });
+    }
+
+    // Add reward to balance
+    const reward = project.rewardPerUserUSD || 0;
+    if (reward > 0) {
+        const ticker = project.ticker || "USD";
+        
+        // Initialize balances if not exist
+        if (!user.balances) user.balances = new Map();
+        
+        let currentBalance = user.balances.get(ticker) || { amount: 0, valueUSD: 0 };
+        currentBalance.valueUSD += reward;
+        // Since we don't know the exact token amount yet (unless we fetch real-time price), we just store USD value for now
+        
+        user.balances.set(ticker, currentBalance);
+    }
+
+    if (!user.completedProjects) user.completedProjects = [];
+    user.completedProjects.push(projectId);
+    
+    await user.save();
+
+    res.json({ success: true, message: "Görev başarıyla tamamlandı, ödül bakiyenize eklendi!", balances: user.balances });
+});
+
 // --- PROJECT API ENDPOINTS ---
 
 app.get('/api/projects', async (req, res) => {

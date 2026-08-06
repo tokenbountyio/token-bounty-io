@@ -523,6 +523,7 @@
     <script src="store.js"></script>
     <script>
         let currentProj = null;
+        let completedLocalTasks = [];
 
         document.addEventListener("DOMContentLoaded", () => {
             const urlParams = new URLSearchParams(window.location.search);
@@ -533,7 +534,9 @@
                 currentProj = TokenBountyStore.projects[0];
             }
 
-            populateDetailView(currentProj);
+            if (currentProj) {
+                populateDetailView(currentProj);
+            }
             checkWalletGatedStatus();
         });
 
@@ -548,38 +551,38 @@
             document.getElementById("detailContract").innerText = proj.contractAddress;
             document.getElementById("detailBuyBtn").href = proj.buyUrl;
 
-            document.getElementById("linkWebsite").href = proj.websiteUrl;
-            document.getElementById("linkTwitter").href = `https://x.com/${proj.twitterHandle.replace('@','')}`;
-            document.getElementById("linkTelegramGroup").href = `https://${proj.telegramGroup}`;
-            document.getElementById("linkTelegramChannel").href = `https://${proj.telegramChannel}`;
-            document.getElementById("linkDexScreener").href = proj.dexScreenerUrl;
+            document.getElementById("linkWebsite").href = proj.websiteUrl || "#";
+            document.getElementById("linkTwitter").href = `https://x.com/${(proj.twitterHandle || '').replace('@','')}`;
+            document.getElementById("linkTelegramGroup").href = `https://${proj.telegramGroup || ''}`;
+            
+            const marketCap = parseFloat(proj.marketCapUSD) || 0;
+            document.getElementById("detailMarketCap").innerText = `$${(marketCap / 1000000).toFixed(2)}M`;
+            document.getElementById("detailVolume").innerText = `$${((parseFloat(proj.volume24hUSD) || 0) / 1000000).toFixed(2)}M`;
 
-            document.getElementById("detailMarketCap").innerText = proj.marketCapUSD;
-            document.getElementById("detailVolume").innerText = proj.volume24hUSD;
-            document.getElementById("detailSupply").innerText = proj.totalSupply;
-
-            document.getElementById("detailRewardPerUser").innerText = `$${proj.rewardPerUserUSD.toFixed(2)} Değerinde Token`;
+            document.getElementById("detailRewardPerUser").innerText = `$${(proj.rewardPerUserUSD || 0).toFixed(2)} Değerinde Token`;
             document.getElementById("detailBountyRemaining").innerText = `$${proj.bountyRemainingUSD} / $${proj.bountyTotalUSD}`;
 
             renderTasksList(proj.tasks);
         }
 
         function renderTasksList(tasks) {
+            if (!tasks) return;
             const container = document.getElementById("taskListContainer");
             container.innerHTML = tasks.map((task, idx) => `
                 <div class="task-item" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); padding: 18px; border-radius: var(--radius-md); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
                     <div style="display: flex; align-items: center; gap: 14px;">
-                        <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(0, 255, 135, 0.15); color: var(--neon-green); display: flex; align-items: center; justify-content: center; font-size: 16px;"><i class="fa-solid fa-check"></i></div>
+                        <div id="icon_${task._id}" style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 16px;"><i class="fa-solid fa-clock"></i></div>
                         <div>
                             <div style="font-weight: 800; font-size: 15px;">${task.title}</div>
                             <div style="font-size: 13px; color: var(--text-secondary);">${task.target}</div>
                         </div>
                     </div>
-                    <button class="btn-verify-task" onclick="verifySingleTask('${task.id}', '${task.target}', '${task.type}')">
+                    <button id="btn_${task._id}" class="btn-verify-task" onclick="verifySingleTask('${task._id}', '${task.target}', '${task.type}')">
                         <i class="fa-solid fa-arrow-right-to-bracket"></i> Görevi Yap
                     </button>
                 </div>
             `).join("");
+            checkAllTasksCompleted();
         }
 
         function checkWalletGatedStatus() {
@@ -596,23 +599,81 @@
         }
 
         function verifySingleTask(taskId, target, type) {
-            const url = type.includes("twitter") && !target.startsWith("http") ? `https://x.com/${target.replace('@','')}` : `https://${target}`;
+            let url = target;
+            if (type.includes("twitter") && !target.startsWith("http")) url = `https://x.com/${target.replace('@','')}`;
+            else if (!target.startsWith("http")) url = `https://${target}`;
             
-            if (type.includes("telegram")) {
-                showToast("Telegram görevi açıldı! Katıldıktan sonra onay verilecektir.", "info");
-            } else if (type.includes("twitter")) {
-                showToast("X (Twitter) görevi açıldı! İşlem sonrası onaylanacaktır.", "info");
-            }
+            showToast("Görev penceresi açıldı. Lütfen görevi yapıp bu sekmeye geri dönün...", "info");
             window.open(url, "_blank");
+            
+            const btn = document.getElementById(`btn_${taskId}`);
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Doğrulanıyor (10s)`;
+            btn.disabled = true;
+            btn.style.opacity = "0.7";
+
+            // 10 Second Smart Timer Verification
+            setTimeout(() => {
+                completedLocalTasks.push(taskId);
+                const icon = document.getElementById(`icon_${taskId}`);
+                icon.style.background = "rgba(0, 255, 135, 0.15)";
+                icon.style.color = "var(--neon-green)";
+                icon.innerHTML = `<i class="fa-solid fa-check"></i>`;
+                
+                btn.innerHTML = `<i class="fa-solid fa-check"></i> Tamamlandı`;
+                btn.style.background = "rgba(255,255,255,0.05)";
+                btn.style.color = "var(--neon-green)";
+                
+                showToast("✅ Görev başarıyla doğrulandı!", "success");
+                checkAllTasksCompleted();
+            }, 10000);
         }
 
-        function claimProjectReward() {
-            if (!TokenBountyStore.userState.connectedWallet) {
-                showToast("🔒 Ödülü alabilmek için cüzdanınızı bağlamalısınız!", "warning");
+        function checkAllTasksCompleted() {
+            if (!currentProj || !currentProj.tasks) return;
+            const claimBtn = document.getElementById("claimRewardBtn");
+            if (completedLocalTasks.length >= currentProj.tasks.length) {
+                claimBtn.disabled = false;
+                claimBtn.style.opacity = "1";
+                claimBtn.innerHTML = `<i class="fa-solid fa-trophy"></i> Ödülü Hesabıma Ekle ($${currentProj.rewardPerUserUSD.toFixed(2)})`;
+            } else {
+                claimBtn.disabled = true;
+                claimBtn.style.opacity = "0.4";
+                claimBtn.innerHTML = `<i class="fa-solid fa-lock"></i> Tüm Görevleri Tamamlayın`;
+            }
+        }
+
+        async function claimProjectReward() {
+            if (!TokenBountyStore.userState.isLoggedIn || !TokenBountyStore.userState.connectedWallet) {
+                showToast("🔒 Ödülü alabilmek için giriş yapmalı ve cüzdan bağlamalısınız!", "warning");
                 openWalletModal();
                 return;
             }
-            showToast(`🎉 Tebrikler! $${currentProj.rewardPerUserUSD} değerindeki ${currentProj.name} token ödülü bakiyenize eklendi!`, "success");
+
+            const claimBtn = document.getElementById("claimRewardBtn");
+            claimBtn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> İşleniyor...`;
+            claimBtn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/user/complete-project`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: TokenBountyStore.userState.email, projectId: currentProj._id })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showToast(`🎉 Tebrikler! $${currentProj.rewardPerUserUSD} değerindeki ${currentProj.name} ödülü bakiyenize eklendi!`, "success");
+                    claimBtn.innerHTML = `<i class="fa-solid fa-check"></i> Alındı`;
+                } else {
+                    showToast(data.error || "Bir hata oluştu", "error");
+                    claimBtn.innerHTML = `<i class="fa-solid fa-trophy"></i> Tekrar Dene`;
+                    claimBtn.disabled = false;
+                }
+            } catch (err) {
+                showToast("Bağlantı hatası", "error");
+                claimBtn.innerHTML = `<i class="fa-solid fa-trophy"></i> Tekrar Dene`;
+                claimBtn.disabled = false;
+            }
         }
 
         function copyContract() {
@@ -629,28 +690,24 @@
             document.getElementById("walletModal")?.classList.remove("active");
         }
 
-        function connectPhantom() {
-            TokenBountyStore.userState.connectedWallet = "5K9x...89a2";
-            TokenBountyStore.saveToStorage();
-            checkWalletGatedStatus();
-            closeWalletModal();
-            alert("Phantom cüzdanı bağlandı!");
+        async function connectPhantom() {
+            const res = await TokenBountyStore.connectWeb3Wallet('phantom');
+            if (res) {
+                checkWalletGatedStatus();
+                closeWalletModal();
+            }
         }
 
-        function connectMetaMask() {
-            TokenBountyStore.userState.connectedWallet = "0x89a...21f0";
-            TokenBountyStore.saveToStorage();
-            checkWalletGatedStatus();
-            closeWalletModal();
-            alert("MetaMask cüzdanı bağlandı!");
+        async function connectMetaMask() {
+            const res = await TokenBountyStore.connectWeb3Wallet('metamask');
+            if (res) {
+                checkWalletGatedStatus();
+                closeWalletModal();
+            }
         }
 
         function connectTrustWallet() {
-            TokenBountyStore.userState.connectedWallet = "0x34f...90ab";
-            TokenBountyStore.saveToStorage();
-            checkWalletGatedStatus();
-            closeWalletModal();
-            alert("Trust Wallet bağlandı!");
+            showToast("Trust Wallet entegrasyonu WalletConnect üzerinden yakında eklenecektir.", "info");
         }
     </script>
 </body>

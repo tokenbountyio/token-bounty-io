@@ -22,7 +22,8 @@ const UserSchema = new mongoose.Schema({
     streak: {
         count: { type: Number, default: 0 },
         lastClaimed: { type: Date, default: null }
-    }
+    },
+    completedProjects: [{ type: String }] // Stores project IDs that the user has completed tasks for
 });
 
 module.exports = mongoose.model('User', UserSchema);

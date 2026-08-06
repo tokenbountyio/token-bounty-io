@@ -40,17 +40,12 @@
                 <a href="index.html" class="nav-item active"><i class="fa-solid fa-fire"></i> Canlı Liste</a>
                 <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i> Profilim</a>
                 <a href="#streak-section" class="nav-item"><i class="fa-solid fa-calendar-check"></i> Günlük Seri</a>
-                <a href="list-project.html" class="nav-item highlight-nav"><i class="fa-solid fa-plus-circle"></i> Projeni Listeleyin ($100)</a>
-                <a href="admin.html" onclick="openAdminAuthModal(event)" class="nav-item"><i class="fa-solid fa-shield-halved"></i> Admin</a>
+                <a href="list-project.html" class="nav-item highlight-nav"><i class="fa-solid fa-circle-plus"></i> Projeni Listeleyin ($100)</a>
             </nav>
 
             <div class="header-actions">
-                <button class="btn-wallet" id="connectWalletBtn" onclick="openWalletModal()">
-                    <i class="fa-solid fa-wallet"></i> <span id="walletBtnText">Cüzdan Bağla</span>
-                </button>
-                <a href="list-project.html" class="btn-primary-glow btn-list-mobile">
-                    <i class="fa-solid fa-rocket"></i> Listele
-                </a>
+                <button onclick="openLoginModal(event)" class="btn-wallet"><i class="fa-solid fa-key" style="color:var(--neon-cyan);"></i> Giriş Yap</button>
+                <button onclick="openRegisterModal(event)" class="btn-main" style="padding:11px 24px;font-size:14px;"><i class="fa-solid fa-user-plus"></i> Kayıt Ol</button>
             </div>
         </div>
     </header>
@@ -220,7 +215,7 @@
         </div>
         <div class="footer-bottom">
             <div class="container">
-                <p>&copy; 2026 TokenBounty.io. Tüm hakları saklıdır. Kripto varlıklar yüksek risk taşır.</p>
+                <p>© 2026 TokenBounty.io — All rights reserved. Premium Web3 Meme Coin Listing Platform. | <a href="admin.html" onclick="openAdminAuthModal(event)" style="color:var(--text-tertiary);text-decoration:none;"><i class="fa-solid fa-lock"></i> Yönetici Girişi</a></p>
             </div>
         </div>
     </footer>

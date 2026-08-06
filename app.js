@@ -31,7 +31,7 @@ function updateWalletUI() {
             <a href="profile.html" class="btn-wallet" style="text-decoration:none;">
                 <i class="fa-solid fa-user-astronaut" style="color:var(--neon-green);"></i> ${displayLabel}
             </a>
-            <button onclick="handleWalletDisconnect()" class="btn-secondary" style="padding:10px 18px;font-size:12px;border-color:rgba(244,63,94,0.5);color:#f43f5e;" title="Çıkış Yap">
+            <button onclick="handleUserLogout()" class="btn-secondary" style="padding:10px 18px;font-size:12px;border-color:rgba(244,63,94,0.5);color:#f43f5e;" title="Çıkış Yap">
                 <i class="fa-solid fa-right-from-bracket"></i>
             </button>
         `;
@@ -449,8 +449,8 @@ function submitLogin() {
     });
 }
 
-function handleWalletDisconnect() {
-    TokenBountyStore.disconnectWallet();
+function handleUserLogout() {
+    TokenBountyStore.logoutUser();
     updateWalletUI();
     closeAuthModals();
     showToast("🚪 Hesaptan başarıyla çıkış yapıldı!", "info");

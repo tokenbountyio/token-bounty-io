@@ -192,7 +192,6 @@ const TokenBountyStore = {
         this.projects.forEach((p, i) => p.rank = i + 1);
         this.saveToStorage();
         return approvedProj;
-        localStorage.removeItem("TB_UserState");
     },
 
     // Connect Web3 Wallet
@@ -203,10 +202,20 @@ const TokenBountyStore = {
         return this.userState;
     },
 
-    // Disconnect Web3 Wallet / Logout
+    // Disconnect Web3 Wallet
     disconnectWallet() {
-        this.resetUserState();
-        sessionStorage.removeItem("TB_ADMIN_AUTH");
+        this.userState.connectedWallet = null;
+        this.userState.walletType = null;
+        this.saveToStorage();
+    },
+
+    // Completely Logout User
+    logoutUser() {
+        this.userState.isLoggedIn = false;
+        this.userState.email = null;
+        this.userState.connectedWallet = null;
+        this.userState.walletType = null;
+        this.saveToStorage();
     },
 
     // Local Storage Sync

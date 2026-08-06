@@ -19,7 +19,6 @@
 
             <nav class="nav-links">
                 <a href="index.html" class="nav-item"><i class="fa-solid fa-fire"></i> Canlı Liste</a>
-                <a href="profile.html" class="nav-item active"><i class="fa-solid fa-user"></i> Profilim</a>
                 <a href="list-project.html" class="nav-item highlight-nav"><i class="fa-solid fa-circle-plus"></i> Projeni Listeleyin ($100)</a>
             </nav>
 
@@ -156,6 +155,12 @@
     <script src="store.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
+            // ROUTE GUARD: Prevent access to profile if not logged in
+            if (!TokenBountyStore.userState.isLoggedIn) {
+                window.location.replace("index.html");
+                return; // Stop execution
+            }
+
             const email = TokenBountyStore.userState.email || "Kullanıcı";
             const title = document.getElementById("profileEmailTitle");
             if (title) title.innerText = email;

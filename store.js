@@ -52,129 +52,34 @@ const TokenBountyStore = {
     // Projects Database (Sorted chronologically - Newest #1 at top)
     projects: [
         {
-            id: "proj_1",
+            id: "proj_doge",
             rank: 1,
-            name: "Aura Final Boss",
-            ticker: "$KIMCHI",
-            network: "solana",
-            logo: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png",
-            contractAddress: "K1mch1SolanaTokenAddress999999999999999",
-            addedTimeText: "5 dakika önce",
-            addedTimestamp: Date.now() - 300000,
-            price: 0.00215,
-            change24h: 26.5,
-            bountyRemainingUSD: 250,
-            bountyTotalUSD: 350,
-            rewardPerUserUSD: 3.00,
-            rewardTokenAmount: 1395, // tokens per $3
-            buyUrl: "https://raydium.io/swap/?inputCurrency=sol&outputCurrency=K1mch1SolanaTokenAddress999999999999999",
-            dexScreenerUrl: "https://dexscreener.com/solana/K1mch1SolanaTokenAddress999999999999999",
-            websiteUrl: "https://kimchiboss.io",
-            telegramChannel: "t.me/KimchiFinalBossOfficial",
-            telegramGroup: "t.me/KimchiFinalBossChat",
-            twitterHandle: "@KimchiBossSol",
-            pinnedTweetUrl: "https://x.com/KimchiBossSol/status/182000000000",
-            marketCapUSD: "2.10M",
-            volume24hUSD: "1.50M",
-            totalSupply: "1,000,000,000",
-            tasks: [
-                { id: "task_1", title: "Official Telegram Grubuna Katıl", type: "telegram", target: "t.me/KimchiFinalBossChat", reward: "$1.00" },
-                { id: "task_2", title: "X (Twitter) Hesabını Takip Et", type: "twitter_follow", target: "@KimchiBossSol", reward: "$1.00" },
-                { id: "task_3", title: "Sabitlenmiş Reklam Tweet'ini Repost Et", type: "twitter_repost", target: "https://x.com/KimchiBossSol/status/182000000000", reward: "$1.00" }
-            ]
-        },
-        {
-            id: "proj_2",
-            rank: 2,
-            name: "QUEST Token",
-            ticker: "$QUEST",
-            network: "solana",
-            logo: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png",
-            contractAddress: "QUESTSolanaTokenAddress88888888888888",
-            addedTimeText: "1 saat önce",
-            addedTimestamp: Date.now() - 3600000,
-            price: 0.0646,
-            change24h: -0.2,
-            bountyRemainingUSD: 180,
-            bountyTotalUSD: 200,
-            rewardPerUserUSD: 2.50,
-            rewardTokenAmount: 38,
-            buyUrl: "https://raydium.io/swap/",
-            dexScreenerUrl: "https://dexscreener.com/solana/",
-            websiteUrl: "https://questtoken.io",
-            telegramChannel: "t.me/QuestTokenOfficial",
-            telegramGroup: "t.me/QuestTokenChat",
-            twitterHandle: "@QuestTokenSol",
-            pinnedTweetUrl: "https://x.com/QuestTokenSol/status/182000000001",
-            marketCapUSD: "236.4M",
-            volume24hUSD: "85.8K",
-            totalSupply: "100,000,000",
-            tasks: [
-                { id: "task_1", title: "Telegram Duyuru Kanalına Abone Ol", type: "telegram", target: "t.me/QuestTokenOfficial", reward: "$1.25" },
-                { id: "task_2", title: "X (Twitter) Hesabını Takip Et", type: "twitter_follow", target: "@QuestTokenSol", reward: "$1.25" }
-            ]
-        },
-        {
-            id: "proj_3",
-            rank: 3,
-            name: "B420 Base",
-            ticker: "$B420",
-            network: "base",
-            logo: "https://raw.githubusercontent.com/ethereum-lists/tokens/master/tokens/eth/assets/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984/logo.png",
-            contractAddress: "0x4200000000000000000000000000000000000042",
-            addedTimeText: "3 saat önce",
-            addedTimestamp: Date.now() - 10800000,
-            price: 1.150,
-            change24h: 63.5,
-            bountyRemainingUSD: 450,
-            bountyTotalUSD: 500,
+            name: "Dogecoin",
+            ticker: "$DOGE",
+            network: "bnb chain",
+            logo: "https://cryptologos.cc/logos/dogecoin-doge-logo.png",
+            contractAddress: "0xbA2aE424d960c26247Dd6c32edC70B295c744C43", // Wrapped Doge on BSC
+            addedTimeText: "Yayında",
+            addedTimestamp: Date.now() - 86400000,
+            price: 0.165,
+            change24h: 4.2,
+            bountyRemainingUSD: 1000,
+            bountyTotalUSD: 1000,
             rewardPerUserUSD: 5.00,
-            rewardTokenAmount: 4.3,
-            buyUrl: "https://uniswap.org/",
-            dexScreenerUrl: "https://dexscreener.com/base/",
-            websiteUrl: "https://b420base.com",
-            telegramChannel: "t.me/B420BaseOfficial",
-            telegramGroup: "t.me/B420BaseChat",
-            twitterHandle: "@B420Base",
-            pinnedTweetUrl: "https://x.com/B420Base/status/182000000002",
-            marketCapUSD: "79.1M",
-            volume24hUSD: "14.9K",
-            totalSupply: "10,000,000",
-            tasks: [
-                { id: "task_1", title: "Telegram Grubuna Katıl", type: "telegram", target: "t.me/B420BaseChat", reward: "$2.00" },
-                { id: "task_2", title: "X (Twitter) Takip Et", type: "twitter_follow", target: "@B420Base", reward: "$1.50" },
-                { id: "task_3", title: "Anons Tweet'ini Repost Et", type: "twitter_repost", target: "https://x.com/B420Base/status/182000000002", reward: "$1.50" }
-            ]
-        },
-        {
-            id: "proj_4",
-            rank: 4,
-            name: "MarsCoin",
-            ticker: "$MARS",
-            network: "bsc",
-            logo: "https://raw.githubusercontent.com/binance-chain/tokens-list/master/assets/0xbb4CdB9CBd36B01bD1cBaEBF2De08d9173bc095c/logo.png",
-            contractAddress: "0xmars111111111111111111111111111111111111",
-            addedTimeText: "9 saat önce",
-            addedTimestamp: Date.now() - 32400000,
-            price: 0.05121,
-            change24h: -16.2,
-            bountyRemainingUSD: 310,
-            bountyTotalUSD: 400,
-            rewardPerUserUSD: 4.00,
-            rewardTokenAmount: 78,
+            rewardTokenAmount: 30, // tokens per $5
             buyUrl: "https://pancakeswap.finance/",
-            dexScreenerUrl: "https://dexscreener.com/bsc/",
-            websiteUrl: "https://marscoinbsc.io",
-            telegramChannel: "t.me/MarsCoinOfficial",
-            telegramGroup: "t.me/MarsCoinChat",
-            twitterHandle: "@MarsCoinBSC",
-            pinnedTweetUrl: "https://x.com/MarsCoinBSC/status/182000000003",
-            marketCapUSD: "50.5M",
-            volume24hUSD: "10.7M",
-            totalSupply: "500,000,000",
+            dexScreenerUrl: "https://dexscreener.com/bsc/0xbA2aE424d960c26247Dd6c32edC70B295c744C43",
+            websiteUrl: "https://dogecoin.com",
+            telegramChannel: "t.me/dogecoin",
+            telegramGroup: "t.me/dogecoin_chat",
+            twitterHandle: "@dogecoin",
+            pinnedTweetUrl: "https://x.com/dogecoin",
+            marketCapUSD: "23.5B",
+            volume24hUSD: "1.2B",
+            totalSupply: "140,000,000,000",
             tasks: [
-                { id: "task_1", title: "Telegram Grubuna Katıl", type: "telegram", target: "t.me/MarsCoinChat", reward: "$2.00" },
-                { id: "task_2", title: "X (Twitter) Takip Et & Repost Yap", type: "twitter_repost", target: "https://x.com/MarsCoinBSC/status/182000000003", reward: "$2.00" }
+                { id: "task_1", title: "Dogecoin Resmi Telegram Grubuna Katıl", type: "telegram", target: "t.me/dogecoin_chat", reward: "$2.50" },
+                { id: "task_2", title: "X (Twitter) Hesabını Takip Et", type: "twitter_follow", target: "@dogecoin", reward: "$2.50" }
             ]
         }
     ],
@@ -311,6 +216,17 @@ const TokenBountyStore = {
     },
 
     loadFromStorage() {
+        const VERSION = "1.1.production";
+        const currentVersion = localStorage.getItem("TB_Version");
+        
+        if (currentVersion !== VERSION) {
+            // Wipe old demo data
+            localStorage.removeItem("TB_Projects");
+            localStorage.removeItem("TB_PendingProjects");
+            // Do NOT wipe user login state if they already registered legitimately
+            localStorage.setItem("TB_Version", VERSION);
+        }
+
         const storedProjects = localStorage.getItem("TB_Projects");
         if (storedProjects) {
             this.projects = JSON.parse(storedProjects);

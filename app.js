@@ -7,7 +7,8 @@ document.addEventListener("DOMContentLoaded", () => {
     initApp();
 });
 
-function initApp() {
+async function initApp() {
+    await TokenBountyStore.fetchProjects(); // Gerçek veritabanından projeleri çeker
     renderTokenTable("all");
     setupFilterTabs();
     setupSearchInput();

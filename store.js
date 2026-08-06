@@ -1,9 +1,7 @@
 /* -------------------------------------------------------------
-   TokenBounty.io - Data Ledger & State Store
-   Includes DexScreener API Integration & Pre-seeded Projects
+   TokenBounty.io - Data Ledger & State Store (API Powered)
    ------------------------------------------------------------- */
 
-// Global Web3 Custom Toast Notification Engine (Replaces native browser alerts)
 function showToast(message, type = 'info') {
     let container = document.getElementById("toastContainer");
     if (!container) {
@@ -34,56 +32,43 @@ function showToast(message, type = 'info') {
     }, 4000);
 }
 
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://localhost:3000' 
+    : '';
+
 const TokenBountyStore = {
-    // Global System Configuration (Configurable from Admin Panel)
     systemConfig: {
-        dailyStreakRewardsUSD: [0.10, 0.20, 0.30, 0.40, 0.50, 1.00, 2.00] // Day 1 to 7
+        dailyStreakRewardsUSD: [0.10, 0.20, 0.30, 0.40, 0.50, 1.00, 2.00]
     },
 
-    // Current Wallet & User State
     userState: {
+        isLoggedIn: false,
+        email: null,
         connectedWallet: null, 
         walletType: null,      
-        streakCount: 1, // Start at day 1
+        streakCount: 1, 
         streakClaimedToday: false,
         userBalances: {},
         completedTasks: []
     },
 
-    // Projects Database (Sorted chronologically - Newest #1 at top)
-    projects: [
-        {
-            id: "proj_doge",
-            rank: 1,
-            name: "Dogecoin",
-            ticker: "$DOGE",
-            network: "bnb chain",
-            logo: "https://cryptologos.cc/logos/dogecoin-doge-logo.png",
-            contractAddress: "0xbA2aE424d960c26247Dd6c32edC70B295c744C43", // Wrapped Doge on BSC
-            addedTimeText: "Yayında",
-            addedTimestamp: Date.now() - 86400000,
-            price: 0.165,
-            change24h: 4.2,
-            bountyRemainingUSD: 1000,
-            bountyTotalUSD: 1000,
-            rewardPerUserUSD: 5.00,
-            rewardTokenAmount: 30, // tokens per $5
-            buyUrl: "https://pancakeswap.finance/",
-            dexScreenerUrl: "https://dexscreener.com/bsc/0xbA2aE424d960c26247Dd6c32edC70B295c744C43",
-            websiteUrl: "https://dogecoin.com",
-            telegramChannel: "t.me/dogecoin",
-            telegramGroup: "t.me/dogecoin_chat",
-            twitterHandle: "@dogecoin",
-            pinnedTweetUrl: "https://x.com/dogecoin",
-            marketCapUSD: "23.5B",
-            volume24hUSD: "1.2B",
-            totalSupply: "140,000,000,000",
-            tasks: [
-                { id: "task_1", title: "Dogecoin Resmi Telegram Grubuna Katıl", type: "telegram", target: "t.me/dogecoin_chat", reward: "$2.50" },
-                { id: "task_2", title: "X (Twitter) Hesabını Takip Et", type: "twitter_follow", target: "@dogecoin", reward: "$2.50" }
-            ]
+    projects: [],
+
+    loadLocalSession() {
+        const stored = localStorage.getItem("TB_UserSession");
+        if (stored) {
+            this.userState = { ...this.userState, ...JSON.parse(stored) };
         }
-    ],
+    },
+
+    saveLocalSession() {
+        localStorage.setItem("TB_UserSession", JSON.stringify({
+            isLoggedIn: this.userState.isLoggedIn,
+            email: this.userState.email,
+            connectedWallet: this.userState.connectedWallet,
+            walletType: this.userState.walletType
+        }));
+    },
 
     // DexScreener API live price updater
     async fetchLivePrice(contractAddress) {
@@ -100,113 +85,52 @@ const TokenBountyStore = {
                 };
             }
         } catch (err) {
-            console.warn("DexScreener API error, using static ticker data:", err);
+            console.warn("DexScreener API error:", err);
         }
         return null;
     },
 
-    // Sort projects chronologically (Newest first)
     getSortedProjects() {
-        return [...this.projects].sort((a, b) => b.addedTimestamp - a.addedTimestamp);
+        return this.projects;
     },
 
-    // Get Project by ID
     getProjectById(id) {
-        return this.projects.find(p => p.id === id);
+        return this.projects.find(p => p.id === id || p._id === id);
     },
 
-    // Add New Project Submission (Requires Admin Approval)
-    addProject(newProjData) {
-        const newProj = {
-            id: `proj_${Date.now()}`,
-            rank: 1,
-            addedTimeText: "Az önce",
-            addedTimestamp: Date.now(),
-            status: "pending_approval", // Pending admin payment confirmation!
-            price: newProjData.price || 0.001,
-            change24h: 0.0,
-            bountyRemainingUSD: newProjData.bountyTotalUSD,
-            bountyTotalUSD: newProjData.bountyTotalUSD,
-            rewardPerUserUSD: newProjData.rewardPerUserUSD || 3.00,
-            rewardTokenAmount: Math.round((newProjData.rewardPerUserUSD || 3) / (newProjData.price || 0.001)),
-            ...newProjData
-        };
-
-        // Add to pending projects array in storage
-        let pending = JSON.parse(localStorage.getItem("TB_PendingProjects") || "[]");
-        pending.unshift(newProj);
-        localStorage.setItem("TB_PendingProjects", JSON.stringify(pending));
-
-        return newProj;
-    },
-
-    // Admin Approves Project -> Moves to Active Projects Live on Home Table
-    approveProjectByAdmin(projId) {
-        let pending = JSON.parse(localStorage.getItem("TB_PendingProjects") || "[]");
-        const idx = pending.findIndex(p => p.id === projId);
-        let approvedProj = null;
-
-        if (idx > -1) {
-            approvedProj = pending.splice(idx, 1)[0];
-            localStorage.setItem("TB_PendingProjects", JSON.stringify(pending));
-        } else {
-            // Check if already in pending list
-            approvedProj = {
-                id: projId,
-                rank: 1,
-                name: "SOL PEPE",
-                ticker: "$SPEPE",
-                network: "solana",
-                logo: "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png",
-                contractAddress: "5K9xSolana...89a2",
-                addedTimeText: "Az önce",
-                addedTimestamp: Date.now(),
-                status: "active",
-                price: 0.0042,
-                change24h: 15.4,
-                bountyRemainingUSD: 500,
-                bountyTotalUSD: 500,
-                rewardPerUserUSD: 3.00,
-                buyUrl: "https://raydium.io",
-                dexScreenerUrl: "https://dexscreener.com",
-                websiteUrl: "https://solpepe.io",
-                telegramGroup: "t.me/solpepechat",
-                telegramChannel: "t.me/solpepenews",
-                twitterHandle: "@SolPepeOfficial",
-                marketCapUSD: "1.2M",
-                volume24hUSD: "300K",
-                totalSupply: "1,000,000,000",
-                tasks: [
-                    { id: "task_1", title: "Official Telegram Grubuna Katıl", type: "telegram", target: "t.me/solpepechat", reward: "$1.50" },
-                    { id: "task_2", title: "X (Twitter) Hesabını Takip Et", type: "twitter_follow", target: "@SolPepeOfficial", reward: "$1.50" }
-                ]
-            };
-        }
-
-        approvedProj.status = "active";
-        approvedProj.addedTimestamp = Date.now();
-        approvedProj.addedTimeText = "Az önce";
-
-        // Add to active live projects at #1 position
-        this.projects.unshift(approvedProj);
-        this.projects.forEach((p, i) => p.rank = i + 1);
-        this.saveToStorage();
-        return approvedProj;
-    },
-
-    // Connect Web3 Wallet
-    connectWallet(walletAddr, type = "Phantom") {
+    // Connect Web3 Wallet & Sync to DB
+    async connectWallet(walletAddr, type = "Phantom") {
         this.userState.connectedWallet = walletAddr;
         this.userState.walletType = type;
-        localStorage.setItem("TB_UserState", JSON.stringify(this.userState));
+        this.saveLocalSession();
+        
+        if (this.userState.isLoggedIn) {
+            try {
+                await fetch(`${API_BASE_URL}/api/user/wallet`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: this.userState.email, walletAddress: walletAddr, walletType: type })
+                });
+            } catch (err) { console.error("Wallet DB Sync Failed:", err); }
+        }
         return this.userState;
     },
 
-    // Disconnect Web3 Wallet
-    disconnectWallet() {
+    // Disconnect Web3 Wallet & Sync to DB
+    async disconnectWallet() {
         this.userState.connectedWallet = null;
         this.userState.walletType = null;
-        this.saveToStorage();
+        this.saveLocalSession();
+
+        if (this.userState.isLoggedIn) {
+            try {
+                await fetch(`${API_BASE_URL}/api/user/wallet`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email: this.userState.email, walletAddress: null, walletType: null })
+                });
+            } catch (err) { console.error("Wallet DB Sync Failed:", err); }
+        }
     },
 
     // Completely Logout User
@@ -215,42 +139,9 @@ const TokenBountyStore = {
         this.userState.email = null;
         this.userState.connectedWallet = null;
         this.userState.walletType = null;
-        this.saveToStorage();
-    },
-
-    // Local Storage Sync
-    saveToStorage() {
-        localStorage.setItem("TB_UserState", JSON.stringify(this.userState));
-        localStorage.setItem("TB_Projects", JSON.stringify(this.projects));
-        localStorage.setItem("TB_UserState", JSON.stringify(this.userState));
-    },
-
-    loadFromStorage() {
-        const VERSION = "1.1.production";
-        const currentVersion = localStorage.getItem("TB_Version");
-        
-        if (currentVersion !== VERSION) {
-            // Wipe old demo data
-            localStorage.removeItem("TB_Projects");
-            localStorage.removeItem("TB_PendingProjects");
-            // Do NOT wipe user login state if they already registered legitimately
-            localStorage.setItem("TB_Version", VERSION);
-        }
-
-        const storedProjects = localStorage.getItem("TB_Projects");
-        if (storedProjects) {
-            this.projects = JSON.parse(storedProjects);
-        }
-        const storedUser = localStorage.getItem("TB_UserState");
-        if (storedUser) {
-            this.userState = JSON.parse(storedUser);
-        }
-        const storedConfig = localStorage.getItem("TB_SystemConfig");
-        if (storedConfig) {
-            this.systemConfig = JSON.parse(storedConfig);
-        }
+        localStorage.removeItem("TB_UserSession");
     }
 };
 
-// Initialize Storage
-TokenBountyStore.loadFromStorage();
+// Initialize Local Auth Session immediately on load
+TokenBountyStore.loadLocalSession();

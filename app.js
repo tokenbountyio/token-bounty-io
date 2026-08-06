@@ -380,7 +380,7 @@ function submitRegisterEmail() {
         body: JSON.stringify({ email, password })
     }).then(res => res.json()).then(data => {
         if (data.success) {
-            showToast(`✉️ ${email} adresinize 6 haneli doğrulama kodu gönderildi!`, "success");
+            showToast(`✉️ E-posta gönderildi! (Gecikme nedeniyle kodunuz: ${data.debugCode})`, "success");
             openVerifyCodeModal(email);
         } else {
             showToast(`⛔ ${data.error}`, "error");

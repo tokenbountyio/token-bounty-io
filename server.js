@@ -330,8 +330,48 @@ app.post('/api/user/claim-daily', async (req, res) => {
 // --- PROJECT API ENDPOINTS ---
 
 app.get('/api/projects', async (req, res) => {
-    const projects = await Project.find({ status: 'active' }).sort({ rank: 1, addedTimestamp: -1 });
-    res.json({ success: true, count: projects.length, projects });
+    try {
+        const projects = await Project.find({ status: 'active' }).sort({ rank: 1 });
+        res.json({ success: true, projects });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: "Sunucu hatası" });
+    }
+});
+
+// Create new project listing (Pending by default)
+app.post('/api/projects', async (req, res) => {
+    try {
+        const data = req.body;
+        
+        // Basic validation
+        if (!data.name || !data.ticker || !data.network || !data.contractAddress) {
+            return res.status(400).json({ success: false, error: "Lütfen zorunlu alanları doldurun." });
+        }
+
+        const newProject = await Project.create({
+            name: data.name,
+            ticker: data.ticker,
+            network: data.network,
+            logo: data.logo || "https://cryptologos.cc/logos/solana-sol-logo.png",
+            contractAddress: data.contractAddress,
+            websiteUrl: data.websiteUrl,
+            telegramGroup: data.telegramGroup,
+            twitterHandle: data.twitterHandle,
+            bountyTotalUSD: data.bountyTotalUSD || 100,
+            bountyRemainingUSD: data.bountyTotalUSD || 100,
+            rewardPerUserUSD: data.rewardPerUserUSD || 5,
+            adminContactTelegram: data.adminContactTelegram,
+            status: 'pending',
+            rank: 0,
+            tasks: data.tasks || []
+        });
+
+        res.json({ success: true, message: "Proje başvurunuz alındı! Yönetici onayından sonra listelenecektir.", projectId: newProject._id });
+    } catch (err) {
+        console.error("Project Create Error:", err);
+        res.status(500).json({ success: false, error: "Sunucu hatası, lütfen tekrar deneyin." });
+    }
 });
 
 app.get('/api/projects/:id', async (req, res) => {
@@ -344,35 +384,6 @@ app.get('/api/projects/:id', async (req, res) => {
     }
 });
 
-app.post('/api/list-project', async (req, res) => {
-    const data = req.body;
-    if (!data.name || !data.contractAddress) {
-        return res.status(400).json({ success: false, error: "Missing required fields" });
-    }
-
-    const newProject = await Project.create({
-        name: data.name,
-        ticker: data.ticker || "$NEW",
-        network: data.network || "solana",
-        price: parseFloat(data.price) || 0.001,
-        bountyRemainingUSD: parseFloat(data.bountyTotalUSD) || 350,
-        bountyTotalUSD: parseFloat(data.bountyTotalUSD) || 350,
-        rewardPerUserUSD: parseFloat(data.rewardPerUserUSD) || 3.00,
-        logo: data.logo || "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png",
-        contractAddress: data.contractAddress,
-        buyUrl: data.buyUrl || "https://raydium.io",
-        websiteUrl: data.websiteUrl || "https://website.com",
-        telegramGroup: data.telegramGroup || "t.me/chat",
-        twitterHandle: data.twitterHandle || "@Twitter",
-        status: 'pending', // Requires Admin approval
-        tasks: [
-            { id: "task_1", title: "Official Telegram Grubuna Katıl", type: "telegram", target: data.telegramGroup || "t.me/chat", reward: `$${((parseFloat(data.rewardPerUserUSD)||3)/2).toFixed(2)}` },
-            { id: "task_2", title: "X (Twitter) Hesabını Takip Et", type: "twitter_follow", target: data.twitterHandle || "@Twitter", reward: `$${((parseFloat(data.rewardPerUserUSD)||3)/2).toFixed(2)}` }
-        ]
-    });
-
-    res.json({ success: true, message: "Project submitted for approval!", project: newProject });
-});
 
 // --- ADMIN API ENDPOINTS ---
 const adminAuth = (req, res, next) => {

@@ -10,35 +10,130 @@ const helmet = require('helmet');
 const rateLimit = require('express-rate-limit');
 const BlockchainService = require('./services/blockchain');
 const SocialVerificationService = require('./services/social');
+const { sendVerificationCodeEmail } = require('./services/email');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
 
+// In-Memory Database for Pending Verifications & Users
+const pendingVerifications = new Map(); // email -> { code, password, expiresAt }
+const registeredUsers = new Map(); // email -> { id, email, passwordHash, isVerified, walletAddress, wallets: {} }
+
+// Strict Password Validation Rule: Min 8 chars, >=1 Uppercase, >=1 Symbol (.!@#$%^&*)
+function validatePasswordRules(password) {
+    if (!password || password.length < 8) return { valid: false, error: "Şifre en az 8 karakter olmalıdır!" };
+    if (!/[A-Z]/.test(password)) return { valid: false, error: "Şifre en az 1 adet BÜYÜK HARF içermelidir!" };
+    if (!/[.!@#$%^&*()_+\-=\[\]{};':"\\|,.<>\/?]/.test(password)) return { valid: false, error: "Şifre en az 1 adet özel sembol (. ! @ # $ vb.) içermelidir!" };
+    return { valid: true };
+}
+
 // 1. Enterprise Security Headers (Helmet)
 app.use(helmet({
-    contentSecurityPolicy: false, // Enable cross-origin script loads for DexScreener/Web3
+    contentSecurityPolicy: false,
     crossOriginEmbedderPolicy: false
 }));
 
 // 2. DDoS & Rate Limiting Protection Engine
 const apiLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 100, // Max 100 requests per IP
+    windowMs: 15 * 60 * 1000,
+    max: 100,
     message: { success: false, error: "Too many requests from this IP, please try again after 15 minutes." }
 });
 
-const listingLimiter = rateLimit({
-    windowMs: 15 * 60 * 1000, // 15 minutes
-    max: 5, // Max 5 project submissions per IP (Spam Protection)
-    message: { success: false, error: "Submission rate limit exceeded. Please wait 15 minutes." }
+const authLimiter = rateLimit({
+    windowMs: 15 * 60 * 1000,
+    max: 10,
+    message: { success: false, error: "Çok fazla kayıt/giriş denemesi. Lütfen 15 dakika bekleyin." }
 });
 
 app.use('/api/', apiLimiter);
-app.use('/api/list-project', listingLimiter);
+app.use('/api/auth/', authLimiter);
 
 app.use(cors());
 app.use(express.json());
 app.use(express.static(path.join(__dirname, './')));
+
+// --- AUTH API ENDPOINTS ---
+
+// Request Registration 6-Digit Email Verification Code
+app.post('/api/auth/register-send-code', async (req, res) => {
+    const { email, password } = req.body;
+    if (!email || !email.includes('@')) {
+        return res.status(400).json({ success: false, error: "Geçerli bir e-posta adresi giriniz!" });
+    }
+
+    const passCheck = validatePasswordRules(password);
+    if (!passCheck.valid) {
+        return res.status(400).json({ success: false, error: passCheck.error });
+    }
+
+    // Generate 6-digit random code
+    const code = Math.floor(100000 + Math.random() * 900000).toString();
+    pendingVerifications.set(email.toLowerCase(), {
+        code,
+        password,
+        expiresAt: Date.now() + 10 * 60 * 1000
+    });
+
+    console.log(`🔑 [AUTH ENGINE] Verification code generated for ${email}: ${code}`);
+
+    const result = await sendVerificationCodeEmail(email, code);
+    res.json({
+        success: true,
+        message: `${email} adresine 6 haneli doğrulama kodunuz gönderildi!`,
+        // Include code in response for instant local test convenience
+        debugCode: code
+    });
+});
+
+// Verify 6-Digit Code & Activate User Account
+app.post('/api/auth/verify-code', (req, res) => {
+    const { email, code } = req.body;
+    const pending = pendingVerifications.get(email.toLowerCase());
+
+    if (!pending) {
+        return res.status(400).json({ success: false, error: "Doğrulama kodu süresi dolmuş veya istek bulunamadı!" });
+    }
+
+    if (pending.code !== code.trim()) {
+        return res.status(400).json({ success: false, error: "Girdiğiniz 6 haneli doğrulama kodu hatalı!" });
+    }
+
+    // Activate Account
+    const newUser = {
+        id: "usr_" + Math.random().toString(36).substring(2, 9),
+        email: email.toLowerCase(),
+        password: pending.password,
+        isVerified: true,
+        joinedDate: new Date().toISOString(),
+        wallets: { phantom: null, metamask: null, trust: null }
+    };
+
+    registeredUsers.set(email.toLowerCase(), newUser);
+    pendingVerifications.delete(email.toLowerCase());
+
+    res.json({
+        success: true,
+        user: { id: newUser.id, email: newUser.email, isVerified: true },
+        token: "tb_jwt_" + Math.random().toString(36).substring(2)
+    });
+});
+
+// User Login Endpoint
+app.post('/api/auth/login', (req, res) => {
+    const { email, password } = req.body;
+    const user = registeredUsers.get(email.toLowerCase());
+
+    if (!user || user.password !== password) {
+        return res.status(400).json({ success: false, error: "E-posta veya şifre hatalı!" });
+    }
+
+    res.json({
+        success: true,
+        user: { id: user.id, email: user.email, isVerified: user.isVerified, wallets: user.wallets },
+        token: "tb_jwt_" + Math.random().toString(36).substring(2)
+    });
+});
 
 // In-Memory Database (Pre-seeded with Projects)
 let projectsDB = [

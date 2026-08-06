@@ -3,230 +3,149 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Profilim & Cüzdan Çekim Geçmişi | TokenBounty.io</title>
-    <link rel="preconnect" href="https://fonts.googleapis.com">
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
-    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <title>Profilim & Cüzdan Yönetimi | TokenBounty.io</title>
     <link rel="stylesheet" href="styles.css">
-    <style>
-        .profile-container {
-            padding: 40px 0 80px;
-        }
-
-        .profile-header-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: 30px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 30px;
-        }
-
-        .user-avatar-meta {
-            display: flex;
-            align-items: center;
-            gap: 20px;
-        }
-
-        .avatar-circle {
-            width: 64px;
-            height: 64px;
-            border-radius: 50%;
-            background: var(--gradient-primary);
-            color: #000;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            font-size: 28px;
-            box-shadow: var(--shadow-glow);
-        }
-
-        .user-wallet-address {
-            font-family: monospace;
-            font-size: 20px;
-            font-weight: 700;
-            color: var(--primary-cyan);
-        }
-
-        .profile-grid-2 {
-            display: grid;
-            grid-template-columns: 1fr 1fr;
-            gap: 30px;
-        }
-
-        .balance-table-card {
-            background: var(--bg-card);
-            border: 1px solid var(--border-color);
-            border-radius: var(--radius-lg);
-            padding: 25px;
-        }
-
-        .btn-withdraw-single {
-            background: var(--gradient-primary);
-            color: #000;
-            font-weight: 700;
-            padding: 6px 14px;
-            border-radius: var(--radius-sm);
-            font-size: 12px;
-        }
-
-        @media (max-width: 992px) {
-            .profile-grid-2 {
-                grid-template-columns: 1fr;
-            }
-            .profile-header-card {
-                flex-direction: column;
-                align-items: flex-start;
-                gap: 20px;
-            }
-        }
-    </style>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
 </head>
 <body>
 
+    <!-- Header Navigation -->
     <header class="main-header">
         <div class="container header-container">
             <a href="index.html" class="brand-logo">
                 <div class="logo-icon"><i class="fa-solid fa-gem"></i></div>
-                <div class="logo-text">
-                    <span class="logo-name">TokenBounty</span>
-                    <span class="logo-ext">.io</span>
-                </div>
+                <span class="logo-name">TokenBounty</span><span class="logo-ext">.io</span>
             </a>
 
             <nav class="nav-links">
                 <a href="index.html" class="nav-item"><i class="fa-solid fa-fire"></i> Canlı Liste</a>
                 <a href="profile.html" class="nav-item active"><i class="fa-solid fa-user"></i> Profilim</a>
-                <a href="list-project.html" class="nav-item highlight-nav"><i class="fa-solid fa-plus-circle"></i> Projeni Listeleyin ($100)</a>
-                <a href="admin.html" class="nav-item" style="color: var(--text-dim); font-size: 13px;"><i class="fa-solid fa-shield-halved"></i> Admin</a>
+                <a href="list-project.html" class="nav-item highlight-nav"><i class="fa-solid fa-circle-plus"></i> Projeni Listeleyin ($100)</a>
             </nav>
 
             <div class="header-actions">
-                <button class="btn-wallet" id="connectWalletBtn" onclick="openWalletModal()">
-                    <i class="fa-solid fa-wallet"></i> <span id="walletBtnText">5K9x...89a2</span>
-                </button>
+                <button onclick="logoutFromProfile()" class="btn-wallet" style="border-color: rgba(244, 63, 94, 0.6); color: #f43f5e;"><i class="fa-solid fa-right-from-bracket"></i> Hesaptan Çıkış Yap</button>
             </div>
         </div>
     </header>
 
-    <main class="container profile-container">
+    <main class="container" style="padding-top: 40px; padding-bottom: 80px;">
         
-        <!-- User Profile Header Card -->
-        <div class="profile-header-card">
-            <div class="user-avatar-meta">
-                <div class="avatar-circle"><i class="fa-solid fa-user-astronaut"></i></div>
-                <div>
-                    <div class="user-wallet-address" id="profileWalletAddr">5K9xSolana...89a2</div>
-                    <div style="color: var(--text-muted); font-size: 13px; margin-top: 4px;">
-                        <i class="fa-solid fa-circle-check text-green"></i> Web3 Bağlantısı Aktif | Daily Streak: <strong>3 Gün (+$10% Bonus)</strong>
+        <!-- User Info Card Header -->
+        <div class="streak-widget-card" style="margin-bottom: 30px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                <div style="display: flex; align-items: center; gap: 20px;">
+                    <div style="width: 70px; height: 70px; background: var(--gradient-brand); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 32px; color: #000; font-weight: 800; box-shadow: var(--shadow-glow-green);">
+                        <i class="fa-solid fa-user-astronaut"></i>
+                    </div>
+                    <div>
+                        <h2 id="profileEmailTitle" style="font-size: 24px; font-weight: 800; margin-bottom: 4px;">Kullanıcı Profili</h2>
+                        <div style="display: flex; align-items: center; gap: 12px; font-size: 13px;">
+                            <span style="background: rgba(0, 255, 135, 0.15); border: 1px solid var(--neon-green); color: var(--neon-green); padding: 4px 12px; border-radius: 20px; font-weight: 800;"><i class="fa-solid fa-circle-check"></i> ✅ E-posta Onaylı Üye</span>
+                            <span style="background: rgba(0, 242, 254, 0.15); border: 1px solid var(--neon-cyan); color: var(--neon-cyan); padding: 4px 12px; border-radius: 20px; font-weight: 800;"><i class="fa-solid fa-shield"></i> VIP Seviye 1 Avcı</span>
+                        </div>
                     </div>
                 </div>
-            </div>
-
-            <div style="display: flex; align-items: center; gap: 20px;">
-                <button class="btn-reject" onclick="logoutFromProfile()" style="padding: 10px 20px; font-size: 13px;">
-                    <i class="fa-solid fa-right-from-bracket"></i> Hesaptan Çıkış Yap
-                </button>
-                <div style="text-align: right;">
-                    <div style="font-size: 12px; color: var(--text-muted);">TOPLAM KAZANILAN TOKEN BAKİYESİ</div>
-                    <div style="font-size: 32px; font-weight: 800; color: var(--neon-green); font-family: var(--font-heading);" id="totalEarnedUSD">$8.50 USD</div>
+                <div>
+                    <button onclick="logoutFromProfile()" class="btn-secondary" style="border-color: rgba(244,63,94,0.5); color: #f43f5e;"><i class="fa-solid fa-right-from-bracket"></i> Hesaptan Çıkış Yap</button>
                 </div>
             </div>
         </div>
 
-        <div class="profile-grid-2">
+        <!-- 2 Column Layout: Wallets Binding Portal & Token Holdings -->
+        <div style="display: grid; grid-template-columns: 1fr 1fr; gap: 30px;">
             
-            <!-- Left Card: Internal Token Balances Ledger -->
-            <div class="balance-table-card">
-                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
-                    <h3><i class="fa-solid fa-coins text-green"></i> Kazandığım Token Bakiyeleri</h3>
-                    <button class="btn-secondary" onclick="withdrawAllTokens()"><i class="fa-solid fa-download"></i> Tümünü Cüzdana Çek</button>
-                </div>
+            <!-- Web3 Wallets Binding Portal -->
+            <div class="table-card" style="padding: 28px;">
+                <h3 style="margin-bottom: 8px; display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-wallet" style="color: var(--neon-cyan);"></i> Bağlı Web3 Cüzdanlarım</h3>
+                <p style="color: var(--text-secondary); font-size: 14px; margin-bottom: 24px;">Airdrop ödüllerinizi ve tokenlarınızı çekmek için Web3 cüzdanlarınızı hesabınıza bağlayın.</p>
 
-                <div class="table-responsive">
-                    <table class="coingecko-table">
-                        <thead>
-                            <tr>
-                                <th>Token</th>
-                                <th>Miktar</th>
-                                <th>Tahmini Değer ($)</th>
-                                <th>İşlem</th>
-                            </tr>
-                        </thead>
-                        <tbody>
-                            <tr>
-                                <td>
-                                    <div class="token-meta-cell">
-                                        <img src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png" class="token-logo-img">
-                                        <strong>$KIMCHI</strong>
-                                    </div>
-                                </td>
-                                <td>1,395 Token</td>
-                                <td style="color: var(--neon-green); font-weight: 800; font-family: var(--font-heading);">$3.00</td>
-                                <td><button class="btn-withdraw-single" onclick="withdrawSingle('KIMCHI', '$3.00')"><i class="fa-solid fa-arrow-down-to-bracket"></i> Cüzdana Çek</button></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="token-meta-cell">
-                                        <img src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/EPjFWdd5AufqSSqeM2qN1xzybapC8G4wEGGkZwyTDt1v/logo.png" class="token-logo-img">
-                                        <strong>$QUEST</strong>
-                                    </div>
-                                </td>
-                                <td>38 Token</td>
-                                <td style="color: var(--neon-green); font-weight: 800; font-family: var(--font-heading);">$2.50</td>
-                                <td><button class="btn-withdraw-single" onclick="withdrawSingle('QUEST', '$2.50')"><i class="fa-solid fa-arrow-down-to-bracket"></i> Cüzdana Çek</button></td>
-                            </tr>
-                            <tr>
-                                <td>
-                                    <div class="token-meta-cell">
-                                        <img src="https://raw.githubusercontent.com/ethereum-lists/tokens/master/tokens/eth/assets/0x1f9840a85d5af5bf1d1762f925bdaddc4201f984/logo.png" class="token-logo-img">
-                                        <strong>$B420</strong>
-                                    </div>
-                                </td>
-                                <td>2.6 Token</td>
-                                <td style="color: var(--neon-green); font-weight: 800; font-family: var(--font-heading);">$3.00</td>
-                                <td><button class="btn-withdraw-single" onclick="withdrawSingle('B420', '$3.00')"><i class="fa-solid fa-arrow-down-to-bracket"></i> Cüzdana Çek</button></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div style="display: flex; flex-direction: column; gap: 14px;">
+                    
+                    <!-- Phantom Wallet -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <img src="https://phantom.app/img/phantom-logo.png" alt="Phantom" style="width: 36px; height: 36px; border-radius: 8px;" onerror="this.src='https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png'">
+                            <div>
+                                <div style="font-weight: 800; font-size: 15px;">Phantom (Solana)</div>
+                                <div id="phantomBindStatus" style="font-size: 12px; color: var(--neon-green); font-weight: 700;">● Bağlı: 5K9x...89a2</div>
+                            </div>
+                        </div>
+                        <button onclick="bindWallet('phantom')" class="btn-secondary" style="padding: 8px 18px; font-size: 12px;">Değiştir</button>
+                    </div>
+
+                    <!-- MetaMask Wallet -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" style="width: 36px; height: 36px;">
+                            <div>
+                                <div style="font-weight: 800; font-size: 15px;">MetaMask (EVM / Base / BSC)</div>
+                                <div id="metamaskBindStatus" style="font-size: 12px; color: var(--text-tertiary); font-weight: 700;">Henüz Bağlanmadı</div>
+                            </div>
+                        </div>
+                        <button onclick="bindWallet('metamask')" class="btn-main" style="padding: 8px 18px; font-size: 12px;">Cüzdan Bağla</button>
+                    </div>
+
+                    <!-- Trust Wallet -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 16px; padding: 16px 20px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 14px;">
+                            <div style="width: 36px; height: 36px; background: #0500ff; border-radius: 8px; display: flex; align-items: center; justify-content: center; color: #fff; font-weight: 800;"><i class="fa-solid fa-shield-halved"></i></div>
+                            <div>
+                                <div style="font-weight: 800; font-size: 15px;">Trust Wallet</div>
+                                <div style="font-size: 12px; color: var(--text-tertiary); font-weight: 700;">Henüz Bağlanmadı</div>
+                            </div>
+                        </div>
+                        <button onclick="bindWallet('trust')" class="btn-main" style="padding: 8px 18px; font-size: 12px;">Cüzdan Bağla</button>
+                    </div>
+
                 </div>
             </div>
 
-            <!-- Right Card: Cold Wallet Withdrawal History Log -->
-            <div class="balance-table-card">
-                <div style="margin-bottom: 20px;">
-                    <h3><i class="fa-solid fa-clock-rotate-left text-cyan"></i> Cüzdan Çekim Geçmişi (TxHash Log)</h3>
-                    <p style="color: var(--text-muted); font-size: 13px;">Soğuk cüzdanınıza doğrudan aktarılan tokenların blokzincir kayıtları.</p>
+            <!-- Token Holdings & Cold Wallet Withdrawal Engine -->
+            <div class="table-card" style="padding: 28px;">
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 16px;">
+                    <h3 style="display: flex; align-items: center; gap: 10px;"><i class="fa-solid fa-coins" style="color: var(--neon-green);"></i> Kazanılan Token Bakiyelerim</h3>
+                    <button onclick="withdrawAllTokens()" class="btn-withdraw-single"><i class="fa-solid fa-arrow-up-right-from-square"></i> Tümünü Cüzdana Çek ($8.50)</button>
                 </div>
 
-                <div class="table-responsive">
-                    <table class="coingecko-table">
-                        <thead>
-                            <tr>
-                                <th>Çekim Tarihi</th>
-                                <th>Token</th>
-                                <th>Tutar ($)</th>
-                                <th>İşlem Kodu (TxHash)</th>
-                            </tr>
-                        </thead>
-                        <tbody id="withdrawalLogBody">
-                            <tr>
-                                <td style="font-size: 12px;">Dün 18:40</td>
-                                <td><strong>$MARS</strong></td>
-                                <td style="color: var(--primary-green);">$4.00</td>
-                                <td style="font-family: monospace; font-size: 11px; color: var(--primary-cyan);">0x7a89...f92a <i class="fa-solid fa-arrow-up-right-from-square"></i></td>
-                            </tr>
-                            <tr>
-                                <td style="font-size: 12px;">3 gün önce</td>
-                                <td><strong>$KIMCHI</strong></td>
-                                <td style="color: var(--primary-green);">$3.00</td>
-                                <td style="font-family: monospace; font-size: 11px; color: var(--primary-cyan);">5K9x...3a01 <i class="fa-solid fa-arrow-up-right-from-square"></i></td>
-                            </tr>
-                        </tbody>
-                    </table>
+                <div style="display: flex; flex-direction: column; gap: 12px;">
+                    
+                    <!-- Token Item 1 -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 36px; height: 36px; background: var(--gradient-brand); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 800;">⚡</div>
+                            <div>
+                                <div style="font-weight: 800; font-size: 14px;">Yeni Token ($NEW)</div>
+                                <div style="font-size: 12px; color: var(--neon-green); font-weight: 700;">35,000 $NEW ($3.50 USD)</div>
+                            </div>
+                        </div>
+                        <button onclick="withdrawSingle('$NEW', '$3.50')" class="btn-withdraw-single">Çek</button>
+                    </div>
+
+                    <!-- Token Item 2 -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 36px; height: 36px; background: var(--gradient-gold); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: #000; font-weight: 800;">🔥</div>
+                            <div>
+                                <div style="font-weight: 800; font-size: 14px;">Aura Final Boss ($KIMCHI)</div>
+                                <div style="font-size: 12px; color: var(--neon-green); font-weight: 700;">12,500 $KIMCHI ($3.00 USD)</div>
+                            </div>
+                        </div>
+                        <button onclick="withdrawSingle('$KIMCHI', '$3.00')" class="btn-withdraw-single">Çek</button>
+                    </div>
+
+                    <!-- Token Item 3 -->
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); border-radius: 14px; padding: 14px 18px; display: flex; justify-content: space-between; align-items: center;">
+                        <div style="display: flex; align-items: center; gap: 12px;">
+                            <div style="width: 36px; height: 36px; background: rgba(0,242,254,0.2); border: 1px solid var(--neon-cyan); border-radius: 10px; display: flex; align-items: center; justify-content: center; color: var(--neon-cyan); font-weight: 800;">💧</div>
+                            <div>
+                                <div style="font-weight: 800; font-size: 14px;">Günlük Giriş Bonusu (USD)</div>
+                                <div style="font-size: 12px; color: var(--neon-green); font-weight: 700;">$2.00 USD Nakit Bakiye</div>
+                            </div>
+                        </div>
+                        <button onclick="withdrawSingle('Nakit Bakiye', '$2.00')" class="btn-withdraw-single">Çek</button>
+                    </div>
+
                 </div>
             </div>
 
@@ -237,8 +156,14 @@
     <script src="store.js"></script>
     <script>
         document.addEventListener("DOMContentLoaded", () => {
-            if (TokenBountyStore.userState.connectedWallet) {
-                document.getElementById("profileWalletAddr").innerText = TokenBountyStore.userState.connectedWallet;
+            const email = TokenBountyStore.userState.email || "Kullanıcı";
+            const title = document.getElementById("profileEmailTitle");
+            if (title) title.innerText = email;
+
+            const wallet = TokenBountyStore.userState.connectedWallet;
+            const status = document.getElementById("phantomBindStatus");
+            if (wallet && status) {
+                status.innerText = `● Bağlı: ${wallet}`;
             }
         });
 
@@ -246,6 +171,14 @@
             TokenBountyStore.disconnectWallet();
             showToast("🚪 Cüzdan bağlantınız kesildi ve hesaptan çıkış yapıldı!", "info");
             setTimeout(() => window.location.href = "index.html", 800);
+        }
+
+        function bindWallet(type) {
+            TokenBountyStore.userState.connectedWallet = "5K9x...89a2";
+            TokenBountyStore.userState.walletType = type;
+            TokenBountyStore.saveToStorage();
+            showToast(`🎉 ${type.toUpperCase()} Cüzdanınız Profilinize Bağlandı!`, "success");
+            setTimeout(() => window.location.reload(), 600);
         }
 
         function withdrawSingle(ticker, val) {

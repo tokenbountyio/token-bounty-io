@@ -21,13 +21,36 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // Connect to MongoDB
-const MONGODB_URI = process.env.MONGODB_URI || 'mongodb://localhost:27017/tokenbounty';
-mongoose.connect(MONGODB_URI)
-    .then(() => {
-        console.log('✅ Connected to MongoDB successfully!');
-        initializeDefaultConfig();
-    })
-    .catch(err => console.error('❌ MongoDB Connection Error. Please set MONGODB_URI in .env', err));
+const fs = require('fs');
+async function connectDB() {
+    let MONGODB_URI = process.env.MONGODB_URI;
+    
+    if (!MONGODB_URI) {
+        console.log('⏳ No MONGODB_URI found in .env! Starting Auto-MongoDB embedded engine...');
+        const { MongoMemoryServer } = require('mongodb-memory-server');
+        const dbPath = path.join(__dirname, '.mongo_data');
+        if (!fs.existsSync(dbPath)) fs.mkdirSync(dbPath);
+        
+        try {
+            const mongod = await MongoMemoryServer.create({
+                instance: { port: 27017, dbPath: dbPath, storageEngine: 'wiredTiger' }
+            });
+            MONGODB_URI = mongod.getUri();
+            console.log(`✅ Embedded MongoDB is running persistently at ${MONGODB_URI}`);
+        } catch (err) {
+            console.error('❌ Failed to start auto-mongo engine. Trying local fallback...', err.message);
+            MONGODB_URI = 'mongodb://localhost:27017/tokenbounty';
+        }
+    }
+
+    mongoose.connect(MONGODB_URI)
+        .then(() => {
+            console.log('✅ Connected to MongoDB successfully!');
+            initializeDefaultConfig();
+        })
+        .catch(err => console.error('❌ MongoDB Connection Error. Please set MONGODB_URI in .env', err));
+}
+connectDB();
 
 async function initializeDefaultConfig() {
     const config = await SystemConfig.findOne();

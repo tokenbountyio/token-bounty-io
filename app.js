@@ -407,7 +407,7 @@ function submitVerifyCode(email) {
         if (data.success) {
             TokenBountyStore.userState.email = data.user.email;
             TokenBountyStore.userState.isLoggedIn = true;
-            TokenBountyStore.saveToStorage();
+            TokenBountyStore.saveLocalSession();
             closeAuthModals();
             updateWalletUI();
             showToast("🎉 TEBRİKLER! Hesabınız doğrulandı ve giriş yapıldı!", "success");
@@ -437,7 +437,7 @@ function submitLogin() {
         if (data.success) {
             TokenBountyStore.userState.email = data.user.email;
             TokenBountyStore.userState.isLoggedIn = true;
-            TokenBountyStore.saveToStorage();
+            TokenBountyStore.saveLocalSession();
             closeAuthModals();
             updateWalletUI();
             showToast(`🔑 Hoş geldiniz, ${email}! Giriş başarılı.`, "success");

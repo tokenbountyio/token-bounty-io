@@ -70,6 +70,18 @@ const TokenBountyStore = {
         }));
     },
 
+    async fetchProjects() {
+        try {
+            const res = await fetch(`${API_BASE_URL}/api/projects`);
+            const data = await res.json();
+            if (data && data.success) {
+                this.projects = data.projects;
+            }
+        } catch (err) {
+            console.error("Failed to load DB projects:", err);
+        }
+    },
+
     // DexScreener API live price updater
     async fetchLivePrice(contractAddress) {
         try {

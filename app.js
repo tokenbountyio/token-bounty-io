@@ -28,7 +28,14 @@ function updateWalletUI() {
 
     if (isLoggedIn) {
         // Logged in user header badge
-        const displayLabel = walletAddress ? `${userEmail || 'Kullanıcı'} (${walletAddress})` : (userEmail || 'Kullanıcı');
+        let displayLabel = "Profilim";
+        if (walletAddress) {
+            displayLabel = walletAddress.length > 12 ? walletAddress.substring(0, 5) + '...' + walletAddress.substring(walletAddress.length - 4) : walletAddress;
+        } else if (userEmail) {
+            displayLabel = userEmail.split('@')[0];
+            if (displayLabel.length > 12) displayLabel = displayLabel.substring(0, 12) + '...';
+        }
+        
         actionsDiv.innerHTML = `
             <a href="profile.html" class="btn-wallet" style="text-decoration:none;">
                 <i class="fa-solid fa-user-astronaut" style="color:var(--neon-green);"></i> ${displayLabel}

@@ -255,8 +255,14 @@
 
         document.addEventListener("DOMContentLoaded", () => {
             if (sessionStorage.getItem("TB_ADMIN_AUTH") !== "true") {
-                window.location.href = "index.html";
-                return;
+                const pass = prompt("🔒 Admin Paneli Şifrenizi Girin:");
+                if (pass === ADMIN_KEY) {
+                    sessionStorage.setItem("TB_ADMIN_AUTH", "true");
+                } else {
+                    alert("Hatalı şifre!");
+                    window.location.href = "index.html";
+                    return;
+                }
             }
             loadAdminData();
         });

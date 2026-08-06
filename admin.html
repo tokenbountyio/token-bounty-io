@@ -1,0 +1,327 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Yönetim Paneli | TokenBounty.io</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .admin-dashboard {
+            padding: 30px 0 60px;
+        }
+
+        .admin-stats-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 20px;
+            margin-bottom: 30px;
+        }
+
+        .admin-stat-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .stat-icon-box {
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            background: rgba(0, 242, 254, 0.1);
+            color: var(--primary-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 22px;
+        }
+
+        .stat-icon-box.green { background: rgba(0, 255, 135, 0.1); color: var(--primary-green); }
+        .stat-icon-box.purple { background: rgba(153, 69, 255, 0.1); color: var(--color-solana); }
+        .stat-icon-box.orange { background: rgba(255, 107, 0, 0.1); color: #ff6b00; }
+
+        .stat-num {
+            font-size: 24px;
+            font-weight: 800;
+            font-family: var(--font-heading);
+        }
+
+        .admin-section-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 25px;
+            margin-bottom: 30px;
+        }
+
+        .admin-section-title {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            margin-bottom: 20px;
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 12px;
+        }
+
+        .btn-approve {
+            background: var(--gradient-brand) !important;
+            color: #000 !important;
+            font-weight: 800 !important;
+            padding: 8px 16px !important;
+            border-radius: var(--radius-full) !important;
+            font-size: 12px !important;
+            border: none !important;
+            box-shadow: var(--shadow-glow-green) !important;
+            cursor: pointer !important;
+        }
+
+        .btn-reject {
+            background: rgba(244, 63, 94, 0.2) !important;
+            border: 1.5px solid var(--color-down) !important;
+            color: var(--color-down) !important;
+            font-weight: 800 !important;
+            padding: 8px 16px !important;
+            border-radius: var(--radius-full) !important;
+            font-size: 12px !important;
+            cursor: pointer !important;
+        }
+
+        @media (max-width: 992px) {
+            .admin-stats-grid {
+                grid-template-columns: 1fr 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Header Navigation -->
+    <header class="main-header">
+        <div class="container header-container">
+            <a href="index.html" class="brand-logo">
+                <div class="logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="logo-text">
+                    <span class="logo-name">TokenBounty</span>
+                    <span class="logo-ext">.io Admin</span>
+                </div>
+            </a>
+
+            <nav class="nav-links">
+                <a href="index.html" class="nav-item"><i class="fa-solid fa-fire"></i> Canlı Liste</a>
+                <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i> Profilim</a>
+                <a href="list-project.html" class="nav-item highlight-nav"><i class="fa-solid fa-plus-circle"></i> Projeni Listeleyin ($100)</a>
+                <a href="admin.html" class="nav-item active" style="color: var(--primary-cyan); font-size: 13px;"><i class="fa-solid fa-shield-halved"></i> Admin</a>
+            </nav>
+        </div>
+    </header>
+
+    <main class="container admin-dashboard">
+        
+        <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 25px;">
+            <div>
+                <h2><i class="fa-solid fa-user-shield text-green"></i> Admin Yönetim Paneli</h2>
+                <p style="color: var(--text-muted); font-size: 14px;">100$ Listeleme ödemelerini, onay bekleyen projeleri ve canlı yayınları yönetin.</p>
+            </div>
+            <button class="btn-main" onclick="loadAdminData()"><i class="fa-solid fa-rotate"></i> Verileri Yenile</button>
+        </div>
+
+        <!-- Key Metrics Grid -->
+        <div class="admin-stats-grid">
+            <div class="admin-stat-card">
+                <div class="stat-icon-box green"><i class="fa-solid fa-dollar-sign"></i></div>
+                <div>
+                    <div style="font-size: 12px; color: var(--text-muted);">TOPLAM KAZANÇ (100$ Ücret)</div>
+                    <div class="stat-num" id="statRevenue">$400.00</div>
+                </div>
+            </div>
+
+            <div class="admin-stat-card">
+                <div class="stat-icon-box"><i class="fa-solid fa-layer-group"></i></div>
+                <div>
+                    <div style="font-size: 12px; color: var(--text-muted);">CANLI LİSTELENEN PROJELER</div>
+                    <div class="stat-num" id="statLiveCount">4 Proje</div>
+                </div>
+            </div>
+
+            <div class="admin-stat-card">
+                <div class="stat-icon-box orange"><i class="fa-solid fa-clock"></i></div>
+                <div>
+                    <div style="font-size: 12px; color: var(--text-muted);">ONAY BEKLEYEN ÖDEMELER</div>
+                    <div class="stat-num" id="statPendingCount">1 Bekleyen</div>
+                </div>
+            </div>
+
+            <div class="admin-stat-card">
+                <div class="stat-icon-box purple"><i class="fa-solid fa-users"></i></div>
+                <div>
+                    <div style="font-size: 12px; color: var(--text-muted);">AKTİF KULLANICI SAYISI</div>
+                    <div class="stat-num" id="statUsersCount">1,240 Avcı</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Pending Project Approvals Section -->
+        <div class="admin-section-card">
+            <div class="admin-section-title">
+                <h3><i class="fa-solid fa-clock-history text-orange"></i> Onay Bekleyen Ödemeler & Proje Başvuruları ($100)</h3>
+                <span style="font-size: 12px; color: var(--text-muted);">Ödeme kontrolü sonrası 1-Tıkla Canlıya Alın</span>
+            </div>
+
+            <div class="table-responsive">
+                <table class="coingecko-table">
+                    <thead>
+                        <tr>
+                            <th>Proje Adı</th>
+                            <th>Ağ</th>
+                            <th>Sözleşme Adresi</th>
+                            <th>Ödeme Yöntemi</th>
+                            <th>Ödül Havuzu</th>
+                            <th>Başvuru Tarihi</th>
+                            <th>İşlem</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pendingTableBody">
+                        <tr>
+                            <td>
+                                <div class="token-meta-cell">
+                                    <img src="https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png" class="token-logo-img">
+                                    <strong>SOL PEPE ($SPEPE)</strong>
+                                </div>
+                            </td>
+                            <td><span class="network-badge solana">Solana</span></td>
+                            <td style="font-family: monospace; font-size: 12px;">5K9xSolana...89a2</td>
+                            <td><strong style="color: var(--primary-green);">Solana SOL (100$)</strong></td>
+                            <td>$500.00</td>
+                            <td>12 dakika önce</td>
+                            <td>
+                                <button class="btn-approve" onclick="approvePendingListing(this)"><i class="fa-solid fa-check"></i> Onayla & #1 Yap</button>
+                                <button class="btn-reject" onclick="rejectPendingListing(this)"><i class="fa-solid fa-xmark"></i> Reddet</button>
+                            </td>
+                        </tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+        <!-- Active Live Projects Management -->
+        <div class="admin-section-card">
+            <div class="admin-section-title">
+                <h3><i class="fa-solid fa-list-check text-green"></i> Canlı Proje Yönetimi (Sıralama & Durum)</h3>
+            </div>
+
+            <div class="table-responsive">
+                <table class="coingecko-table">
+                    <thead>
+                        <tr>
+                            <th># Sıra</th>
+                            <th>Proje</th>
+                            <th>Ağ</th>
+                            <th>Fiyat ($)</th>
+                            <th>Kalan Ödül</th>
+                            <th>İşlemler</th>
+                        </tr>
+                    </thead>
+                    <tbody id="adminLiveTableBody">
+                        <!-- Loaded dynamically -->
+                    </tbody>
+                </table>
+            </div>
+        </div>
+
+    </main>
+
+    <script src="store.js"></script>
+    <script>
+        document.addEventListener("DOMContentLoaded", () => {
+            loadAdminData();
+        });
+
+        function loadAdminData() {
+            const projects = TokenBountyStore.getSortedProjects();
+            document.getElementById("statLiveCount").innerText = `${projects.length} Proje`;
+            document.getElementById("statRevenue").innerText = `$${projects.length * 100}.00`;
+
+            // Load Pending Projects from storage
+            const pending = JSON.parse(localStorage.getItem("TB_PendingProjects") || "[]");
+            document.getElementById("statPendingCount").innerText = `${pending.length} Bekleyen`;
+
+            const pendingBody = document.getElementById("pendingTableBody");
+            if (pending.length === 0) {
+                pendingBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">Onay bekleyen yeni başvuru bulunmamaktadır.</td></tr>`;
+            } else {
+                pendingBody.innerHTML = pending.map(p => `
+                    <tr>
+                        <td>
+                            <div class="token-meta-cell">
+                                <img src="${p.logo}" class="token-logo-img">
+                                <strong>${p.name} (${p.ticker})</strong>
+                            </div>
+                        </td>
+                        <td><span class="network-badge ${p.network}">${p.network}</span></td>
+                        <td style="font-family: monospace; font-size: 12px;">${p.contractAddress.substring(0, 8)}...</td>
+                        <td><strong style="color: var(--primary-green);">${p.network.toUpperCase()} USDT (100$)</strong></td>
+                        <td>$${p.bountyTotalUSD}.00</td>
+                        <td>${p.addedTimeText}</td>
+                        <td>
+                            <button class="btn-approve" onclick="approvePendingListing('${p.id}')"><i class="fa-solid fa-check"></i> Onayla & #1 Yap</button>
+                            <button class="btn-reject" onclick="rejectPendingListing(this)"><i class="fa-solid fa-xmark"></i> Reddet</button>
+                        </td>
+                    </tr>
+                `).join("");
+            }
+
+            const tbody = document.getElementById("adminLiveTableBody");
+            tbody.innerHTML = projects.map((p, idx) => `
+                <tr>
+                    <td><strong>#${idx + 1}</strong></td>
+                    <td>
+                        <div class="token-meta-cell">
+                            <img src="${p.logo}" class="token-logo-img">
+                            <div>
+                                <div style="font-weight: 700;">${p.name}</div>
+                                <div style="font-size: 12px; color: var(--text-muted);">${p.ticker}</div>
+                            </div>
+                        </div>
+                    </td>
+                    <td><span class="network-badge ${p.network}">${p.network}</span></td>
+                    <td style="font-family: monospace; font-weight: 700;">$${p.price}</td>
+                    <td style="color: var(--primary-green); font-weight: 700;">$${p.bountyRemainingUSD} / $${p.bountyTotalUSD}</td>
+                    <td>
+                        <button class="btn-copy" onclick="moveProjectTop('${p.id}')"><i class="fa-solid fa-arrow-up"></i> En Üste Al</button>
+                    </td>
+                </tr>
+            `).join("");
+        }
+
+        function approvePendingListing(projId) {
+            const approved = TokenBountyStore.approveProjectByAdmin(projId);
+            alert(`🎉 PROJE ONAYLANDI!\n\n${approved.name} projesinin 100$ ödemesi doğrulandı ve ana sayfada #1. sıradan canlıya alındı!`);
+            loadAdminData();
+        }
+
+        function rejectPendingListing(btn) {
+            btn.closest("tr").remove();
+            alert("Başvuru reddedildi.");
+        }
+
+        function moveProjectTop(id) {
+            const projIndex = TokenBountyStore.projects.findIndex(p => p.id === id);
+            if (projIndex > -1) {
+                const [proj] = TokenBountyStore.projects.splice(projIndex, 1);
+                proj.addedTimestamp = Date.now();
+                TokenBountyStore.projects.unshift(proj);
+                TokenBountyStore.saveToStorage();
+                loadAdminData();
+                alert(`${proj.name} projesi listenin en tepesine (#1 Sıra) taşındı!`);
+            }
+        }
+    </script>
+</body>
+</html>

@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Proje Listele ($100) & Ödül Havuzu Oluştur | TokenBounty.io</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .wizard-container {
+            max-width: 800px;
+            margin: 40px auto;
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+        }
+
+        .wizard-steps {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 35px;
+            position: relative;
+        }
+
+        .wizard-steps::before {
+            content: '';
+            position: absolute;
+            top: 20px;
+            left: 0;
+            right: 0;
+            height: 2px;
+            background: var(--border-color);
+            z-index: 1;
+        }
+
+        .wizard-step-item {
+            position: relative;
+            z-index: 2;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .step-number {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: var(--bg-dark);
+            border: 2px solid var(--border-color);
+            color: var(--text-muted);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: 700;
+        }
+
+        .wizard-step-item.active .step-number {
+            border-color: var(--primary-cyan);
+            background: var(--primary-cyan);
+            color: #000;
+            box-shadow: 0 0 15px var(--primary-cyan);
+        }
+
+        .step-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            font-weight: 600;
+        }
+
+        .form-group {
+            margin-bottom: 22px;
+        }
+
+        .form-group label {
+            display: block;
+            font-size: 14px;
+            font-weight: 600;
+            margin-bottom: 8px;
+            color: var(--text-main);
+        }
+
+        .form-control {
+            width: 100%;
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 12px 16px;
+            color: var(--text-main);
+            font-size: 14px;
+            font-family: var(--font-body);
+            outline: none;
+        }
+
+        .form-control:focus {
+            border-color: var(--primary-cyan);
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+        }
+
+        .form-grid-2 {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 20px;
+        }
+
+        .payment-box {
+            background: rgba(0, 255, 135, 0.05);
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            border-radius: var(--radius-md);
+            padding: 25px;
+            text-align: center;
+            margin-top: 20px;
+        }
+
+        .payment-amount {
+            font-size: 36px;
+            font-weight: 800;
+            color: var(--primary-green);
+            font-family: var(--font-heading);
+        }
+
+        .chain-select-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 12px;
+            margin: 20px 0;
+        }
+
+        .chain-btn {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            padding: 12px;
+            border-radius: var(--radius-md);
+            color: var(--text-main);
+            font-weight: 600;
+            font-size: 13px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 8px;
+        }
+
+        .chain-btn.selected {
+            border-color: var(--primary-cyan);
+            background: rgba(0, 242, 254, 0.1);
+            color: var(--primary-cyan);
+        }
+
+        .btn-wizard-next {
+            width: 100%;
+            background: var(--gradient-primary);
+            color: #000;
+            font-weight: 800;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            margin-top: 25px;
+        }
+
+        @media (max-width: 768px) {
+            .form-grid-2, .chain-select-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="main-header">
+        <div class="container header-container">
+            <a href="index.html" class="brand-logo">
+                <div class="logo-icon"><i class="fa-solid fa-gem"></i></div>
+                <div class="logo-text">
+                    <span class="logo-name">TokenBounty</span>
+                    <span class="logo-ext">.io</span>
+                </div>
+            </a>
+            <div style="display: flex; gap: 15px; align-items: center;">
+                <a href="profile.html" style="color: var(--text-main); font-size: 14px; font-weight: 600;"><i class="fa-solid fa-user"></i> Profilim</a>
+                <a href="index.html" style="color: var(--text-muted); font-size: 14px;"><i class="fa-solid fa-arrow-left"></i> Ana Sayfaya Dön</a>
+            </div>
+        </div>
+    </header>
+
+    <main class="container">
+        
+        <div class="wizard-container">
+            <h2 style="text-align: center; margin-bottom: 10px;">🚀 Projenizi Listeleyin & Ödül Havuzu Oluşturun</h2>
+            <p style="text-align: center; color: var(--text-muted); font-size: 14px; margin-bottom: 30px;">
+                24 saat içinde projenize 300+ gerçek on-chain holder ve X (Twitter) etkileşimi kazandırın.
+            </p>
+
+            <!-- Wizard Step Indicators -->
+            <div class="wizard-steps">
+                <div class="wizard-step-item active" id="stepIndicator1">
+                    <div class="step-number">1</div>
+                    <div class="step-label">Token Detayları</div>
+                </div>
+                <div class="wizard-step-item" id="stepIndicator2">
+                    <div class="step-number">2</div>
+                    <div class="step-label">DEX & Sosyal Linkler</div>
+                </div>
+                <div class="wizard-step-item" id="stepIndicator3">
+                    <div class="step-number">3</div>
+                    <div class="step-label">Ödül Havuzu</div>
+                </div>
+                <div class="wizard-step-item" id="stepIndicator4">
+                    <div class="step-number">4</div>
+                    <div class="step-label">100$ Ödeme</div>
+                </div>
+            </div>
+
+            <!-- Form Wizard Container -->
+            <form id="projectForm" onsubmit="event.preventDefault();">
+                
+                <!-- STEP 1: TOKEN DETAILS -->
+                <div id="step1">
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Token Adı *</label>
+                            <input type="text" id="inputName" class="form-control" placeholder="Örn: Aura Final Boss" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Token Sembolü (Ticker) *</label>
+                            <input type="text" id="inputTicker" class="form-control" placeholder="Örn: $KIMCHI" required>
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Çalıştığı Ağ *</label>
+                            <select id="inputNetwork" class="form-control">
+                                <option value="solana">Solana</option>
+                                <option value="base">Base</option>
+                                <option value="bsc">BNB Smart Chain (BSC)</option>
+                                <option value="ethereum">Ethereum (ERC20)</option>
+                                <option value="polygon">Polygon</option>
+                            </select>
+                        </div>
+                        <div class="form-group">
+                            <label>Canlı Fiyat ($) *</label>
+                            <input type="number" step="any" id="inputPrice" class="form-control" placeholder="Örn: 0.00215" required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Sözleşme Adresi (Contract Address) *</label>
+                        <input type="text" id="inputContract" class="form-control" placeholder="Örn: K1mch1SolanaTokenAddress999..." required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Kare Token Logosu URL (512x512 px) *</label>
+                        <input type="url" id="inputLogo" class="form-control" placeholder="https://domain.com/logo.png" required>
+                    </div>
+
+                    <button class="btn-wizard-next" onclick="goToStep(2)">İleri: DEX & Sosyal Linkler <i class="fa-solid fa-arrow-right"></i></button>
+                </div>
+
+                <!-- STEP 2: DEX & SOCIAL LINKS -->
+                <div id="step2" style="display: none;">
+                    <div class="form-group">
+                        <label>🛒 DEX / Borsa Satın Al (Buy) Linki *</label>
+                        <input type="url" id="inputBuyUrl" class="form-control" placeholder="https://raydium.io/swap/?outputCurrency=..." required>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Resmi Telegram Grubu *</label>
+                            <input type="text" id="inputTelegramGroup" class="form-control" placeholder="t.me/projechat" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Resmi Telegram Duyuru Kanalı</label>
+                            <input type="text" id="inputTelegramChannel" class="form-control" placeholder="t.me/projenews">
+                        </div>
+                    </div>
+
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Resmi X (Twitter) Kullanıcı Adı *</label>
+                            <input type="text" id="inputTwitterHandle" class="form-control" placeholder="@ProjeHesabi" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Sabitlenmiş Reklam Tweet Linki *</label>
+                            <input type="url" id="inputPinnedTweet" class="form-control" placeholder="https://x.com/Proje/status/18200..." required>
+                        </div>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Resmi Web Sitesi URL *</label>
+                        <input type="url" id="inputWebsite" class="form-control" placeholder="https://projesitesi.io" required>
+                    </div>
+
+                    <div style="display: flex; gap: 15px;">
+                        <button class="btn-secondary" style="width: 30%; margin-top: 25px;" onclick="goToStep(1)">Geri</button>
+                        <button class="btn-wizard-next" style="width: 70%;" onclick="goToStep(3)">İleri: Ödül Havuzu <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- STEP 3: BOUNTY POOL -->
+                <div id="step3" style="display: none;">
+                    
+                    <div class="form-group">
+                        <label>Toplam Depozito Ödül Havuzu ($) * (Minimum $200)</label>
+                        <input type="number" id="inputBountyTotal" class="form-control" value="350" min="200" required>
+                    </div>
+
+                    <div class="form-group">
+                        <label>Kullanıcı Başı Ödül ($) *</label>
+                        <input type="number" step="0.5" id="inputRewardPerUser" class="form-control" value="3.00" min="1" required>
+                    </div>
+
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); padding: 15px; border-radius: var(--radius-md); font-size: 13px; color: var(--text-muted);">
+                        <i class="fa-solid fa-circle-info text-green"></i> 350$ ödül havuzu tanımladığınızda yaklaşık 116 gerçek kullanıcı görev yapacak ve on-chain holder'ınız olacaktır.
+                    </div>
+
+                    <div style="display: flex; gap: 15px;">
+                        <button class="btn-secondary" style="width: 30%; margin-top: 25px;" onclick="goToStep(2)">Geri</button>
+                        <button class="btn-wizard-next" style="width: 70%;" onclick="goToStep(4)">İleri: 100$ Ödeme Ekranı <i class="fa-solid fa-arrow-right"></i></button>
+                    </div>
+                </div>
+
+                <!-- STEP 4: $100 PAYMENT CHECKOUT -->
+                <div id="step4" style="display: none;">
+                    
+                    <div class="payment-box">
+                        <div style="font-size: 13px; color: var(--text-muted);">SABİT LİSTELEME ÜCRETİ</div>
+                        <div class="payment-amount">$100 USD</div>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Ödemeniz onaylandığı an projeniz 1. sıradan canlıya alınır.</p>
+                    </div>
+
+                    <div style="margin-top: 20px;">
+                        <label style="font-weight: 600; font-size: 14px;">Ödeme Yapacağınız Kripto Ağını Seçin:</label>
+                        <div class="chain-select-grid">
+                            <button class="chain-btn selected" onclick="selectPaymentChain('trc20')">TRC20 (USDT)</button>
+                            <button class="chain-btn" onclick="selectPaymentChain('bep20')">BEP20 (USDT/BNB)</button>
+                            <button class="chain-btn" onclick="selectPaymentChain('solana')">Solana (SOL/USDT)</button>
+                            <button class="chain-btn" onclick="selectPaymentChain('erc20')">ERC20 (ETH/USDT)</button>
+                            <button class="chain-btn" onclick="selectPaymentChain('btc')">Bitcoin (BTC)</button>
+                        </div>
+                    </div>
+
+                    <div class="contract-box" style="margin-top: 15px;">
+                        <div>
+                            <span style="color: var(--text-muted); margin-right: 8px;">Admin Cüzdan Adresi:</span>
+                            <span class="contract-code" id="adminWalletAddr">TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t</span>
+                        </div>
+                        <button class="btn-copy" onclick="copyAdminAddr()"><i class="fa-solid fa-copy"></i> Kopyala</button>
+                    </div>
+
+                    <button class="btn-wizard-next" onclick="submitProjectListing()" style="background: var(--gradient-primary); box-shadow: var(--shadow-glow);">
+                        <i class="fa-solid fa-check-circle"></i> Ödemeyi Yaptım & Projeyi Canlıya Al
+                    </button>
+                </div>
+
+            </form>
+        </div>
+
+    </main>
+
+    <script src="store.js"></script>
+    <script>
+        function goToStep(step) {
+            for (let i = 1; i <= 4; i++) {
+                document.getElementById(`step${i}`).style.display = i === step ? "block" : "none";
+                const ind = document.getElementById(`stepIndicator${i}`);
+                if (i <= step) {
+                    ind.classList.add("active");
+                } else {
+                    ind.classList.remove("active");
+                }
+            }
+        }
+
+        function selectPaymentChain(chain) {
+            const btns = document.querySelectorAll(".chain-btn");
+            btns.forEach(b => b.classList.remove("selected"));
+            event.target.classList.add("selected");
+
+            const walletEl = document.getElementById("adminWalletAddr");
+            if (chain === "solana") walletEl.innerText = "5K9xSolanaAdminWalletAddress9999999999";
+            else if (chain === "bep20" || chain === "erc20") walletEl.innerText = "0x89a21f0000000000000000000000000000000000";
+            else if (chain === "btc") walletEl.innerText = "bc1qxy2kgdygjrsqtzq2n0yrf2493p83kkfjhx0wlh";
+            else walletEl.innerText = "TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t";
+        }
+
+        function copyAdminAddr() {
+            const addr = document.getElementById("adminWalletAddr").innerText;
+            navigator.clipboard.writeText(addr);
+            alert("Admin cüzdan adresi panoya kopyalandı!");
+        }
+
+        function submitProjectListing() {
+            const name = document.getElementById("inputName").value || "Yeni Token";
+            const ticker = document.getElementById("inputTicker").value || "$NEW";
+            const network = document.getElementById("inputNetwork").value;
+            const price = parseFloat(document.getElementById("inputPrice").value) || 0.001;
+            const contract = document.getElementById("inputContract").value || "0x00000000000";
+            const logo = document.getElementById("inputLogo").value || "https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png";
+
+            const buyUrl = document.getElementById("inputBuyUrl").value || "https://raydium.io";
+            const telegramGroup = document.getElementById("inputTelegramGroup").value || "t.me/chat";
+            const telegramChannel = document.getElementById("inputTelegramChannel").value || "t.me/news";
+            const twitterHandle = document.getElementById("inputTwitterHandle").value || "@Twitter";
+            const websiteUrl = document.getElementById("inputWebsite").value || "https://website.com";
+
+            const bountyTotalUSD = parseFloat(document.getElementById("inputBountyTotal").value) || 350;
+            const rewardPerUserUSD = parseFloat(document.getElementById("inputRewardPerUser").value) || 3.00;
+
+            const newProj = TokenBountyStore.addProject({
+                name,
+                ticker,
+                network,
+                price,
+                contractAddress: contract,
+                logo,
+                buyUrl,
+                telegramGroup,
+                telegramChannel,
+                twitterHandle,
+                websiteUrl,
+                bountyTotalUSD,
+                rewardPerUserUSD,
+                dexScreenerUrl: `https://dexscreener.com/${network}/${contract}`,
+                marketCapUSD: "500K",
+                volume24hUSD: "100K",
+                totalSupply: "100,000,000",
+                tasks: [
+                    { id: "task_1", title: "Official Telegram Grubuna Katıl", type: "telegram", target: telegramGroup, reward: `$${(rewardPerUserUSD/2).toFixed(2)}` },
+                    { id: "task_2", title: "X (Twitter) Hesabını Takip Et", type: "twitter_follow", target: twitterHandle, reward: `$${(rewardPerUserUSD/2).toFixed(2)}` }
+                ]
+            });
+
+            alert(`📌 BAŞVURUNUZ ALINDI!\n\n100$ Listeleme ödemeniz ve ödül depozitonuz Admin ekibimiz tarafından doğrulandıktan sonra projeniz (${name}) 5-10 dakika içinde listenin 1. sırasından canlıya alınacaktır.`);
+            window.location.href = "index.html";
+        }
+    </script>
+</body>
+</html>

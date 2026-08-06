@@ -1,0 +1,272 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TokenBounty.io | Yeni Kripto Token Radarı & Airdrop Ödül Platformu</title>
+    <meta name="description" content="En yeni Solana, Base, BSC ve Ethereum meme coinlerini keşfedin, görevleri tamamlayın ve cüzdanınıza ücretsiz token ödülleri kazanın.">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+    <!-- Top Live Ticker (FOMO Bar) -->
+    <div class="top-ticker-bar">
+        <div class="ticker-wrapper">
+            <span class="ticker-badge"><i class="fa-solid fa-bolt"></i> CANLI KAZANÇLAR</span>
+            <div class="ticker-content" id="liveTickerContent">
+                <span class="ticker-item"><i class="fa-solid fa-circle-check text-green"></i> <strong>0x89...21</strong> az önce <strong>$PUMP</strong> projesinden <strong>$3.00</strong> kazandı!</span>
+                <span class="ticker-item"><i class="fa-solid fa-circle-check text-green"></i> <strong>0x34...90</strong> az önce <strong>$MOON</strong> token ödülünü Phantom cüzdanına çekti!</span>
+                <span class="ticker-item"><i class="fa-solid fa-circle-check text-green"></i> <strong>0x12...77</strong> 7 Günlük Giriş Serisi Bonusunu (+$10%) açtı!</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Main Navigation Header -->
+    <header class="main-header">
+        <div class="container header-container">
+            <a href="index.html" class="brand-logo">
+                <div class="logo-icon"><i class="fa-solid fa-gem"></i></div>
+                <div class="logo-text">
+                    <span class="logo-name">TokenBounty</span>
+                    <span class="logo-ext">.io</span>
+                </div>
+            </a>
+
+            <nav class="nav-links">
+                <a href="index.html" class="nav-item active"><i class="fa-solid fa-fire"></i> Canlı Liste</a>
+                <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i> Profilim</a>
+                <a href="#streak-section" class="nav-item"><i class="fa-solid fa-calendar-check"></i> Günlük Seri</a>
+                <a href="list-project.html" class="nav-item highlight-nav"><i class="fa-solid fa-plus-circle"></i> Projeni Listeleyin ($100)</a>
+                <a href="admin.html" class="nav-item" style="color: var(--text-dim); font-size: 13px;"><i class="fa-solid fa-shield-halved"></i> Admin</a>
+            </nav>
+
+            <div class="header-actions">
+                <button class="btn-wallet" id="connectWalletBtn" onclick="openWalletModal()">
+                    <i class="fa-solid fa-wallet"></i> <span id="walletBtnText">Cüzdan Bağla</span>
+                </button>
+                <a href="list-project.html" class="btn-primary-glow btn-list-mobile">
+                    <i class="fa-solid fa-rocket"></i> Listele
+                </a>
+            </div>
+        </div>
+    </header>
+
+    <!-- Hero Banner & Stats -->
+    <section class="hero-section">
+        <div class="container">
+            <div class="hero-grid">
+                <div class="hero-text-col">
+                    <div class="hero-badge">
+                        <span class="badge-dot"></span> #1 Web3 Meme Coin & Airdrop Listing Platform
+                    </div>
+                    <h1 class="hero-title">
+                        Yeni Tokenları Keşfet, <br><span class="gradient-text">Airdrop Görevlerini Yap & Kazan!</span>
+                    </h1>
+                    <p class="hero-subtitle">
+                        Projeler min <strong>$200 ödül havuzu</strong> ile sisteme kaydolur. Web3 cüzdanını bağla, Telegram ve X (Twitter) görevlerini tamamla, gerçek tokenları anında soğuk cüzdanına çek!
+                    </p>
+
+                    <div class="hero-buttons">
+                        <a href="list-project.html" class="btn-main"><i class="fa-solid fa-rocket"></i> Projeni Listeleyin ($100)</a>
+                        <a href="#table-section" class="btn-secondary"><i class="fa-solid fa-fire"></i> Canlı Liste & Görevler</a>
+                    </div>
+                </div>
+
+                <!-- Right Hero Column: Pure Code Interactive Web3 Live Reward Vault Card ($200k Aesthetic) -->
+                <div class="hero-right" id="streak-section">
+                    <div class="streak-widget-card">
+                        <div class="streak-header">
+                            <div class="streak-title">
+                                <i class="fa-solid fa-fire-flame-curved streak-fire-icon"></i>
+                                <div>
+                                    <h3 style="font-size: 18px; font-weight: 800;">Günlük Giriş Bonusu</h3>
+                                    <p style="font-size: 12px; color: var(--text-secondary);">Her gün gir, +%10 Ödül Çarpanı kazan!</p>
+                                </div>
+                            </div>
+                            <span class="streak-badge-count" id="streakDaysBadge">3 Gün Seri 🔥</span>
+                        </div>
+
+                        <div class="streak-days-grid" id="streakGridContainer">
+                            <div class="streak-day done"><i class="fa-solid fa-check"></i><span>1.Gün</span></div>
+                            <div class="streak-day done"><i class="fa-solid fa-check"></i><span>2.Gün</span></div>
+                            <div class="streak-day active"><i class="fa-solid fa-fire"></i><span>3.Gün</span></div>
+                            <div class="streak-day"><span>4.Gün</span></div>
+                            <div class="streak-day"><span>5.Gün</span></div>
+                            <div class="streak-day"><span>6.Gün</span></div>
+                            <div class="streak-day bonus"><span>+10%</span></div>
+                        </div>
+
+                        <button class="btn-claim-streak" id="claimStreakBtn" onclick="claimDailyStreak()">
+                            <i class="fa-solid fa-bolt"></i> Bugünkü Bonusu Al (+0.50$)
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 4 3D Glassmorphism Live Stats Metrics Cards ($200k Level Upgrade) -->
+            <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 20px; margin-top: 50px;">
+                <div style="background: var(--bg-glass-card); backdrop-filter: blur(16px); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 22px; display: flex; align-items: center; gap: 16px;">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(0, 255, 135, 0.15); color: var(--neon-green); display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="fa-solid fa-gift"></i></div>
+                    <div>
+                        <div style="font-size: 22px; font-weight: 800; font-family: var(--font-heading); color: var(--neon-green);">$1,250,000+</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">Dağıtılan Toplam Ödül</div>
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-glass-card); backdrop-filter: blur(16px); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 22px; display: flex; align-items: center; gap: 16px;">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(0, 242, 254, 0.15); color: var(--neon-cyan); display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="fa-solid fa-users"></i></div>
+                    <div>
+                        <div style="font-size: 22px; font-weight: 800; font-family: var(--font-heading); color: var(--neon-cyan);">85,400+</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">On-Chain Holder Kullanıcı</div>
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-glass-card); backdrop-filter: blur(16px); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 22px; display: flex; align-items: center; gap: 16px;">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(153, 69, 255, 0.15); color: var(--neon-purple); display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="fa-solid fa-coins"></i></div>
+                    <div>
+                        <div style="font-size: 22px; font-weight: 800; font-family: var(--font-heading); color: #d4b3ff;">320+</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">Listelenen Meme Token</div>
+                    </div>
+                </div>
+
+                <div style="background: var(--bg-glass-card); backdrop-filter: blur(16px); border: 1px solid var(--border-subtle); border-radius: var(--radius-md); padding: 22px; display: flex; align-items: center; gap: 16px;">
+                    <div style="width: 48px; height: 48px; border-radius: 12px; background: rgba(255, 183, 3, 0.15); color: var(--neon-gold); display: flex; align-items: center; justify-content: center; font-size: 22px;"><i class="fa-solid fa-bolt"></i></div>
+                    <div>
+                        <div style="font-size: 22px; font-weight: 800; font-family: var(--font-heading); color: var(--neon-gold);">%100</div>
+                        <div style="font-size: 12px; color: var(--text-secondary); font-weight: 600;">Otomatik API Doğrulama</div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Main Token Directory Table Section -->
+    <section class="table-section" id="table-section">
+        <div class="container">
+
+            <!-- Controls: Network Filters & Search -->
+            <div class="table-controls">
+                <div class="filter-tabs">
+                    <button class="filter-btn active" data-network="all"><i class="fa-solid fa-globe"></i> Tüm Ağlar</button>
+                    <button class="filter-btn" data-network="solana"><span class="chain-icon solana"></span> Solana</button>
+                    <button class="filter-btn" data-network="base"><span class="chain-icon base"></span> Base</button>
+                    <button class="filter-btn" data-network="bsc"><span class="chain-icon bsc"></span> BNB Chain</button>
+                    <button class="filter-btn" data-network="ethereum"><span class="chain-icon eth"></span> Ethereum</button>
+                </div>
+
+                <div class="search-box">
+                    <i class="fa-solid fa-search"></i>
+                    <input type="text" id="tokenSearchInput" placeholder="Token ismi, Ticker veya Kontrat adresi ara...">
+                </div>
+            </div>
+
+            <!-- CoinGecko-Style Table Container -->
+            <div class="table-card">
+                <div class="table-responsive">
+                    <table class="coingecko-table">
+                        <thead>
+                            <tr>
+                                <th class="th-rank">#</th>
+                                <th class="th-token">Token / Proje</th>
+                                <th class="th-network">Ağ</th>
+                                <th class="th-time">Eklenme Zamanı</th>
+                                <th class="th-price">Canlı Fiyat ($)</th>
+                                <th class="th-change">24s Değişim</th>
+                                <th class="th-bounty">Kalan Ödül / Havuz</th>
+                                <th class="th-quests">Görevler</th>
+                                <th class="th-actions">İşlem</th>
+                            </tr>
+                        </thead>
+                        <tbody id="tokenTableBody">
+                            <!-- Dynamically Injected via app.js -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer class="main-footer">
+        <div class="container footer-container">
+            <div class="footer-brand">
+                <div class="brand-logo">
+                    <div class="logo-icon"><i class="fa-solid fa-gem"></i></div>
+                    <span class="logo-name">TokenBounty</span><span class="logo-ext">.io</span>
+                </div>
+                <p>En yeni tokenların keşfedildiği ve görev ödüllerinin doğrudan cüzdanlara dağıtıldığı Web3 ekosistemi.</p>
+            </div>
+
+            <div class="footer-links">
+                <h4>Hızlı Bağlantılar</h4>
+                <a href="index.html">Canlı Liste</a>
+                <a href="list-project.html">Proje Listele ($100)</a>
+                <a href="https://t.me/TokenBountyBot" target="_blank">Doğrulama Botu</a>
+            </div>
+
+            <div class="footer-social">
+                <h4>Topluluğumuza Katılın</h4>
+                <div class="social-icons">
+                    <a href="#" target="_blank"><i class="fa-brands fa-telegram"></i></a>
+                    <a href="#" target="_blank"><i class="fa-brands fa-x-twitter"></i></a>
+                    <a href="#" target="_blank"><i class="fa-brands fa-discord"></i></a>
+                </div>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div class="container">
+                <p>&copy; 2026 TokenBounty.io. Tüm hakları saklıdır. Kripto varlıklar yüksek risk taşır.</p>
+            </div>
+        </div>
+    </footer>
+
+    <!-- Web3 Wallet Connection Modal -->
+    <div class="modal-backdrop" id="walletModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-wallet"></i> Web3 Cüzdanınızı Bağlayın</h3>
+                <button class="modal-close" onclick="closeWalletModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Görev yapmak ve kazandığınız token ödüllerini çekmek için tercih ettiğiniz cüzdanı seçin:</p>
+                <div class="wallet-options">
+                    <button class="wallet-option-btn" onclick="connectPhantom()">
+                        <img src="https://phantom.app/img/phantom-logo.svg" alt="Phantom" class="wallet-icon-img">
+                        <div class="wallet-info">
+                            <span class="wallet-name">Phantom Wallet</span>
+                            <span class="wallet-badge sol">Solana</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+
+                    <button class="wallet-option-btn" onclick="connectMetaMask()">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" class="wallet-icon-img">
+                        <div class="wallet-info">
+                            <span class="wallet-name">MetaMask</span>
+                            <span class="wallet-badge evm">EVM / BSC / Base</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+
+                    <button class="wallet-option-btn" onclick="connectTrustWallet()">
+                        <img src="https://trustwallet.com/assets/images/media/assets/trust_platform.svg" alt="Trust Wallet" class="wallet-icon-img">
+                        <div class="wallet-info">
+                            <span class="wallet-name">Trust Wallet</span>
+                            <span class="wallet-badge multi">Çoklu Ağ</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="store.js"></script>
+    <script src="app.js"></script>
+</body>
+</html>

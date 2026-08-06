@@ -1,0 +1,656 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Token Detayı & Airdrop Görevleri | TokenBounty.io</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        /* Detail Page Specific Styling */
+        .detail-layout {
+            display: grid;
+            grid-template-columns: 1.4fr 1fr;
+            gap: 30px;
+            margin-top: 30px;
+        }
+
+        .token-header-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            margin-bottom: 25px;
+        }
+
+        .token-header-top {
+            display: flex;
+            justify-content: space-between;
+            align-items: flex-start;
+            margin-bottom: 20px;
+        }
+
+        .token-info-left {
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+
+        .detail-logo-img {
+            width: 64px;
+            height: 64px;
+            border-radius: 14px;
+            border: 2px solid var(--border-highlight);
+            object-fit: cover;
+        }
+
+        .detail-title {
+            font-size: 28px;
+            font-weight: 800;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .price-badge-group {
+            display: flex;
+            align-items: baseline;
+            gap: 15px;
+            margin-top: 5px;
+        }
+
+        .detail-price {
+            font-size: 32px;
+            font-weight: 800;
+            font-family: var(--font-heading);
+        }
+
+        .contract-box {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 10px 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            margin-top: 20px;
+            font-size: 13px;
+        }
+
+        .contract-code {
+            font-family: monospace;
+            color: var(--primary-cyan);
+            font-weight: 600;
+        }
+
+        .btn-copy {
+            background: rgba(0, 242, 254, 0.1);
+            color: var(--primary-cyan);
+            border: 1px solid var(--border-highlight);
+            padding: 6px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 700;
+        }
+
+        .social-links-grid {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 10px;
+            margin-top: 20px;
+        }
+
+        .social-link-btn {
+            background: rgba(255, 255, 255, 0.04);
+            border: 1px solid var(--border-color);
+            color: var(--text-main);
+            padding: 8px 16px;
+            border-radius: var(--radius-md);
+            font-size: 13px;
+            font-weight: 600;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .social-link-btn:hover {
+            border-color: var(--primary-cyan);
+            color: var(--primary-cyan);
+        }
+
+        .btn-buy-hero {
+            background: #10b981;
+            color: #000;
+            font-weight: 800;
+            padding: 12px 24px;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            display: inline-flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 0 20px rgba(16, 185, 129, 0.4);
+        }
+
+        .btn-buy-hero:hover {
+            transform: translateY(-2px);
+        }
+
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(3, 1fr);
+            gap: 15px;
+            margin-top: 20px;
+        }
+
+        .stat-card {
+            background: rgba(255, 255, 255, 0.02);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 15px;
+        }
+
+        .stat-label {
+            font-size: 12px;
+            color: var(--text-muted);
+            margin-bottom: 4px;
+        }
+
+        .stat-val {
+            font-size: 18px;
+            font-weight: 700;
+            font-family: var(--font-heading);
+        }
+
+        /* Chart Card */
+        .chart-card {
+            background: var(--bg-card);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-lg);
+            padding: 20px;
+            height: 450px;
+        }
+
+        .chart-placeholder {
+            width: 100%;
+            height: 100%;
+            border-radius: var(--radius-md);
+            background: rgba(0, 0, 0, 0.3);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            border: 1px dashed var(--border-color);
+            color: var(--text-muted);
+        }
+
+        /* Quest Box Side Card (Gated) */
+        .quest-box-card {
+            background: var(--bg-card);
+            border: 2px solid var(--border-highlight);
+            border-radius: var(--radius-lg);
+            padding: 30px;
+            box-shadow: var(--shadow-glow);
+            position: sticky;
+            top: 100px;
+        }
+
+        .quest-box-header {
+            border-bottom: 1px solid var(--border-color);
+            padding-bottom: 15px;
+            margin-bottom: 20px;
+        }
+
+        .quest-reward-banner {
+            background: rgba(0, 255, 135, 0.1);
+            border: 1px solid rgba(0, 255, 135, 0.3);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .quest-reward-amount {
+            font-size: 24px;
+            font-weight: 800;
+            color: var(--primary-green);
+        }
+
+        /* Gated Wall Warning */
+        .gated-wall {
+            background: rgba(255, 107, 0, 0.1);
+            border: 1px solid rgba(255, 107, 0, 0.3);
+            border-radius: var(--radius-md);
+            padding: 20px;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+
+        .gated-wall i {
+            font-size: 32px;
+            color: #ff6b00;
+            margin-bottom: 10px;
+        }
+
+        .task-list {
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
+
+        .task-item-card {
+            background: rgba(255, 255, 255, 0.03);
+            border: 1px solid var(--border-color);
+            border-radius: var(--radius-md);
+            padding: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .task-info-left {
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+
+        .task-icon-circle {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            background: rgba(0, 242, 254, 0.15);
+            color: var(--primary-cyan);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        .btn-verify-task {
+            background: var(--gradient-primary);
+            color: #000;
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: var(--radius-sm);
+            font-size: 13px;
+        }
+
+        .btn-claim-reward {
+            width: 100%;
+            background: var(--gradient-primary);
+            color: #000;
+            font-weight: 800;
+            padding: 16px;
+            border-radius: var(--radius-md);
+            font-size: 16px;
+            margin-top: 25px;
+            box-shadow: var(--shadow-glow);
+        }
+
+        @media (max-width: 992px) {
+            .detail-layout {
+                grid-template-columns: 1fr;
+            }
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Main Navigation Header -->
+    <header class="main-header">
+        <div class="container header-container">
+            <a href="index.html" class="brand-logo">
+                <div class="logo-icon"><i class="fa-solid fa-gem"></i></div>
+                <div class="logo-text">
+                    <span class="logo-name">TokenBounty</span>
+                    <span class="logo-ext">.io</span>
+                </div>
+            </a>
+
+            <nav class="nav-links">
+                <a href="index.html" class="nav-item"><i class="fa-solid fa-fire"></i> Canlı Liste</a>
+                <a href="profile.html" class="nav-item"><i class="fa-solid fa-user"></i> Profilim</a>
+                <a href="list-project.html" class="nav-item highlight-nav"><i class="fa-solid fa-plus-circle"></i> Projeni Listeleyin ($100)</a>
+            </nav>
+
+            <div class="header-actions">
+                <button class="btn-wallet" onclick="openWalletModal()">
+                    <i class="fa-solid fa-wallet"></i> <span id="walletBtnText">Cüzdan Bağla</span>
+                </button>
+            </div>
+        </div>
+    </header>
+
+    <!-- Main Detail Layout -->
+    <main class="container" style="padding-top: 30px; padding-bottom: 60px;">
+        
+        <a href="index.html" style="color: var(--text-muted); font-size: 14px; display: inline-flex; align-items: center; gap: 8px; margin-bottom: 20px;">
+            <i class="fa-solid fa-arrow-left"></i> Canlı Listeye Geri Dön
+        </a>
+
+        <div class="detail-layout">
+            
+            <!-- Left Main Column: Token Meta & Chart -->
+            <div class="detail-left-col">
+                
+                <!-- Token Header Summary Card -->
+                <div class="token-header-card">
+                    <div class="token-header-top">
+                        <div class="token-info-left">
+                            <img id="detailLogo" src="" alt="Token Logo" class="detail-logo-img">
+                            <div>
+                                <h1 class="detail-title">
+                                    <span id="detailName">Aura Final Boss</span>
+                                    <span id="detailTicker" style="color: var(--text-muted); font-size: 20px;">$KIMCHI</span>
+                                    <span id="detailNetworkBadge" class="network-badge solana">Solana</span>
+                                </h1>
+                                <div class="price-badge-group">
+                                    <span class="detail-price" id="detailPrice">$0.00215</span>
+                                    <span class="change-pill up" id="detailChange">+26.5%</span>
+                                </div>
+                            </div>
+                        </div>
+
+                        <!-- Big DEX Buy Button -->
+                        <a href="#" target="_blank" id="detailBuyBtn" class="btn-buy-hero">
+                            <i class="fa-solid fa-cart-shopping"></i> Satın Al (DEX)
+                        </a>
+                    </div>
+
+                    <!-- Contract Address Box -->
+                    <div class="contract-box">
+                        <div>
+                            <span style="color: var(--text-muted); margin-right: 8px;">Sözleşme Adresi:</span>
+                            <span class="contract-code" id="detailContract">K1mch1SolanaTokenAddress999999999999999</span>
+                        </div>
+                        <button class="btn-copy" onclick="copyContract()"><i class="fa-solid fa-copy"></i> Kopyala</button>
+                    </div>
+
+                    <!-- Official Social Links -->
+                    <div class="social-links-grid">
+                        <a href="#" target="_blank" id="linkWebsite" class="social-link-btn"><i class="fa-solid fa-globe"></i> Web Sitesi</a>
+                        <a href="#" target="_blank" id="linkTwitter" class="social-link-btn"><i class="fa-brands fa-x-twitter"></i> X (Twitter)</a>
+                        <a href="#" target="_blank" id="linkTelegramGroup" class="social-link-btn"><i class="fa-brands fa-telegram"></i> Telegram Grubu</a>
+                        <a href="#" target="_blank" id="linkTelegramChannel" class="social-link-btn"><i class="fa-solid fa-bullhorn"></i> Duyuru Kanalı</a>
+                        <a href="#" target="_blank" id="linkDexScreener" class="social-link-btn" style="color: var(--primary-green); border-color: rgba(0, 255, 135, 0.3);"><i class="fa-solid fa-chart-line"></i> DexScreener Canlı Grafik</a>
+                    </div>
+
+                    <!-- Market Stats Grid -->
+                    <div class="stats-grid">
+                        <div class="stat-card">
+                            <div class="stat-label">Piyasa Değeri (Market Cap)</div>
+                            <div class="stat-val" id="detailMarketCap">$2.10M</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">24 Saatlik Hacim</div>
+                            <div class="stat-val" id="detailVolume">$1.50M</div>
+                        </div>
+                        <div class="stat-card">
+                            <div class="stat-label">Toplam Arz</div>
+                            <div class="stat-val" id="detailSupply">1,000,000,000</div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Live Chart Container -->
+                <div class="chart-card">
+                    <div class="chart-placeholder" id="chartPlaceholder">
+                        <i class="fa-solid fa-chart-area" style="font-size: 48px; color: var(--primary-cyan); margin-bottom: 15px;"></i>
+                        <h3>DexScreener Canlı Fiyat Grafiği</h3>
+                        <p style="font-size: 13px; margin-top: 5px;">Anlık mum verileri DexScreener API üzerinden çekilmektedir.</p>
+                    </div>
+                </div>
+
+            </div>
+
+            <!-- Right Column: Interactive Quest Execution Card ($200k Level Polish) -->
+            <div class="quest-execution-card" style="background: var(--bg-glass-card); backdrop-filter: blur(20px); border: 1px solid var(--border-hover); border-radius: var(--radius-lg); padding: 30px; box-shadow: var(--shadow-soft);">
+                
+                <div style="background: rgba(0, 242, 254, 0.08); border: 1px solid rgba(0, 242, 254, 0.3); border-radius: var(--radius-md); padding: 20px; text-align: center; margin-bottom: 24px;">
+                    <div style="font-size: 11px; font-weight: 800; color: var(--text-secondary); text-transform: uppercase; letter-spacing: 1px;">GÖREV BAŞINA KAZANILACAK ÖDÜL</div>
+                    <div style="font-size: 32px; font-weight: 800; color: var(--neon-green); font-family: var(--font-heading); margin: 6px 0;" id="detailRewardPerUser">$3.00 Değerinde Token</div>
+                    <div style="font-size: 12px; color: var(--text-secondary);"><i class="fa-solid fa-vault text-green"></i> Kalan Ödül Havuzu: <strong>$350 / $350</strong></div>
+                </div>
+
+                <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                    <div>
+                        <h3 style="font-size: 20px; font-weight: 800;"><i class="fa-solid fa-gift text-green"></i> Airdrop Ödül Görevleri</h3>
+                        <p style="font-size: 13px; color: var(--text-secondary);">Görevleri tamamlayın, ücretsiz tokenları kazanın!</p>
+                    </div>
+                    <span class="badge-dot" style="width: 10px; height: 10px;"></span>
+                </div>     <div class="quest-reward-banner">
+                        <div style="font-size: 12px; color: var(--text-muted);">GÖREV BAŞINA KAZANILACAK ÖDÜL</div>
+                        <div class="quest-reward-amount" id="detailRewardPerUser">$3.00 Değerinde Token</div>
+                        <div style="font-size: 12px; color: var(--text-muted); margin-top: 4px;">
+                            Kalan Ödül Havuzu: <strong id="detailBountyRemaining" style="color: var(--text-main);">$250 / $350</strong>
+                        </div>
+                    </div>
+
+                    <!-- Gated Wall Warning (Shown if Wallet Not Connected) -->
+                    <div class="gated-wall" id="gatedWallWarning">
+                        <i class="fa-solid fa-lock"></i>
+                        <h4 style="margin-bottom: 8px;">Görevleri Görmek ve Yapmak İçin Giriş Yapın</h4>
+                        <p style="font-size: 13px; color: var(--text-muted); margin-bottom: 15px;">
+                            Görevlerin doğrulanması ve kazandığınız ödüllerin hesabınıza aktarılması için Web3 Cüzdanınızı bağlamanız gerekmektedir.
+                        </p>
+                        <button class="btn-main" onclick="openWalletModal()" style="width: 100%; justify-content: center;">
+                            <i class="fa-solid fa-wallet"></i> Cüzdan Bağla / Giriş Yap
+                        </button>
+                    </div>
+
+                    <!-- Interactive Task Execution Area (Shown when connected) -->
+                    <div id="activeTaskSection" style="display: none;">
+                        <div class="task-list" id="taskListContainer">
+                            <div class="task-item" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); padding: 18px; border-radius: var(--radius-md); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; align-items: center; gap: 14px;">
+                                    <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(0, 255, 135, 0.15); color: var(--neon-green); display: flex; align-items: center; justify-content: center; font-size: 16px;"><i class="fa-solid fa-check"></i></div>
+                                    <div>
+                                        <div style="font-weight: 800; font-size: 15px;">Official Telegram Grubuna Katıl</div>
+                                        <div style="font-size: 13px; color: var(--text-secondary);">t.me/KimchiFinalBossChat</div>
+                                    </div>
+                                </div>
+                                <button class="btn-verify-task" onclick="verifyTask('task_1')"><i class="fa-solid fa-arrow-right-to-bracket"></i> Görevi Yap</button>
+                            </div>
+
+                            <div class="task-item" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); padding: 18px; border-radius: var(--radius-md); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                                <div style="display: flex; align-items: center; gap: 14px;">
+                                    <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(0, 255, 135, 0.15); color: var(--neon-green); display: flex; align-items: center; justify-content: center; font-size: 16px;"><i class="fa-solid fa-check"></i></div>
+                                    <div>
+                                        <div style="font-weight: 800; font-size: 15px;">X (Twitter) Hesabını Takip Et</div>
+                                        <div style="font-size: 13px; color: var(--text-secondary);">@KimchiBossSol</div>
+                                    </div>
+                                </div>
+                                <button class="btn-verify-task" onclick="verifyTask('task_2')"><i class="fa-solid fa-arrow-right-to-bracket"></i> Görevi Yap</button>
+                            </div>
+                        </div>
+
+                        <button class="btn-claim-reward" id="claimRewardBtn" onclick="claimProjectReward()" style="width: 100%; padding: 18px; margin-top: 15px; font-size: 16px; font-weight: 800; font-family: var(--font-heading);">
+                            <i class="fa-solid fa-trophy"></i> Ödülü Hesabıma Ekle & Çek ($3.00)
+                        </button>
+                    </div>
+
+                </div>
+            </div>
+
+        </div>
+
+    </main>
+
+    <!-- Web3 Wallet Connection Modal -->
+    <div class="modal-backdrop" id="walletModal">
+        <div class="modal-card">
+            <div class="modal-header">
+                <h3><i class="fa-solid fa-wallet"></i> Web3 Cüzdanınızı Bağlayın</h3>
+                <button class="modal-close" onclick="closeWalletModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <p class="modal-desc">Görev yapmak ve kazandığınız token ödüllerini çekmek için tercih ettiğiniz cüzdanı seçin:</p>
+                <div class="wallet-options">
+                    <button class="wallet-option-btn" onclick="connectPhantom()">
+                        <img src="https://phantom.app/img/phantom-logo.svg" alt="Phantom" class="wallet-icon-img">
+                        <div class="wallet-info">
+                            <span class="wallet-name">Phantom Wallet</span>
+                            <span class="wallet-badge sol">Solana</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+
+                    <button class="wallet-option-btn" onclick="connectMetaMask()">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" class="wallet-icon-img">
+                        <div class="wallet-info">
+                            <span class="wallet-name">MetaMask</span>
+                            <span class="wallet-badge evm">EVM / BSC / Base</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+
+                    <button class="wallet-option-btn" onclick="connectTrustWallet()">
+                        <img src="https://trustwallet.com/assets/images/media/assets/trust_platform.svg" alt="Trust Wallet" class="wallet-icon-img">
+                        <div class="wallet-info">
+                            <span class="wallet-name">Trust Wallet</span>
+                            <span class="wallet-badge multi">Çoklu Ağ</span>
+                        </div>
+                        <i class="fa-solid fa-chevron-right"></i>
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="store.js"></script>
+    <script>
+        let currentProj = null;
+
+        document.addEventListener("DOMContentLoaded", () => {
+            const urlParams = new URLSearchParams(window.location.search);
+            const projId = urlParams.get("id") || "proj_1";
+            currentProj = TokenBountyStore.getProjectById(projId);
+
+            if (!currentProj) {
+                currentProj = TokenBountyStore.projects[0];
+            }
+
+            populateDetailView(currentProj);
+            checkWalletGatedStatus();
+        });
+
+        function populateDetailView(proj) {
+            document.getElementById("detailLogo").src = proj.logo;
+            document.getElementById("detailName").innerText = proj.name;
+            document.getElementById("detailTicker").innerText = proj.ticker;
+            document.getElementById("detailNetworkBadge").innerText = proj.network.toUpperCase();
+            document.getElementById("detailNetworkBadge").className = `network-badge ${proj.network}`;
+            
+            document.getElementById("detailPrice").innerText = proj.price < 0.01 ? `$${proj.price.toFixed(5)}` : `$${proj.price.toFixed(2)}`;
+            document.getElementById("detailContract").innerText = proj.contractAddress;
+            document.getElementById("detailBuyBtn").href = proj.buyUrl;
+
+            document.getElementById("linkWebsite").href = proj.websiteUrl;
+            document.getElementById("linkTwitter").href = `https://x.com/${proj.twitterHandle.replace('@','')}`;
+            document.getElementById("linkTelegramGroup").href = `https://${proj.telegramGroup}`;
+            document.getElementById("linkTelegramChannel").href = `https://${proj.telegramChannel}`;
+            document.getElementById("linkDexScreener").href = proj.dexScreenerUrl;
+
+            document.getElementById("detailMarketCap").innerText = proj.marketCapUSD;
+            document.getElementById("detailVolume").innerText = proj.volume24hUSD;
+            document.getElementById("detailSupply").innerText = proj.totalSupply;
+
+            document.getElementById("detailRewardPerUser").innerText = `$${proj.rewardPerUserUSD.toFixed(2)} Değerinde Token`;
+            document.getElementById("detailBountyRemaining").innerText = `$${proj.bountyRemainingUSD} / $${proj.bountyTotalUSD}`;
+
+            renderTasksList(proj.tasks);
+        }
+
+        function renderTasksList(tasks) {
+            const container = document.getElementById("taskListContainer");
+            container.innerHTML = tasks.map((task, idx) => `
+                <div class="task-item" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); padding: 18px; border-radius: var(--radius-md); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                    <div style="display: flex; align-items: center; gap: 14px;">
+                        <div style="width: 36px; height: 36px; border-radius: 50%; background: rgba(0, 255, 135, 0.15); color: var(--neon-green); display: flex; align-items: center; justify-content: center; font-size: 16px;"><i class="fa-solid fa-check"></i></div>
+                        <div>
+                            <div style="font-weight: 800; font-size: 15px;">${task.title}</div>
+                            <div style="font-size: 13px; color: var(--text-secondary);">${task.target}</div>
+                        </div>
+                    </div>
+                    <button class="btn-verify-task" onclick="verifySingleTask('${task.id}', '${task.target}', '${task.type}')">
+                        <i class="fa-solid fa-arrow-right-to-bracket"></i> Görevi Yap
+                    </button>
+                </div>
+            `).join("");
+        }
+
+        function checkWalletGatedStatus() {
+            const warning = document.getElementById("gatedWallWarning");
+            const activeSection = document.getElementById("activeTaskSection");
+
+            if (TokenBountyStore.userState.connectedWallet) {
+                warning.style.display = "none";
+                activeSection.style.display = "block";
+            } else {
+                warning.style.display = "block";
+                activeSection.style.display = "none";
+            }
+        }
+
+        function verifySingleTask(taskId, target, type) {
+            if (type.includes("telegram")) {
+                window.open(`https://${target}`, "_blank");
+                alert(`Telegram görevi açıldı! Katıldıktan sonra doğrulama botumuz t.me/TokenBountyBot üzerinden onay verecektir.`);
+            } else if (type.includes("twitter")) {
+                window.open(target.startsWith("http") ? target : `https://x.com/${target.replace('@','')}`, "_blank");
+                alert(`X (Twitter) görevi açıldı! İşlemi tamamladıktan sonra X API doğrulamasıyla yeşil tik onaylanacaktır.`);
+            }
+        }
+
+        function claimProjectReward() {
+            if (!TokenBountyStore.userState.connectedWallet) {
+                openWalletModal();
+                return;
+            }
+            alert(`🎉 Tebrikler! $${currentProj.rewardPerUserUSD} değerindeki ${currentProj.name} token ödülü site içi bakiyenize eklendi! Cüzdanınıza çekim talebi gönderildi.`);
+        }
+
+        function copyContract() {
+            const code = document.getElementById("detailContract").innerText;
+            navigator.clipboard.writeText(code);
+            alert("Kontrat adresi panoya kopyalandı!");
+        }
+
+        function openWalletModal() {
+            document.getElementById("walletModal")?.classList.add("active");
+        }
+
+        function closeWalletModal() {
+            document.getElementById("walletModal")?.classList.remove("active");
+        }
+
+        function connectPhantom() {
+            TokenBountyStore.userState.connectedWallet = "5K9x...89a2";
+            TokenBountyStore.saveToStorage();
+            checkWalletGatedStatus();
+            closeWalletModal();
+            alert("Phantom cüzdanı bağlandı!");
+        }
+
+        function connectMetaMask() {
+            TokenBountyStore.userState.connectedWallet = "0x89a...21f0";
+            TokenBountyStore.saveToStorage();
+            checkWalletGatedStatus();
+            closeWalletModal();
+            alert("MetaMask cüzdanı bağlandı!");
+        }
+
+        function connectTrustWallet() {
+            TokenBountyStore.userState.connectedWallet = "0x34f...90ab";
+            TokenBountyStore.saveToStorage();
+            checkWalletGatedStatus();
+            closeWalletModal();
+            alert("Trust Wallet bağlandı!");
+        }
+    </script>
+</body>
+</html>

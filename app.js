@@ -456,18 +456,52 @@ function handleUserLogout() {
     setTimeout(() => window.location.reload(), 600);
 }
 
-function claimDailyStreak() {
+async function claimDailyStreak() {
     if (!TokenBountyStore.userState.isLoggedIn) {
         showToast("🔒 Günlük Giriş Bonusunu alabilmek için lütfen önce hesabınıza giriş yapın!", "warning");
         openLoginModal();
         return;
     }
 
-    const current = TokenBountyStore.userState.streakDays || 1;
-    TokenBountyStore.userState.streakDays = current + 1;
-    TokenBountyStore.saveToStorage();
-    updateStreakUI();
-    showToast(`🎉 TEBRİKLER! ${current + 1}. Gün bonusunuz (+10% Ödül Çarpanı) hesabınıza tanımlandı!`, "success");
+    const btn = document.getElementById("claimStreakBtn");
+    if (btn) {
+        btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> İşleniyor...`;
+        btn.disabled = true;
+    }
+
+    try {
+        const res = await fetch(`${API_BASE_URL}/api/user/claim-daily`, {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email: TokenBountyStore.userState.email })
+        });
+        const data = await res.json();
+        
+        if (data.success) {
+            TokenBountyStore.userState.streakDays = data.streak.count;
+            TokenBountyStore.saveToStorage();
+            updateStreakUI();
+            showToast(data.message, "success");
+            
+            if (btn) {
+                btn.innerHTML = `<i class="fa-solid fa-clock"></i> Ödül Alındı (24 Saat Bekleyin)`;
+                btn.classList.add("disabled");
+            }
+        } else {
+            showToast(data.error, "warning");
+            if (btn) {
+                btn.innerHTML = `<i class="fa-solid fa-clock"></i> Ödül Alındı (24 Saat Bekleyin)`;
+                btn.classList.add("disabled");
+            }
+        }
+    } catch (err) {
+        console.error("Streak error", err);
+        showToast("Bağlantı hatası", "error");
+        if (btn) {
+            btn.innerHTML = `Ödülü Al <i class="fa-solid fa-arrow-right"></i>`;
+            btn.disabled = false;
+        }
+    }
 }
 
 // Admin Auth Protection Modal

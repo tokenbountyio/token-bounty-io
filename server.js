@@ -58,6 +58,34 @@ async function initializeDefaultConfig() {
         await SystemConfig.create({});
         console.log('✅ Default SystemConfig created.');
     }
+
+    // Seed test project if DB is empty
+    const projCount = await Project.countDocuments();
+    if (projCount === 0) {
+        await Project.create({
+            name: "Doge Coin",
+            ticker: "$DOGE",
+            network: "bsc",
+            price: 0.12,
+            bountyRemainingUSD: 100.00,
+            bountyTotalUSD: 100.00,
+            rewardPerUserUSD: 5.00,
+            logo: "https://cryptologos.cc/logos/dogecoin-doge-logo.png",
+            contractAddress: "0xba2ae424d960c26247dd6c32edc70b295c744c43",
+            buyUrl: "https://pancakeswap.finance",
+            websiteUrl: "https://dogecoin.com",
+            telegramGroup: "t.me/dogecoin",
+            twitterHandle: "@dogecoin",
+            status: "active",
+            rank: 1,
+            tasks: [
+                { id: "task_doge_1", title: "Resmi Dogecoin Telegram'a Katıl", type: "telegram", target: "t.me/dogecoin" },
+                { id: "task_doge_2", title: "X'te (Twitter) Takip Et", type: "twitter_follow", target: "@dogecoin" },
+                { id: "task_doge_3", title: "Sabitlenmiş Tweet'i Repostla", type: "twitter_repost", target: "dogecoin/status/123456789" }
+            ]
+        });
+        console.log('✅ Default Doge Coin Test Project created.');
+    }
 }
 
 // In-Memory map for short-lived 6-digit codes
@@ -238,6 +266,64 @@ app.post('/api/user/complete-project', async (req, res) => {
     await user.save();
 
     res.json({ success: true, message: "Görev başarıyla tamamlandı, ödül bakiyenize eklendi!", balances: user.balances });
+});
+
+app.post('/api/user/claim-daily', async (req, res) => {
+    const { email } = req.body;
+    if (!email) return res.status(400).json({ success: false, error: "Unauthorized" });
+
+    const user = await User.findOne({ email: email.toLowerCase() });
+    if (!user) return res.status(404).json({ success: false, error: "Kullanıcı bulunamadı" });
+
+    const now = new Date();
+    
+    // Check if 24 hours have passed
+    if (user.streak && user.streak.lastClaimed) {
+        const timeDiff = now.getTime() - user.streak.lastClaimed.getTime();
+        const hoursPassed = timeDiff / (1000 * 3600);
+        
+        if (hoursPassed < 24) {
+            const hoursLeft = Math.ceil(24 - hoursPassed);
+            return res.status(400).json({ 
+                success: false, 
+                error: `Günlük ödülünüzü zaten aldınız! Yeni ödül için ${hoursLeft} saat bekleyin.` 
+            });
+        }
+        
+        // Reset streak if more than 48 hours passed (missed a day)
+        if (hoursPassed > 48) {
+            user.streak.count = 0;
+        }
+    }
+
+    // Initialize streak if null
+    if (!user.streak) {
+        user.streak = { count: 0, lastClaimed: null };
+    }
+
+    // Increment streak count (max 7 days visually, but can grow)
+    user.streak.count += 1;
+    user.streak.lastClaimed = now;
+
+    // Calculate reward (Day 1: $0.10, Day 2: $0.20 ... Day 7: $2.00)
+    const dailyRewards = [0.10, 0.20, 0.30, 0.40, 0.50, 1.00, 2.00];
+    const rewardIndex = Math.min(user.streak.count - 1, 6);
+    const rewardAmount = dailyRewards[rewardIndex];
+
+    // Add to Balance (USD)
+    if (!user.balances) user.balances = new Map();
+    let currentBalance = user.balances.get("Günlük Giriş Bonusu") || { amount: 0, valueUSD: 0 };
+    currentBalance.valueUSD += rewardAmount;
+    user.balances.set("Günlük Giriş Bonusu", currentBalance);
+
+    await user.save();
+
+    res.json({ 
+        success: true, 
+        message: `Günlük ${user.streak.count}. gün ödülü ($${rewardAmount.toFixed(2)}) kasanıza eklendi!`, 
+        streak: user.streak,
+        balances: user.balances
+    });
 });
 
 // --- PROJECT API ENDPOINTS ---

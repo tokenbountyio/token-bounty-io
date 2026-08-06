@@ -85,6 +85,104 @@ h1, h2, h3, h4, h5, h6 {
     padding: 0 24px;
 }
 
+/* Custom Web3 Toast Notification Container & Cards ($200k Level Polish) */
+#toastContainer {
+    position: fixed;
+    top: 24px;
+    right: 24px;
+    z-index: 999999;
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    pointer-events: none;
+}
+
+.web3-toast {
+    pointer-events: auto;
+    min-width: 320px;
+    max-width: 440px;
+    background: var(--bg-glass-card);
+    backdrop-filter: blur(20px);
+    -webkit-backdrop-filter: blur(20px);
+    border: 1px solid var(--border-hover);
+    border-radius: var(--radius-md);
+    padding: 16px 20px;
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), var(--shadow-glow-cyan);
+    animation: toastSlideIn 0.35s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+    transition: all 0.3s ease;
+}
+
+.web3-toast.toast-success {
+    border-color: rgba(0, 255, 135, 0.5);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), var(--shadow-glow-green);
+}
+
+.web3-toast.toast-error {
+    border-color: rgba(244, 63, 94, 0.5);
+    box-shadow: 0 20px 40px rgba(0, 0, 0, 0.6), 0 0 25px rgba(244, 63, 94, 0.3);
+}
+
+.web3-toast-icon {
+    font-size: 22px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.toast-success .web3-toast-icon { color: var(--neon-green); }
+.toast-error .web3-toast-icon { color: var(--color-down); }
+.toast-info .web3-toast-icon { color: var(--neon-cyan); }
+
+.web3-toast-content {
+    flex-grow: 1;
+    font-size: 14px;
+    font-weight: 700;
+    color: var(--text-primary);
+    line-height: 1.4;
+}
+
+.web3-toast-close {
+    background: transparent;
+    border: none;
+    color: var(--text-tertiary);
+    font-size: 16px;
+    cursor: pointer;
+    padding: 4px;
+    transition: color 0.2s ease;
+}
+
+.web3-toast-close:hover { color: var(--text-primary); }
+
+@keyframes toastSlideIn {
+    0% {
+        opacity: 0;
+        transform: translateX(100px) scale(0.9);
+    }
+    100% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+}
+
+.toast-hiding {
+    animation: toastSlideOut 0.3s ease forwards !important;
+}
+
+@keyframes toastSlideOut {
+    0% {
+        opacity: 1;
+        transform: translateX(0) scale(1);
+    }
+    100% {
+        opacity: 0;
+        transform: translateX(100px) scale(0.9);
+    }
+}
+
 /* Top FOMO Live Ticker Bar */
 .top-ticker-bar {
     background: rgba(5, 7, 10, 0.98);

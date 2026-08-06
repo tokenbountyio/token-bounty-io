@@ -3,6 +3,37 @@
    Includes DexScreener API Integration & Pre-seeded Projects
    ------------------------------------------------------------- */
 
+// Global Web3 Custom Toast Notification Engine (Replaces native browser alerts)
+function showToast(message, type = 'info') {
+    let container = document.getElementById("toastContainer");
+    if (!container) {
+        container = document.createElement("div");
+        container.id = "toastContainer";
+        document.body.appendChild(container);
+    }
+
+    const toast = document.createElement("div");
+    toast.className = `web3-toast toast-${type}`;
+
+    let iconHtml = '<i class="fa-solid fa-circle-info"></i>';
+    if (type === 'success') iconHtml = '<i class="fa-solid fa-circle-check"></i>';
+    else if (type === 'error') iconHtml = '<i class="fa-solid fa-circle-xmark"></i>';
+    else if (type === 'warning') iconHtml = '<i class="fa-solid fa-triangle-exclamation"></i>';
+
+    toast.innerHTML = `
+        <div class="web3-toast-icon">${iconHtml}</div>
+        <div class="web3-toast-content">${message}</div>
+        <button class="web3-toast-close" onclick="this.parentElement.remove()"><i class="fa-solid fa-xmark"></i></button>
+    `;
+
+    container.appendChild(toast);
+
+    setTimeout(() => {
+        toast.classList.add("toast-hiding");
+        setTimeout(() => toast.remove(), 300);
+    }, 4000);
+}
+
 const TokenBountyStore = {
     // Current Wallet & User State
     userState: {

@@ -222,7 +222,7 @@ function connectMetaMask() {
             const acc = accounts[0];
             setWalletState(acc.substring(0, 6) + "..." + acc.substring(acc.length - 4), "metamask");
         }).catch(err => {
-            alert("MetaMask bağlantısı reddedildi.");
+            showToast("MetaMask bağlantısı reddedildi.", "error");
         });
     } else {
         // Fallback simulation
@@ -236,7 +236,7 @@ function connectTrustWallet() {
 
 function claimDailyStreak() {
     if (!TokenBountyStore.userState.connectedWallet) {
-        alert("🔒 Günlük Giriş Bonusunu alabilmek için lütfen önce Web3 cüzdanınızı bağlayın!");
+        showToast("🔒 Günlük Giriş Bonusunu alabilmek için lütfen önce Web3 cüzdanınızı bağlayın!", "warning");
         openWalletModal();
         return;
     }
@@ -245,7 +245,7 @@ function claimDailyStreak() {
     TokenBountyStore.userState.streakDays = current + 1;
     TokenBountyStore.saveToStorage();
     updateStreakUI();
-    alert(`🎉 TEBRİKLER!\n\n${current + 1}. Gün bonusunuz (+$0.50 USD) hesabınıza tanımlandı ve ödül çarpanınız %10 arttı!`);
+    showToast(`🎉 TEBRİKLER! ${current + 1}. Gün bonusunuz (+$0.50 USD) hesabınıza tanımlandı ve ödül çarpanınız %10 arttı!`, "success");
 }
 
 function setWalletState(address, type) {

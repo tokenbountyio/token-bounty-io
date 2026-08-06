@@ -12,7 +12,7 @@ const transporter = nodemailer.createTransport({
     secure: true, // SSL/TLS
     auth: {
         user: process.env.SMTP_USER || 'info@tokenbounty.io',
-        pass: process.env.SMTP_PASS || 'TokenBounty2026!' // Replace with actual password or ENV
+        pass: process.env.SMTP_PASS || 'Guney51080.' // Updated per user request
     }
 });
 

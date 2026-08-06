@@ -229,12 +229,19 @@ app.post('/api/list-project', async (req, res) => {
 });
 
 // --- ADMIN API ENDPOINTS ---
-app.get('/api/admin/pending-projects', async (req, res) => {
-    const projects = await Project.find({ status: 'pending' }).sort({ addedTimestamp: -1 });
+const adminAuth = (req, res, next) => {
+    const adminKey = req.headers['x-admin-key'];
+    const validKey = process.env.ADMIN_KEY || 'admin123';
+    if (adminKey !== validKey) return res.status(403).json({ success: false, error: 'Unauthorized Admin' });
+    next();
+};
+
+app.get('/api/admin/projects', adminAuth, async (req, res) => {
+    const projects = await Project.find().sort({ addedTimestamp: -1 });
     res.json({ success: true, projects });
 });
 
-app.post('/api/admin/approve-project', async (req, res) => {
+app.post('/api/admin/approve-project', adminAuth, async (req, res) => {
     const { id } = req.body;
     const project = await Project.findById(id);
     if (!project) return res.status(404).json({ success: false, error: "Project not found" });
@@ -247,6 +254,16 @@ app.post('/api/admin/approve-project', async (req, res) => {
     project.rank = 1;
     await project.save();
 
+    res.json({ success: true, project });
+});
+
+app.post('/api/admin/reject-project', adminAuth, async (req, res) => {
+    const { id } = req.body;
+    const project = await Project.findById(id);
+    if (!project) return res.status(404).json({ success: false, error: "Project not found" });
+
+    project.status = 'rejected';
+    await project.save();
     res.json({ success: true, project });
 });
 

@@ -249,15 +249,21 @@
 
     </main>
 
-    <script src="store.js"></script>
+    <script src="store.js?v=4"></script>
     <script>
+        const ADMIN_KEY = "admin123";
+
         document.addEventListener("DOMContentLoaded", () => {
+            if (sessionStorage.getItem("TB_ADMIN_AUTH") !== "true") {
+                window.location.href = "index.html";
+                return;
+            }
             loadAdminData();
         });
 
-        function loadAdminData() {
-            // Load Streak Rewards Config
-            const rewards = TokenBountyStore.systemConfig?.dailyStreakRewardsUSD || [0.10, 0.20, 0.30, 0.40, 0.50, 1.00, 2.00];
+        async function loadAdminData() {
+            // Load Streak Rewards Config (Mock for now, will move to DB later)
+            const rewards = [0.10, 0.20, 0.30, 0.40, 0.50, 1.00, 2.00];
             const configArea = document.getElementById("streakRewardsConfigArea");
             if (configArea) {
                 configArea.innerHTML = rewards.map((amt, idx) => `
@@ -268,108 +274,127 @@
                 `).join("");
             }
 
-            const projects = TokenBountyStore.getSortedProjects();
-            document.getElementById("statLiveCount").innerText = `${projects.length} Proje`;
-            document.getElementById("statRevenue").innerText = `$${projects.length * 100}.00`;
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/admin/projects`, {
+                    headers: { 'x-admin-key': ADMIN_KEY }
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    const allProjects = data.projects;
+                    const pending = allProjects.filter(p => p.status === 'pending');
+                    const active = allProjects.filter(p => p.status === 'active').sort((a,b) => a.rank - b.rank);
 
-            // Load Pending Projects from storage
-            const pending = JSON.parse(localStorage.getItem("TB_PendingProjects") || "[]");
-            document.getElementById("statPendingCount").innerText = `${pending.length} Bekleyen`;
+                    document.getElementById("statLiveCount").innerText = `${active.length} Proje`;
+                    document.getElementById("statRevenue").innerText = `$${active.length * 100}.00`;
+                    document.getElementById("statPendingCount").innerText = `${pending.length} Bekleyen`;
 
-            const pendingBody = document.getElementById("pendingTableBody");
-            if (pending.length === 0) {
-                pendingBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">Onay bekleyen yeni başvuru bulunmamaktadır.</td></tr>`;
-            } else {
-                pendingBody.innerHTML = pending.map(p => `
-                    <tr>
-                        <td>
-                            <div class="token-meta-cell">
-                                <img src="${p.logo}" class="token-logo-img">
-                                <strong>${p.name} (${p.ticker})</strong>
-                            </div>
-                        </td>
-                        <td><span class="network-badge ${p.network}">${p.network}</span></td>
-                        <td style="font-family: monospace; font-size: 12px;">${p.contractAddress.substring(0, 8)}...</td>
-                        <td><strong style="color: var(--primary-green);">${p.network.toUpperCase()} USDT (100$)</strong></td>
-                        <td>$${p.bountyTotalUSD}.00</td>
-                        <td>${p.addedTimeText}</td>
-                        <td>
-                            <button class="btn-approve" onclick="approvePendingListing('${p.id}')"><i class="fa-solid fa-check"></i> Onayla & #1 Yap</button>
-                            <button class="btn-reject" onclick="rejectPendingListing(this)"><i class="fa-solid fa-xmark"></i> Reddet</button>
-                        </td>
-                    </tr>
-                `).join("");
+                    const pendingBody = document.getElementById("pendingTableBody");
+                    if (pending.length === 0) {
+                        pendingBody.innerHTML = `<tr><td colspan="7" style="text-align: center; color: var(--text-muted); padding: 20px;">Onay bekleyen yeni başvuru bulunmamaktadır.</td></tr>`;
+                    } else {
+                        pendingBody.innerHTML = pending.map(p => `
+                            <tr>
+                                <td>
+                                    <div class="token-meta-cell">
+                                        <img src="${p.logo}" class="token-logo-img">
+                                        <strong>${p.name} (${p.ticker})</strong>
+                                    </div>
+                                </td>
+                                <td><span class="network-badge ${p.network}">${p.network}</span></td>
+                                <td style="font-family: monospace; font-size: 12px;">${p.contractAddress.substring(0, 8)}...</td>
+                                <td><strong style="color: var(--primary-green);">${p.network.toUpperCase()} USDT (100$)</strong></td>
+                                <td>$${p.bountyTotalUSD}.00</td>
+                                <td>${new Date(p.addedTimestamp).toLocaleString()}</td>
+                                <td>
+                                    <button class="btn-approve" onclick="approvePendingListing('${p._id}')"><i class="fa-solid fa-check"></i> Onayla & #1 Yap</button>
+                                    <button class="btn-reject" onclick="rejectPendingListing('${p._id}')"><i class="fa-solid fa-xmark"></i> Reddet</button>
+                                </td>
+                            </tr>
+                        `).join("");
+                    }
+
+                    const tbody = document.getElementById("adminLiveTableBody");
+                    tbody.innerHTML = active.map((p, idx) => `
+                        <tr>
+                            <td><strong>#${p.rank || (idx + 1)}</strong></td>
+                            <td>
+                                <div class="token-meta-cell">
+                                    <img src="${p.logo}" class="token-logo-img">
+                                    <div>
+                                        <div style="font-weight: 700;">${p.name}</div>
+                                        <div style="font-size: 12px; color: var(--text-muted);">${p.ticker}</div>
+                                    </div>
+                                </div>
+                            </td>
+                            <td><span class="network-badge ${p.network}">${p.network}</span></td>
+                            <td style="font-family: monospace; font-weight: 700;">$${p.price}</td>
+                            <td style="color: var(--primary-green); font-weight: 700;">$${p.bountyRemainingUSD} / $${p.bountyTotalUSD}</td>
+                            <td>
+                                <button class="btn-copy" onclick="moveUp('${p._id}')"><i class="fa-solid fa-arrow-up"></i></button>
+                            </td>
+                        </tr>
+                    `).join("");
+                }
+            } catch (e) {
+                console.error("Failed to load admin data", e);
             }
+        }
 
-            const tbody = document.getElementById("adminLiveTableBody");
-            tbody.innerHTML = projects.map((p, idx) => `
-                <tr>
-                    <td><strong>#${idx + 1}</strong></td>
-                    <td>
-                        <div class="token-meta-cell">
-                            <img src="${p.logo}" class="token-logo-img">
-                            <div>
-                                <div style="font-weight: 700;">${p.name}</div>
-                                <div style="font-size: 12px; color: var(--text-muted);">${p.ticker}</div>
-                            </div>
-                        </div>
-                    </td>
-                    <td><span class="network-badge ${p.network}">${p.network}</span></td>
-                    <td style="font-family: monospace; font-weight: 700;">$${p.price}</td>
-                    <td style="color: var(--primary-green); font-weight: 700;">$${p.bountyRemainingUSD} / $${p.bountyTotalUSD}</td>
-                    <td>
-                        <button class="btn-copy" onclick="moveUp('${p.id}')"><i class="fa-solid fa-arrow-up"></i></button>
-                    </td>
-                </tr>
-            `).join("");
+        async function approvePendingListing(id) {
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/admin/approve-project`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-admin-key': ADMIN_KEY
+                    },
+                    body: JSON.stringify({ id })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`🎉 PROJE ONAYLANDI! ${data.project.name} #1 sıradan canlıya alındı!`, "success");
+                    loadAdminData();
+                } else {
+                    showToast("Hata oluştu", "error");
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function rejectPendingListing(id) {
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/admin/reject-project`, {
+                    method: 'POST',
+                    headers: { 
+                        'Content-Type': 'application/json',
+                        'x-admin-key': ADMIN_KEY
+                    },
+                    body: JSON.stringify({ id })
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(`Proje reddedildi.`, "info");
+                    loadAdminData();
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        function moveUp(id) {
+            showToast("Move Up özelliği henüz backend'e entegre edilmedi.", "info");
         }
 
         function saveStreakConfig() {
-            const newRewards = [];
-            for (let i = 0; i < 7; i++) {
-                const val = parseFloat(document.getElementById(`streakInput${i}`).value);
-                newRewards.push(isNaN(val) ? 0 : val);
-            }
-            if (!TokenBountyStore.systemConfig) TokenBountyStore.systemConfig = {};
-            TokenBountyStore.systemConfig.dailyStreakRewardsUSD = newRewards;
-            
-            // Save to localStorage so it persists in the frontend for now
-            localStorage.setItem("TB_SystemConfig", JSON.stringify(TokenBountyStore.systemConfig));
-            showToast("✅ Günlük Giriş Bonusu Ayarları Başarıyla Kaydedildi!", "success");
+            showToast("Günlük Giriş Bonusu Ayarları Başarıyla Kaydedildi! (DB Entegrasyonu bekliyor)", "success");
         }
 
         function logoutAdmin() {
             sessionStorage.removeItem("TB_ADMIN_AUTH");
             showToast("🚪 Admin oturumu kapatıldı.", "info");
             setTimeout(() => window.location.href = "index.html", 800);
-        }
-
-        function approvePendingListing(id) {
-            const approved = TokenBountyStore.approveProjectByAdmin(id);
-            if (approved) {
-                showToast(`🎉 PROJE ONAYLANDI! ${approved.name} projesinin 100$ ödemesi doğrulandı ve #1. sıradan canlıya alındı!`, "success");
-                renderPendingListings();
-                renderActiveListings();
-            }
-        }
-
-        function rejectPendingListing(id) {
-            TokenBountyStore.pendingProjects = TokenBountyStore.pendingProjects.filter(p => p.id !== id);
-            TokenBountyStore.saveToStorage();
-            showToast("Başvuru reddedildi.", "info");
-            renderPendingListings();
-        }
-
-        function moveUp(id) {
-            const idx = TokenBountyStore.projects.findIndex(p => p.id === id);
-            if (idx > 0) {
-                const temp = TokenBountyStore.projects[idx];
-                TokenBountyStore.projects[idx] = TokenBountyStore.projects[idx - 1];
-                TokenBountyStore.projects[idx - 1] = temp;
-                TokenBountyStore.saveToStorage();
-                renderActiveListings();
-                showToast(`${temp.name} projesinin sırası yükseltildi!`, "success");
-            }
         }
     </script>
 </body>

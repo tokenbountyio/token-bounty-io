@@ -244,16 +244,16 @@
 
         function logoutFromProfile() {
             TokenBountyStore.disconnectWallet();
-            alert("🚪 Cüzdan bağlantınız kesildi ve hesaptan çıkış yapıldı!");
-            window.location.href = "index.html";
+            showToast("🚪 Cüzdan bağlantınız kesildi ve hesaptan çıkış yapıldı!", "info");
+            setTimeout(() => window.location.href = "index.html", 800);
         }
 
         function withdrawSingle(ticker, val) {
-            alert(`🎉 Tebrikler! ${val} değerindeki ${ticker} tokenınız bağlı soğuk cüzdanınıza (${TokenBountyStore.userState.connectedWallet || 'Phantom'}) doğrudan transfer edildi!\nTxHash: 0x${Math.random().toString(16).substring(2, 10)}`);
+            showToast(`🎉 Tebrikler! ${val} değerindeki ${ticker} tokenınız bağlı soğuk cüzdanınıza doğrudan transfer edildi!`, "success");
         }
 
         function withdrawAllTokens() {
-            alert(`🎉 TEBRİKLER! Toplam $8.50 USD değerindeki tüm tokenlarınız bağlı cüzdanınıza aktarıldı!`);
+            showToast("🎉 TEBRİKLER! Toplam $8.50 USD değerindeki tüm tokenlarınız bağlı cüzdanınıza aktarıldı!", "success");
         }
     </script>
 </body>

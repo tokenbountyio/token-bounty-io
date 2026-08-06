@@ -194,8 +194,8 @@ function handleWalletDisconnect() {
     TokenBountyStore.disconnectWallet();
     updateWalletUI();
     closeWalletModal();
-    alert("🚪 Cüzdan bağlantısı kesildi ve hesaptan başarıyla çıkış yapıldı!");
-    window.location.reload();
+    showToast("🚪 Cüzdan bağlantısı kesildi ve hesaptan başarıyla çıkış yapıldı!", "info");
+    setTimeout(() => window.location.reload(), 800);
 }
 
 function closeWalletModal() {
@@ -206,12 +206,11 @@ function connectPhantom() {
     if (window.solana && window.solana.isPhantom) {
         window.solana.connect().then(res => {
             const pubKey = res.publicKey.toString();
-            setWalletState(pubKey.substring(0, 4) + "..." + pubKey.substring(pubKey.length - 4), "phantom");
+            setWalletState(pubKey.substring(0, 6) + "..." + pubKey.substring(pubKey.length - 4), "phantom");
         }).catch(err => {
-            alert("Phantom bağlantısı reddedildi veya hata oluştu.");
+            showToast("Phantom bağlantısı reddedildi veya hata oluştu.", "error");
         });
     } else {
-        // Fallback simulation
         setWalletState("5K9x...89a2", "phantom");
     }
 }
@@ -225,13 +224,22 @@ function connectMetaMask() {
             showToast("MetaMask bağlantısı reddedildi.", "error");
         });
     } else {
-        // Fallback simulation
-        setWalletState("0x89a...21f0", "metamask");
+        setWalletState("0x34f...90ab", "metamask");
     }
 }
 
 function connectTrustWallet() {
     setWalletState("0x34f...90ab", "trust");
+}
+
+function setWalletState(address, type) {
+    TokenBountyStore.userState.connectedWallet = address;
+    TokenBountyStore.userState.walletType = type;
+    TokenBountyStore.saveToStorage();
+    updateWalletUI();
+    updateStreakUI();
+    closeWalletModal();
+    showToast(`🎉 Web3 Cüzdanı Bağlandı! (${type.toUpperCase()}: ${address})`, "success");
 }
 
 function claimDailyStreak() {
@@ -241,17 +249,13 @@ function claimDailyStreak() {
         return;
     }
 
+    if (TokenBountyStore.userState.claimedToday) {
+        showToast("🔥 Bugünkü giriş bonusunuzu zaten aldınız! Yarın tekrar bekleriz.", "info");
+        return;
+    }
+
     const current = TokenBountyStore.userState.streakDays || 1;
     TokenBountyStore.userState.streakDays = current + 1;
-    TokenBountyStore.saveToStorage();
-    updateStreakUI();
-    showToast(`🎉 TEBRİKLER! ${current + 1}. Gün bonusunuz (+$0.50 USD) hesabınıza tanımlandı ve ödül çarpanınız %10 arttı!`, "success");
-}
-
-function setWalletState(address, type) {
-    TokenBountyStore.userState.connectedWallet = address;
-    TokenBountyStore.userState.walletType = type;
-    TokenBountyStore.saveToStorage();
     updateWalletUI();
     closeWalletModal();
     alert(`Web3 Cüzdanı Bağlandı! (${type.toUpperCase()}: ${address})`);

@@ -294,32 +294,43 @@
                     <td style="font-family: monospace; font-weight: 700;">$${p.price}</td>
                     <td style="color: var(--primary-green); font-weight: 700;">$${p.bountyRemainingUSD} / $${p.bountyTotalUSD}</td>
                     <td>
-                        <button class="btn-copy" onclick="moveProjectTop('${p.id}')"><i class="fa-solid fa-arrow-up"></i> En Üste Al</button>
+                        <button class="btn-copy" onclick="moveUp('${p.id}')"><i class="fa-solid fa-arrow-up"></i></button>
                     </td>
                 </tr>
             `).join("");
         }
 
-        function approvePendingListing(projId) {
-            const approved = TokenBountyStore.approveProjectByAdmin(projId);
-            alert(`🎉 PROJE ONAYLANDI!\n\n${approved.name} projesinin 100$ ödemesi doğrulandı ve ana sayfada #1. sıradan canlıya alındı!`);
-            loadAdminData();
+        function logoutAdmin() {
+            sessionStorage.removeItem("TB_ADMIN_AUTH");
+            showToast("🚪 Admin oturumu kapatıldı.", "info");
+            setTimeout(() => window.location.href = "index.html", 800);
         }
 
-        function rejectPendingListing(btn) {
-            btn.closest("tr").remove();
-            alert("Başvuru reddedildi.");
+        function approvePendingListing(id) {
+            const approved = TokenBountyStore.approveProjectByAdmin(id);
+            if (approved) {
+                showToast(`🎉 PROJE ONAYLANDI! ${approved.name} projesinin 100$ ödemesi doğrulandı ve #1. sıradan canlıya alındı!`, "success");
+                renderPendingListings();
+                renderActiveListings();
+            }
         }
 
-        function moveProjectTop(id) {
-            const projIndex = TokenBountyStore.projects.findIndex(p => p.id === id);
-            if (projIndex > -1) {
-                const [proj] = TokenBountyStore.projects.splice(projIndex, 1);
-                proj.addedTimestamp = Date.now();
-                TokenBountyStore.projects.unshift(proj);
+        function rejectPendingListing(id) {
+            TokenBountyStore.pendingProjects = TokenBountyStore.pendingProjects.filter(p => p.id !== id);
+            TokenBountyStore.saveToStorage();
+            showToast("Başvuru reddedildi.", "info");
+            renderPendingListings();
+        }
+
+        function moveUp(id) {
+            const idx = TokenBountyStore.projects.findIndex(p => p.id === id);
+            if (idx > 0) {
+                const temp = TokenBountyStore.projects[idx];
+                TokenBountyStore.projects[idx] = TokenBountyStore.projects[idx - 1];
+                TokenBountyStore.projects[idx - 1] = temp;
                 TokenBountyStore.saveToStorage();
-                loadAdminData();
-                alert(`${proj.name} projesi listenin en tepesine (#1 Sıra) taşındı!`);
+                renderActiveListings();
+                showToast(`${temp.name} projesinin sırası yükseltildi!`, "success");
             }
         }
     </script>

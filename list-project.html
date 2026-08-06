@@ -391,7 +391,7 @@
         function copyAdminAddr() {
             const addr = document.getElementById("adminWalletAddr").innerText;
             navigator.clipboard.writeText(addr);
-            alert("Admin cüzdan adresi panoya kopyalandı!");
+            showToast("📋 Admin cüzdan adresi panoya kopyalandı!", "success");
         }
 
         function submitProjectListing() {

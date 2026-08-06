@@ -597,27 +597,29 @@
         }
 
         function verifySingleTask(taskId, target, type) {
+            const url = type.includes("twitter") && !target.startsWith("http") ? `https://x.com/${target.replace('@','')}` : `https://${target}`;
+            
             if (type.includes("telegram")) {
-                window.open(`https://${target}`, "_blank");
-                alert(`Telegram görevi açıldı! Katıldıktan sonra doğrulama botumuz t.me/TokenBountyBot üzerinden onay verecektir.`);
+                showToast("Telegram görevi açıldı! Katıldıktan sonra onay verilecektir.", "info");
             } else if (type.includes("twitter")) {
-                window.open(target.startsWith("http") ? target : `https://x.com/${target.replace('@','')}`, "_blank");
-                alert(`X (Twitter) görevi açıldı! İşlemi tamamladıktan sonra X API doğrulamasıyla yeşil tik onaylanacaktır.`);
+                showToast("X (Twitter) görevi açıldı! İşlem sonrası onaylanacaktır.", "info");
             }
+            window.open(url, "_blank");
         }
 
         function claimProjectReward() {
             if (!TokenBountyStore.userState.connectedWallet) {
+                showToast("🔒 Ödülü alabilmek için cüzdanınızı bağlamalısınız!", "warning");
                 openWalletModal();
                 return;
             }
-            alert(`🎉 Tebrikler! $${currentProj.rewardPerUserUSD} değerindeki ${currentProj.name} token ödülü site içi bakiyenize eklendi! Cüzdanınıza çekim talebi gönderildi.`);
+            showToast(`🎉 Tebrikler! $${currentProj.rewardPerUserUSD} değerindeki ${currentProj.name} token ödülü bakiyenize eklendi!`, "success");
         }
 
         function copyContract() {
             const code = document.getElementById("detailContract").innerText;
             navigator.clipboard.writeText(code);
-            alert("Kontrat adresi panoya kopyalandı!");
+            showToast("📋 Kontrat adresi panoya kopyalandı!", "success");
         }
 
         function openWalletModal() {

@@ -166,6 +166,19 @@
             </div>
         </div>
 
+        <!-- Daily Streak Rewards Configuration Section -->
+        <div class="admin-section-card">
+            <div class="admin-section-title">
+                <h3><i class="fa-solid fa-gift text-cyan"></i> Günlük Giriş Bonusu Ayarları (USD)</h3>
+                <span style="font-size: 12px; color: var(--text-muted);">Her gün için verilecek nakit ödül tutarını ayarlayın.</span>
+            </div>
+            
+            <div style="display: flex; gap: 10px; overflow-x: auto; padding-bottom: 10px;" id="streakRewardsConfigArea">
+                <!-- Dynamically loaded inputs -->
+            </div>
+            <button class="btn-main" onclick="saveStreakConfig()" style="margin-top: 15px; padding: 10px 20px;"><i class="fa-solid fa-save"></i> Ödül Ayarlarını Kaydet</button>
+        </div>
+
         <!-- Pending Project Approvals Section -->
         <div class="admin-section-card">
             <div class="admin-section-title">
@@ -243,6 +256,18 @@
         });
 
         function loadAdminData() {
+            // Load Streak Rewards Config
+            const rewards = TokenBountyStore.systemConfig?.dailyStreakRewardsUSD || [0.10, 0.20, 0.30, 0.40, 0.50, 1.00, 2.00];
+            const configArea = document.getElementById("streakRewardsConfigArea");
+            if (configArea) {
+                configArea.innerHTML = rewards.map((amt, idx) => `
+                    <div style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-color); border-radius: 8px; padding: 10px; min-width: 80px; text-align: center;">
+                        <div style="font-size: 11px; color: var(--text-muted); margin-bottom: 5px;">${idx + 1}. Gün</div>
+                        <input type="number" id="streakInput${idx}" value="${amt.toFixed(2)}" step="0.05" style="width: 100%; background: transparent; border: 1px solid var(--border-color); color: #fff; padding: 5px; border-radius: 4px; text-align: center;">
+                    </div>
+                `).join("");
+            }
+
             const projects = TokenBountyStore.getSortedProjects();
             document.getElementById("statLiveCount").innerText = `${projects.length} Proje`;
             document.getElementById("statRevenue").innerText = `$${projects.length * 100}.00`;
@@ -297,6 +322,20 @@
                     </td>
                 </tr>
             `).join("");
+        }
+
+        function saveStreakConfig() {
+            const newRewards = [];
+            for (let i = 0; i < 7; i++) {
+                const val = parseFloat(document.getElementById(`streakInput${i}`).value);
+                newRewards.push(isNaN(val) ? 0 : val);
+            }
+            if (!TokenBountyStore.systemConfig) TokenBountyStore.systemConfig = {};
+            TokenBountyStore.systemConfig.dailyStreakRewardsUSD = newRewards;
+            
+            // Save to localStorage so it persists in the frontend for now
+            localStorage.setItem("TB_SystemConfig", JSON.stringify(TokenBountyStore.systemConfig));
+            showToast("✅ Günlük Giriş Bonusu Ayarları Başarıyla Kaydedildi!", "success");
         }
 
         function logoutAdmin() {

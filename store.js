@@ -35,18 +35,19 @@ function showToast(message, type = 'info') {
 }
 
 const TokenBountyStore = {
+    // Global System Configuration (Configurable from Admin Panel)
+    systemConfig: {
+        dailyStreakRewardsUSD: [0.10, 0.20, 0.30, 0.40, 0.50, 1.00, 2.00] // Day 1 to 7
+    },
+
     // Current Wallet & User State
     userState: {
-        connectedWallet: null, // e.g. "0x89a...21" or "Phantom: 5K...89"
-        walletType: null,      // "phantom", "metamask", "trust"
-        streakCount: 3,
+        connectedWallet: null, 
+        walletType: null,      
+        streakCount: 1, // Start at day 1
         streakClaimedToday: false,
-        userBalances: {
-            // "KIMCHI": 500, "QUEST": 120
-        },
-        completedTasks: [
-            // "project_1_task_1"
-        ]
+        userBalances: {},
+        completedTasks: []
     },
 
     // Projects Database (Sorted chronologically - Newest #1 at top)
@@ -234,6 +235,10 @@ const TokenBountyStore = {
         const storedUser = localStorage.getItem("TB_UserState");
         if (storedUser) {
             this.userState = JSON.parse(storedUser);
+        }
+        const storedConfig = localStorage.getItem("TB_SystemConfig");
+        if (storedConfig) {
+            this.systemConfig = JSON.parse(storedConfig);
         }
     }
 };

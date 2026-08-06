@@ -49,23 +49,53 @@ function updateWalletUI() {
 }
 
 function updateStreakUI() {
-    const isConnected = !!TokenBountyStore.userState.connectedWallet;
+    const isConnected = !!TokenBountyStore.userState.isLoggedIn;
     const streakBtn = document.getElementById("claimStreakBtn");
     const streakBadge = document.getElementById("streakDaysBadge");
+    const gridContainer = document.getElementById("streakGridContainer");
+    
+    // Ensure config exists (fallback if needed)
+    const rewards = TokenBountyStore.systemConfig?.dailyStreakRewardsUSD || [0.10, 0.20, 0.30, 0.40, 0.50, 1.00, 2.00];
+    const currentStreak = TokenBountyStore.userState.streakCount || 1;
+
+    // Render Grid Dynamically
+    if (gridContainer) {
+        let gridHtml = '';
+        for (let i = 1; i <= 7; i++) {
+            const rewardAmt = rewards[i - 1];
+            
+            if (!isConnected) {
+                // Not logged in -> all gray
+                gridHtml += `<div class="streak-day"><span>${i}.Gün</span><span style="font-size:10px; opacity:0.7;">$${rewardAmt.toFixed(2)}</span></div>`;
+            } else {
+                // Logged in logic
+                if (i < currentStreak) {
+                    gridHtml += `<div class="streak-day done"><i class="fa-solid fa-check"></i><span>${i}.Gün</span></div>`;
+                } else if (i === currentStreak) {
+                    gridHtml += `<div class="streak-day active"><i class="fa-solid fa-fire"></i><span>${i}.Gün</span><span style="font-size:10px;">$${rewardAmt.toFixed(2)}</span></div>`;
+                } else if (i === 7) {
+                    gridHtml += `<div class="streak-day bonus"><span>Büyük Ödül</span><span style="font-size:10px;">$${rewardAmt.toFixed(2)}</span></div>`;
+                } else {
+                    gridHtml += `<div class="streak-day"><span>${i}.Gün</span><span style="font-size:10px; opacity:0.7;">$${rewardAmt.toFixed(2)}</span></div>`;
+                }
+            }
+        }
+        gridContainer.innerHTML = gridHtml;
+    }
 
     if (!isConnected) {
         // Gated state when wallet is NOT connected
         if (streakBadge) streakBadge.innerHTML = `<i class="fa-solid fa-lock"></i> Kilitli`;
         if (streakBtn) {
             streakBtn.innerHTML = `<i class="fa-solid fa-wallet"></i> Bonusu Açmak İçin Cüzdan Bağlayın`;
-            streakBtn.onclick = openWalletModal;
+            streakBtn.onclick = openLoginModal; // It's better to open login modal instead of wallet modal now
         }
     } else {
         // Unlocked state when wallet IS connected
-        const currentStreak = TokenBountyStore.userState.streakDays || 3;
         if (streakBadge) streakBadge.innerText = `${currentStreak} Gün Seri 🔥`;
         if (streakBtn) {
-            streakBtn.innerHTML = `<i class="fa-solid fa-bolt"></i> Bugünkü Bonusu Al (+0.50$)`;
+            const todayReward = rewards[currentStreak - 1] || 0.10;
+            streakBtn.innerHTML = `<i class="fa-solid fa-bolt"></i> Bugünkü Bonusu Al (+$${todayReward.toFixed(2)})`;
             streakBtn.onclick = claimDailyStreak;
         }
     }

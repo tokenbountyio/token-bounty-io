@@ -192,18 +192,20 @@ function renderTokenTable(networkFilter = "all", searchQuery = "") {
         // Dynamic SVG sparkline curve
         const sparklineColor = isUp ? "#10b981" : "#f43f5e";
         const sparklineSvg = isUp 
-            ? `<svg width="80" height="26" viewBox="0 0 80 26"><path d="M0,20 Q20,24 40,10 T80,4" fill="none" stroke="${sparklineColor}" stroke-width="2.2" stroke-linecap="round"/></svg>`
-            : `<svg width="80" height="26" viewBox="0 0 80 26"><path d="M0,4 Q20,10 40,20 T80,24" fill="none" stroke="${sparklineColor}" stroke-width="2.2" stroke-linecap="round"/></svg>`;
+            ? `<div class="sparkline-container"><svg viewBox="0 0 80 26"><path d="M0,20 Q20,24 40,10 T80,4" fill="none" stroke="${sparklineColor}" stroke-width="2.2" stroke-linecap="round"/></svg></div>`
+            : `<div class="sparkline-container"><svg viewBox="0 0 80 26"><path d="M0,4 Q20,10 40,20 T80,24" fill="none" stroke="${sparklineColor}" stroke-width="2.2" stroke-linecap="round"/></svg></div>`;
+
+        const rowClass = index === 0 ? "token-row laser-row" : "token-row";
 
         return `
-            <tr class="token-row" onclick="openTokenDetail('${item.id}')">
+            <tr class="${rowClass}" onclick="openTokenDetail('${item._id || item.id}')">
                 <td class="th-rank"><span class="rank-badge">${rankBadge}</span></td>
                 <td class="th-token">
                     <div class="token-meta-cell">
                         <img src="${item.logo}" alt="${item.name}" class="token-logo-img" onerror="this.src='https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png'">
                         <div class="token-names">
                             <span class="token-title">${item.name}</span>
-                            <span class="token-ticker-text">$${item.symbol || item.ticker}</span>
+                            <span class="token-ticker-text">${item.ticker || item.symbol}</span>
                         </div>
                     </div>
                 </td>
@@ -217,7 +219,7 @@ function renderTokenTable(networkFilter = "all", searchQuery = "") {
                     <span class="price-text">$${item.price}</span>
                 </td>
                 <td class="th-change">
-                    <div style="display:flex;align-items:center;gap:8px;">
+                    <div style="display:flex;align-items:center;">
                         <span class="change-pill ${changeClass}">${changeIcon} ${changeSign}${item.change24h}%</span>
                         ${sparklineSvg}
                     </div>

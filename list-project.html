@@ -175,6 +175,11 @@
 </head>
 <body>
 
+    <!-- 3D Interactive Canvas Background -->
+    <canvas id="bg-canvas" style="position: fixed; top: 0; left: 0; width: 100%; height: 100%; z-index: -1; pointer-events: none;"></canvas>
+    
+    <div class="toast-container" id="toastContainer"></div>
+
     <header class="main-header">
         <div class="container header-container">
             <a href="index.html" class="brand-logo">
@@ -374,7 +379,8 @@
 
     </main>
 
-    <script src="store.js?v=4"></script>
+    <script src="store.js"></script>
+    <script src="visuals.js"></script>
     <script src="app.js?v=4"></script>
     <script>
         function goToStep(step) {

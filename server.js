@@ -424,6 +424,43 @@ app.post('/api/admin/reject-project', adminAuth, async (req, res) => {
     res.json({ success: true, project });
 });
 
+// --- ADVANCED ADMIN ENDPOINTS ---
+app.get('/api/admin/stats', adminAuth, async (req, res) => {
+    try {
+        const totalUsers = await User.countDocuments();
+        const users = await User.find({}, 'balances');
+        let totalPaid = 0;
+        users.forEach(u => {
+            if (u.balances && u.balances.totalUSD) {
+                totalPaid += u.balances.totalUSD;
+            }
+        });
+        const totalProjects = await Project.countDocuments();
+        
+        res.json({ success: true, stats: { totalUsers, totalPaid, totalProjects } });
+    } catch (err) {
+        res.status(500).json({ success: false, error: "Stats calculation failed" });
+    }
+});
+
+app.get('/api/admin/users', adminAuth, async (req, res) => {
+    try {
+        const users = await User.find().select('-password').sort({ _id: -1 });
+        res.json({ success: true, users });
+    } catch (err) {
+        res.status(500).json({ success: false, error: "Failed to fetch users" });
+    }
+});
+
+app.delete('/api/admin/users/:id', adminAuth, async (req, res) => {
+    try {
+        await User.findByIdAndDelete(req.params.id);
+        res.json({ success: true, message: "Kullanıcı başarıyla banlandı ve silindi." });
+    } catch (err) {
+        res.status(500).json({ success: false, error: "Failed to delete user" });
+    }
+});
+
 // --- START SERVER ---
 if (require.main === module) {
     app.listen(PORT, () => {

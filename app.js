@@ -17,22 +17,34 @@ function initApp() {
 
 // Render CoinGecko-Style Chronological Table
 function updateWalletUI() {
-    const walletBtn = document.getElementById("connectWalletBtn");
-    if (!walletBtn) return;
+    const actionsDiv = document.querySelector(".header-actions");
+    if (!actionsDiv) return;
 
     const isLoggedIn = TokenBountyStore.userState.isLoggedIn;
-    const userEmail = TokenBountyStore.userState.email || "Kullanıcı";
+    const userEmail = TokenBountyStore.userState.email;
     const walletAddress = TokenBountyStore.userState.connectedWallet;
 
     if (isLoggedIn) {
-        // Logged in state - User Avatar & Quick Menu
-        const displayLabel = walletAddress ? `${userEmail.split('@')[0]} (${walletAddress})` : userEmail;
-        walletBtn.innerHTML = `<i class="fa-solid fa-user-astronaut" style="color:var(--neon-green);"></i> ${displayLabel}`;
-        walletBtn.onclick = openWalletModal;
+        // Logged in user header badge
+        const displayLabel = walletAddress ? `${userEmail || 'Kullanıcı'} (${walletAddress})` : (userEmail || 'Kullanıcı');
+        actionsDiv.innerHTML = `
+            <a href="profile.html" class="btn-wallet" style="text-decoration:none;">
+                <i class="fa-solid fa-user-astronaut" style="color:var(--neon-green);"></i> ${displayLabel}
+            </a>
+            <button onclick="handleWalletDisconnect()" class="btn-secondary" style="padding:10px 18px;font-size:12px;border-color:rgba(244,63,94,0.5);color:#f43f5e;" title="Çıkış Yap">
+                <i class="fa-solid fa-right-from-bracket"></i>
+            </button>
+        `;
     } else {
-        // Logged out state - Show Login & Register Options
-        walletBtn.innerHTML = `<i class="fa-solid fa-right-to-bracket"></i> Giriş Yap / Kaydol`;
-        walletBtn.onclick = openLoginModal;
+        // Logged out header - Giriş Yap & Kayıt Ol
+        actionsDiv.innerHTML = `
+            <button onclick="openLoginModal(event)" class="btn-wallet">
+                <i class="fa-solid fa-key" style="color:var(--neon-cyan);"></i> Giriş Yap
+            </button>
+            <button onclick="openRegisterModal(event)" class="btn-main" style="padding:11px 24px;font-size:14px;">
+                <i class="fa-solid fa-user-plus"></i> Kayıt Ol
+            </button>
+        `;
     }
 }
 

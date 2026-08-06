@@ -10,6 +10,7 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <style>
+        /* ... existing styles ... */
         .wizard-container {
             max-width: 800px;
             margin: 40px auto;
@@ -87,19 +88,27 @@
 
         .form-control {
             width: 100%;
-            background: rgba(255, 255, 255, 0.03);
+            background: rgba(255, 255, 255, 0.05);
             border: 1px solid var(--border-color);
             border-radius: var(--radius-md);
-            padding: 12px 16px;
-            color: var(--text-main);
+            padding: 14px 16px;
+            color: #fff;
             font-size: 14px;
             font-family: var(--font-body);
             outline: none;
+            transition: all 0.3s ease;
         }
 
         .form-control:focus {
             border-color: var(--primary-cyan);
+            background: rgba(0, 242, 254, 0.05);
             box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
+        }
+        
+        select.form-control option {
+            background-color: var(--bg-dark);
+            color: #fff;
+            padding: 10px;
         }
 
         .form-grid-2 {
@@ -143,23 +152,18 @@
             align-items: center;
             justify-content: center;
             gap: 8px;
+            cursor: pointer;
+            transition: all 0.2s ease;
+        }
+        .chain-btn:hover {
+            background: rgba(255, 255, 255, 0.08);
         }
 
         .chain-btn.selected {
             border-color: var(--primary-cyan);
             background: rgba(0, 242, 254, 0.1);
             color: var(--primary-cyan);
-        }
-
-        .btn-wizard-next {
-            width: 100%;
-            background: var(--gradient-primary);
-            color: #000;
-            font-weight: 800;
-            padding: 16px;
-            border-radius: var(--radius-md);
-            font-size: 16px;
-            margin-top: 25px;
+            box-shadow: 0 0 10px rgba(0, 242, 254, 0.2);
         }
 
         @media (max-width: 768px) {
@@ -181,7 +185,7 @@
                 </div>
             </a>
             <div style="display: flex; gap: 15px; align-items: center;">
-                <a href="index.html" style="color: var(--text-muted); font-size: 14px;"><i class="fa-solid fa-arrow-left"></i> Ana Sayfaya Dön</a>
+                <a href="index.html" style="color: var(--text-muted); font-size: 14px; font-weight:600; text-decoration:none; transition: color 0.3s;"><i class="fa-solid fa-arrow-left"></i> Ana Sayfaya Dön</a>
             </div>
         </div>
     </header>
@@ -189,8 +193,8 @@
     <main class="container">
         
         <div class="wizard-container">
-            <h2 style="text-align: center; margin-bottom: 10px;">🚀 Projenizi Listeleyin & Ödül Havuzu Oluşturun</h2>
-            <p style="text-align: center; color: var(--text-muted); font-size: 14px; margin-bottom: 30px;">
+            <h2 style="text-align: center; margin-bottom: 10px; font-weight:800;"><i class="fa-solid fa-rocket" style="color:var(--neon-green)"></i> Projenizi Listeleyin & Ödül Havuzu Oluşturun</h2>
+            <p style="text-align: center; color: var(--text-muted); font-size: 14px; margin-bottom: 40px;">
                 24 saat içinde projenize 300+ gerçek on-chain holder ve X (Twitter) etkileşimi kazandırın.
             </p>
 
@@ -257,7 +261,7 @@
                         <input type="url" id="inputLogo" class="form-control" placeholder="https://domain.com/logo.png" required>
                     </div>
 
-                    <button class="btn-wizard-next" onclick="goToStep(2)">İleri: DEX & Sosyal Linkler <i class="fa-solid fa-arrow-right"></i></button>
+                    <button class="btn-main" style="width: 100%; justify-content: center; padding: 16px; margin-top: 15px;" onclick="goToStep(2)">İleri: DEX & Sosyal Linkler <i class="fa-solid fa-arrow-right"></i></button>
                 </div>
 
                 <!-- STEP 2: DEX & SOCIAL LINKS -->
@@ -289,14 +293,20 @@
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label>Resmi Web Sitesi URL *</label>
-                        <input type="url" id="inputWebsite" class="form-control" placeholder="https://projesitesi.io" required>
+                    <div class="form-grid-2">
+                        <div class="form-group">
+                            <label>Resmi Web Sitesi URL *</label>
+                            <input type="url" id="inputWebsite" class="form-control" placeholder="https://projesitesi.io" required>
+                        </div>
+                        <div class="form-group">
+                            <label>Proje Yetkilisi Telegram (İletişim) *</label>
+                            <input type="text" id="inputAdminContact" class="form-control" placeholder="@SizinKullaniciAdiniz" required>
+                        </div>
                     </div>
 
-                    <div style="display: flex; gap: 15px;">
-                        <button class="btn-secondary" style="width: 30%; margin-top: 25px;" onclick="goToStep(1)">Geri</button>
-                        <button class="btn-wizard-next" style="width: 70%;" onclick="goToStep(3)">İleri: Ödül Havuzu <i class="fa-solid fa-arrow-right"></i></button>
+                    <div style="display: flex; gap: 15px; margin-top: 25px;">
+                        <button class="btn-secondary" style="width: 30%;" onclick="goToStep(1)">Geri</button>
+                        <button class="btn-main" style="width: 70%; justify-content: center;" onclick="goToStep(3)">İleri: Ödül Havuzu <i class="fa-solid fa-arrow-right"></i></button>
                     </div>
                 </div>
 
@@ -317,9 +327,9 @@
                         <i class="fa-solid fa-circle-info text-green"></i> 350$ ödül havuzu tanımladığınızda yaklaşık 116 gerçek kullanıcı görev yapacak ve on-chain holder'ınız olacaktır.
                     </div>
 
-                    <div style="display: flex; gap: 15px;">
-                        <button class="btn-secondary" style="width: 30%; margin-top: 25px;" onclick="goToStep(2)">Geri</button>
-                        <button class="btn-wizard-next" style="width: 70%;" onclick="goToStep(4)">İleri: 100$ Ödeme Ekranı <i class="fa-solid fa-arrow-right"></i></button>
+                    <div style="display: flex; gap: 15px; margin-top: 25px;">
+                        <button class="btn-secondary" style="width: 30%;" onclick="goToStep(2)">Geri</button>
+                        <button class="btn-main" style="width: 70%; justify-content: center;" onclick="goToStep(4)">İleri: 100$ Ödeme Ekranı <i class="fa-solid fa-arrow-right"></i></button>
                     </div>
                 </div>
 
@@ -327,13 +337,13 @@
                 <div id="step4" style="display: none;">
                     
                     <div class="payment-box">
-                        <div style="font-size: 13px; color: var(--text-muted);">SABİT LİSTELEME ÜCRETİ</div>
+                        <div style="font-size: 13px; color: var(--text-muted); font-weight:700;">SABİT LİSTELEME ÜCRETİ</div>
                         <div class="payment-amount">$100 USD</div>
                         <p style="font-size: 13px; color: var(--text-muted); margin-top: 5px;">Ödemeniz onaylandığı an projeniz 1. sıradan canlıya alınır.</p>
                     </div>
 
-                    <div style="margin-top: 20px;">
-                        <label style="font-weight: 600; font-size: 14px;">Ödeme Yapacağınız Kripto Ağını Seçin:</label>
+                    <div style="margin-top: 25px;">
+                        <label style="font-weight: 700; font-size: 14px; margin-bottom:10px; display:block;">Ödeme Yapacağınız Kripto Ağını Seçin:</label>
                         <div class="chain-select-grid">
                             <button class="chain-btn selected" onclick="selectPaymentChain('trc20')">TRC20 (USDT)</button>
                             <button class="chain-btn" onclick="selectPaymentChain('bep20')">BEP20 (USDT/BNB)</button>
@@ -346,14 +356,17 @@
                     <div class="contract-box" style="margin-top: 15px;">
                         <div>
                             <span style="color: var(--text-muted); margin-right: 8px;">Admin Cüzdan Adresi:</span>
-                            <span class="contract-code" id="adminWalletAddr">TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t</span>
+                            <span class="contract-code" id="adminWalletAddr" style="user-select:all;">TR7NHqjeKQxGTCi8q8ZY4pL8otSzgjLj6t</span>
                         </div>
                         <button class="btn-copy" onclick="copyAdminAddr()"><i class="fa-solid fa-copy"></i> Kopyala</button>
                     </div>
 
-                    <button class="btn-wizard-next" onclick="submitProjectListing()" style="background: var(--gradient-primary); box-shadow: var(--shadow-glow);">
-                        <i class="fa-solid fa-check-circle"></i> Ödemeyi Yaptım & Projeyi Canlıya Al
-                    </button>
+                    <div style="display: flex; gap: 15px; margin-top: 30px;">
+                        <button class="btn-secondary" style="width: 30%;" onclick="goToStep(3)">Geri</button>
+                        <button class="btn-main" style="width: 70%; justify-content: center; box-shadow: var(--shadow-glow);" onclick="submitProjectListing()">
+                            <i class="fa-solid fa-check-circle"></i> Ödemeyi Yaptım & Projeyi Gönder
+                        </button>
+                    </div>
                 </div>
 
             </form>
@@ -361,7 +374,8 @@
 
     </main>
 
-    <script src="store.js?v=2"></script>
+    <script src="store.js?v=4"></script>
+    <script src="app.js?v=4"></script>
     <script>
         function goToStep(step) {
             for (let i = 1; i <= 4; i++) {
@@ -393,7 +407,7 @@
             showToast("📋 Admin cüzdan adresi panoya kopyalandı!", "success");
         }
 
-        function submitProjectListing() {
+        async function submitProjectListing() {
             const name = document.getElementById("inputName").value || "Yeni Token";
             const ticker = document.getElementById("inputTicker").value || "$NEW";
             const network = document.getElementById("inputNetwork").value;
@@ -406,11 +420,12 @@
             const telegramChannel = document.getElementById("inputTelegramChannel").value || "t.me/news";
             const twitterHandle = document.getElementById("inputTwitterHandle").value || "@Twitter";
             const websiteUrl = document.getElementById("inputWebsite").value || "https://website.com";
+            const adminContactTelegram = document.getElementById("inputAdminContact").value || "@Admin";
 
             const bountyTotalUSD = parseFloat(document.getElementById("inputBountyTotal").value) || 350;
             const rewardPerUserUSD = parseFloat(document.getElementById("inputRewardPerUser").value) || 3.00;
 
-            const newProj = TokenBountyStore.addProject({
+            const projectData = {
                 name,
                 ticker,
                 network,
@@ -422,6 +437,7 @@
                 telegramChannel,
                 twitterHandle,
                 websiteUrl,
+                adminContactTelegram,
                 bountyTotalUSD,
                 rewardPerUserUSD,
                 dexScreenerUrl: `https://dexscreener.com/${network}/${contract}`,
@@ -432,10 +448,29 @@
                     { id: "task_1", title: "Official Telegram Grubuna Katıl", type: "telegram", target: telegramGroup, reward: `$${(rewardPerUserUSD/2).toFixed(2)}` },
                     { id: "task_2", title: "X (Twitter) Hesabını Takip Et", type: "twitter_follow", target: twitterHandle, reward: `$${(rewardPerUserUSD/2).toFixed(2)}` }
                 ]
-            });
+            };
 
-            alert(`📌 BAŞVURUNUZ ALINDI!\n\n100$ Listeleme ödemeniz ve ödül depozitonuz Admin ekibimiz tarafından doğrulandıktan sonra projeniz (${name}) 5-10 dakika içinde listenin 1. sırasından canlıya alınacaktır.`);
-            window.location.href = "index.html";
+            try {
+                // MongoDB API request!
+                const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : '';
+                const response = await fetch(`${API_BASE_URL}/api/projects`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify(projectData)
+                });
+                
+                const resData = await response.json();
+                
+                if (resData.success) {
+                    alert(`📌 BAŞVURUNUZ ALINDI!\n\nProjeniz onay bekleyenler listesine eklendi. Yetkili ekibimiz inceleyip "${adminContactTelegram}" Telegram adresinizden sizinle iletişime geçecektir.`);
+                    window.location.href = "index.html";
+                } else {
+                    alert("⛔ Hata: " + resData.error);
+                }
+            } catch(err) {
+                console.error(err);
+                alert("⛔ Sunucu hatası. API'ye ulaşılamıyor.");
+            }
         }
     </script>
 </body>

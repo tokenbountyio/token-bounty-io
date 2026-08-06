@@ -20,6 +20,7 @@ const ProjectSchema = new mongoose.Schema({
     telegramGroup: { type: String },
     telegramChannel: { type: String },
     twitterHandle: { type: String },
+    adminContactTelegram: { type: String },
     marketCapUSD: { type: String },
     volume24hUSD: { type: String },
     totalSupply: { type: String },

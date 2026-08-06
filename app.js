@@ -352,9 +352,7 @@ function closeAuthModals() {
     document.querySelectorAll(".modal-backdrop").forEach(m => m.classList.remove("active"));
 }
 
-const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
-    ? 'http://localhost:3000' 
-    : ''; // Canlı sunucuya atılınca buraya gerçek backend URL'si gelecek.
+// API_BASE_URL is inherited from store.js
 
 function submitRegisterEmail() {
     const email = document.getElementById("regEmail").value.trim();

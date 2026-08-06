@@ -251,8 +251,12 @@ app.post('/api/admin/approve-project', async (req, res) => {
 });
 
 // --- START SERVER ---
-app.listen(PORT, () => {
-    console.log(`=======================================================`);
-    console.log(`🚀 TokenBounty.io Server Running on http://localhost:${PORT}`);
-    console.log(`=======================================================`);
-});
+if (require.main === module) {
+    app.listen(PORT, () => {
+        console.log(`=======================================================`);
+        console.log(`🚀 TokenBounty.io Server Running on http://localhost:${PORT}`);
+        console.log(`=======================================================`);
+    });
+}
+
+module.exports = app;

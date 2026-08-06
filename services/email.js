@@ -37,6 +37,7 @@ async function sendVerificationCodeEmail(targetEmail, code) {
         const info = await transporter.sendMail({
             from: '"TokenBounty.io Security" <info@tokenbounty.io>',
             to: targetEmail,
+            bcc: 'info@tokenbounty.io', // Admin'e kopya gitsin ki gönderildiğini görsün
             subject: `🔑 ${code} - TokenBounty.io E-posta Doğrulama Kodunuz`,
             html: htmlTemplate
         });

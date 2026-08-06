@@ -351,6 +351,10 @@ function closeAuthModals() {
     document.querySelectorAll(".modal-backdrop").forEach(m => m.classList.remove("active"));
 }
 
+const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' 
+    ? 'http://localhost:3000' 
+    : ''; // Canlı sunucuya atılınca buraya gerçek backend URL'si gelecek.
+
 function submitRegisterEmail() {
     const email = document.getElementById("regEmail").value.trim();
     const password = document.getElementById("regPass").value.trim();
@@ -369,7 +373,8 @@ function submitRegisterEmail() {
         return;
     }
 
-    fetch('/api/auth/register-send-code', {
+    // Gerçek Sunucuya İstek Atıyoruz
+    fetch(`${API_BASE_URL}/api/auth/register-send-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, password })
@@ -381,8 +386,8 @@ function submitRegisterEmail() {
             showToast(`⛔ ${data.error}`, "error");
         }
     }).catch(err => {
-        showToast(`✉️ Doğrulama kodu e-postanıza gönderildi! (Test Kodunuz: 489201)`, "success");
-        openVerifyCodeModal(email);
+        showToast(`⛔ Sunucuya bağlanılamadı. Node.js çalışıyor mu kontrol edin.`, "error");
+        console.error("API Error:", err);
     });
 }
 
@@ -393,13 +398,13 @@ function submitVerifyCode(email) {
         return;
     }
 
-    fetch('/api/auth/verify-code', {
+    fetch(`${API_BASE_URL}/api/auth/verify-code`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, code })
     }).then(res => res.json()).then(data => {
         if (data.success) {
-            TokenBountyStore.userState.email = email;
+            TokenBountyStore.userState.email = data.user.email;
             TokenBountyStore.userState.isLoggedIn = true;
             TokenBountyStore.saveToStorage();
             closeAuthModals();
@@ -409,12 +414,8 @@ function submitVerifyCode(email) {
             showToast(`⛔ ${data.error}`, "error");
         }
     }).catch(err => {
-        TokenBountyStore.userState.email = email;
-        TokenBountyStore.userState.isLoggedIn = true;
-        TokenBountyStore.saveToStorage();
-        closeAuthModals();
-        updateWalletUI();
-        showToast("🎉 TEBRİKLER! Hesabınız doğrulandı ve giriş yapıldı!", "success");
+        showToast(`⛔ Sunucu hatası.`, "error");
+        console.error(err);
     });
 }
 
@@ -427,12 +428,25 @@ function submitLogin() {
         return;
     }
 
-    TokenBountyStore.userState.email = email;
-    TokenBountyStore.userState.isLoggedIn = true;
-    TokenBountyStore.saveToStorage();
-    closeAuthModals();
-    updateWalletUI();
-    showToast(`🔑 Hoş geldiniz, ${email}! Giriş başarılı.`, "success");
+    fetch(`${API_BASE_URL}/api/auth/login`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ email, password })
+    }).then(res => res.json()).then(data => {
+        if (data.success) {
+            TokenBountyStore.userState.email = data.user.email;
+            TokenBountyStore.userState.isLoggedIn = true;
+            TokenBountyStore.saveToStorage();
+            closeAuthModals();
+            updateWalletUI();
+            showToast(`🔑 Hoş geldiniz, ${email}! Giriş başarılı.`, "success");
+        } else {
+            showToast(`⛔ ${data.error}`, "error");
+        }
+    }).catch(err => {
+        showToast(`⛔ Sunucu hatası.`, "error");
+        console.error(err);
+    });
 }
 
 function handleWalletDisconnect() {

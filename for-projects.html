@@ -1,0 +1,329 @@
+<!DOCTYPE html>
+<html lang="tr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>TokenBounty | Projeni Listeleyin & 85K+ Holdera Ulaşın</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700;800&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="styles.css">
+    <style>
+        .marketing-hero {
+            padding: 120px 20px 80px;
+            text-align: center;
+            max-width: 1000px;
+            margin: 0 auto;
+            position: relative;
+            z-index: 10;
+        }
+
+        .marketing-title {
+            font-size: 56px;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            font-family: var(--font-heading);
+            font-weight: 800;
+            background: linear-gradient(135deg, #fff 0%, #a855f7 50%, #00f2fe 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            animation: textShimmer 3s infinite linear;
+            background-size: 200% auto;
+        }
+
+        @keyframes textShimmer {
+            to { background-position: 200% center; }
+        }
+
+        .marketing-subtitle {
+            font-size: 20px;
+            color: var(--text-secondary);
+            max-width: 700px;
+            margin: 0 auto 50px;
+            line-height: 1.6;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(2, 1fr);
+            gap: 30px;
+            max-width: 1100px;
+            margin: 0 auto 100px;
+            padding: 0 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .feature-card {
+            background: var(--bg-glass-card);
+            backdrop-filter: blur(28px);
+            -webkit-backdrop-filter: blur(28px);
+            border: 1px solid var(--border-subtle);
+            border-radius: var(--radius-lg);
+            padding: 40px;
+            text-align: left;
+            transition: all 0.4s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+            position: relative;
+            overflow: hidden;
+            box-shadow: 0 30px 60px rgba(0,0,0,0.5);
+            animation: fadeInUp 0.8s ease backwards;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-10px);
+            border-color: var(--neon-cyan);
+            box-shadow: 0 20px 50px rgba(0, 242, 254, 0.2);
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0; height: 3px;
+            background: var(--gradient-brand);
+            opacity: 0;
+            transition: opacity 0.4s ease;
+        }
+        .feature-card:hover::before { opacity: 1; }
+
+        .feature-icon-wrapper {
+            width: 70px;
+            height: 70px;
+            border-radius: var(--radius-md);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            margin-bottom: 24px;
+            background: rgba(255,255,255,0.03);
+            border: 1px solid var(--border-subtle);
+        }
+
+        .feature-card:nth-child(1) .feature-icon-wrapper { color: var(--neon-cyan); box-shadow: 0 0 30px rgba(0,242,254,0.15); }
+        .feature-card:nth-child(2) .feature-icon-wrapper { color: var(--neon-purple); box-shadow: 0 0 30px rgba(168,85,247,0.15); }
+        .feature-card:nth-child(3) .feature-icon-wrapper { color: var(--neon-green); box-shadow: 0 0 30px rgba(16,185,129,0.15); }
+        .feature-card:nth-child(4) .feature-icon-wrapper { color: var(--neon-gold); box-shadow: 0 0 30px rgba(245,158,11,0.15); }
+
+        .feature-title {
+            font-family: var(--font-heading);
+            font-size: 24px;
+            font-weight: 700;
+            margin-bottom: 16px;
+            color: var(--text-primary);
+        }
+
+        .feature-desc {
+            color: var(--text-secondary);
+            font-size: 15px;
+            line-height: 1.7;
+        }
+
+        @keyframes fadeInUp {
+            from { opacity: 0; transform: translateY(40px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        .fc-1 { animation-delay: 0.1s; }
+        .fc-2 { animation-delay: 0.3s; }
+        .fc-3 { animation-delay: 0.5s; }
+        .fc-4 { animation-delay: 0.7s; }
+
+        /* How it works */
+        .hiw-section {
+            background: linear-gradient(180deg, transparent, rgba(9, 12, 19, 0.8), transparent);
+            padding: 100px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .hiw-title {
+            text-align: center;
+            font-family: var(--font-heading);
+            font-size: 36px;
+            font-weight: 800;
+            margin-bottom: 60px;
+        }
+
+        .steps-container {
+            max-width: 1000px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            position: relative;
+        }
+
+        .steps-container::after {
+            content: '';
+            position: absolute;
+            top: 40px;
+            left: 50px;
+            right: 50px;
+            height: 2px;
+            background: linear-gradient(90deg, var(--neon-cyan), var(--neon-purple));
+            z-index: 1;
+            opacity: 0.3;
+        }
+
+        .step-item {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+            flex: 1;
+            padding: 0 20px;
+        }
+
+        .step-circle {
+            width: 80px;
+            height: 80px;
+            border-radius: 50%;
+            background: var(--bg-surface);
+            border: 2px solid var(--neon-purple);
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 32px;
+            color: #fff;
+            box-shadow: 0 0 30px rgba(168, 85, 247, 0.3);
+        }
+
+        .step-title {
+            font-family: var(--font-heading);
+            font-weight: 700;
+            font-size: 20px;
+            margin-bottom: 12px;
+            color: var(--text-primary);
+        }
+
+        .step-desc {
+            color: var(--text-secondary);
+            font-size: 14px;
+            line-height: 1.6;
+        }
+
+        /* Final CTA */
+        .cta-section {
+            text-align: center;
+            padding: 100px 20px;
+            position: relative;
+            z-index: 10;
+        }
+
+        .btn-massive {
+            background: var(--gradient-brand);
+            color: #fff;
+            font-family: var(--font-heading);
+            font-weight: 800;
+            font-size: 22px;
+            padding: 24px 60px;
+            border-radius: var(--radius-full);
+            border: none;
+            cursor: pointer;
+            text-decoration: none;
+            display: inline-flex;
+            align-items: center;
+            gap: 16px;
+            box-shadow: 0 0 50px rgba(168, 85, 247, 0.6);
+            transition: all 0.3s ease;
+        }
+
+        .btn-massive:hover {
+            transform: scale(1.05) translateY(-5px);
+            box-shadow: 0 0 80px rgba(0, 242, 254, 0.8);
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Ambient Background -->
+    <div class="ambient-orbs">
+        <div class="orb orb-1"></div>
+        <div class="orb orb-2"></div>
+        <div class="orb orb-3"></div>
+    </div>
+
+    <!-- Header -->
+    <header class="main-header" style="z-index: 100;">
+        <div class="container header-container">
+            <a href="index.html" class="brand-logo">
+                <div class="logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
+                <div class="logo-text">
+                    <span class="logo-name">TokenBounty</span>
+                    <span class="logo-ext">.io</span>
+                </div>
+            </a>
+            <div class="header-actions">
+                <a href="list-project.html" class="btn-main"><i class="fa-solid fa-rocket"></i> Hemen Listele ($100)</a>
+            </div>
+        </div>
+    </header>
+
+    <main style="overflow-x: hidden;">
+        
+        <!-- Hero Section -->
+        <section class="marketing-hero">
+            <div style="display:inline-block; padding: 6px 16px; background: rgba(0,242,254,0.1); border: 1px solid rgba(0,242,254,0.3); border-radius: 99px; color: var(--neon-cyan); font-weight:700; font-size: 13px; margin-bottom: 24px;">
+                <i class="fa-solid fa-sparkles"></i> Sadece $100 Ücretle Ekosisteme Katılın
+            </div>
+            <h1 class="marketing-title">Projenizi 85,400+ Gerçek On-Chain Kullanıcıya Ulaştırın</h1>
+            <p class="marketing-subtitle">Telegram kanalınızı büyütün, X (Twitter) etkileşiminizi uçurun ve token hacminizi organik olarak artırın. Botlara para ödemeyi bırakın, gerçek yatırımcılara doğrudan ulaşın.</p>
+            <a href="list-project.html" class="btn-main" style="padding: 16px 40px; font-size: 18px;"><i class="fa-solid fa-bolt"></i> Listeleme Formuna Git</a>
+        </section>
+
+        <!-- Features Grid -->
+        <section class="features-grid">
+            <div class="feature-card fc-1">
+                <div class="feature-icon-wrapper"><i class="fa-solid fa-users-rays"></i></div>
+                <h3 class="feature-title">Anında Holder Kazanımı</h3>
+                <p class="feature-desc">Platformumuzdaki kullanıcılar ödül almak için mutlaka Web3 cüzdanlarını bağlarlar. Görevlerinizi yapan kullanıcılar otomatik olarak yeni potansiyel yatırımcılarınız ve "holder"larınız haline gelir.</p>
+            </div>
+            <div class="feature-card fc-2">
+                <div class="feature-icon-wrapper"><i class="fa-brands fa-x-twitter"></i></div>
+                <h3 class="feature-title">Organik Sosyal Büyüme</h3>
+                <p class="feature-desc">Telegram grubunuza aktif kullanıcılar katılır ve Twitter (X) paylaşımlarınız gerçek kişiler tarafından Retweetlenir. Sahte bot hesaplar sistemimiz tarafından %100 engellenir.</p>
+            </div>
+            <div class="feature-card fc-3">
+                <div class="feature-icon-wrapper"><i class="fa-solid fa-chart-line"></i></div>
+                <h3 class="feature-title">DEX Hacmi Artışı (Satın Al)</h3>
+                <p class="feature-desc">Projenizin yanına eklenen "Satın Al" butonu ile binlerce yatırımcı doğrudan Raydium, Uniswap veya PancakeSwap havuzlarınıza yönlendirilir, hacminiz doğal yollarla artar.</p>
+            </div>
+            <div class="feature-card fc-4">
+                <div class="feature-icon-wrapper"><i class="fa-solid fa-shield-check"></i></div>
+                <h3 class="feature-title">Tam Otomatik Onay Süreci</h3>
+                <p class="feature-desc">Admin onayı beklemenize gerek yok! Formu doldurup sistem üzerinden USDT/USDC veya SOL ile ödemenizi yaptığınız anda, projeniz saniyeler içinde "Canlı Projeler" listesinde zirveye oturur.</p>
+            </div>
+        </section>
+
+        <!-- How It Works -->
+        <section class="hiw-section">
+            <h2 class="hiw-title">Sistem Nasıl Çalışır?</h2>
+            <div class="steps-container">
+                <div class="step-item">
+                    <div class="step-circle"><i class="fa-solid fa-file-invoice-dollar"></i></div>
+                    <h4 class="step-title">1. Formu Doldurun</h4>
+                    <p class="step-desc">Proje bilgilerinizi, sözleşme adresinizi ve bütçenizi (min. $200 ödül havuzu) belirleyin. Sadece $100 listeleme ücreti ödeyin.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle"><i class="fa-solid fa-tower-broadcast"></i></div>
+                    <h4 class="step-title">2. Görevler Yayınlansın</h4>
+                    <p class="step-desc">Projeniz anasayfada listelenir. Binlerce kullanıcı projenizi inceler ve sosyal medya görevlerini yerine getirmeye başlar.</p>
+                </div>
+                <div class="step-item">
+                    <div class="step-circle"><i class="fa-solid fa-rocket"></i></div>
+                    <h4 class="step-title">3. Büyümeyi İzleyin</h4>
+                    <p class="step-desc">Telegram ve Twitter sayınız hızla artarken, cüzdan bağlamış gerçek yatırımcıların projenize olan ilgisinin keyfini çıkarın.</p>
+                </div>
+            </div>
+        </section>
+
+        <!-- CTA Section -->
+        <section class="cta-section">
+            <h2 style="font-family: var(--font-heading); font-size: 40px; margin-bottom: 20px;">Sıradaki Büyük Token Sizinki Olsun!</h2>
+            <p style="color: var(--text-secondary); font-size: 18px; margin-bottom: 50px;">Binlerce projeye ev sahipliği yapan TokenBounty.io ile tanışma vakti.</p>
+            <a href="list-project.html" class="btn-massive"><i class="fa-solid fa-crown"></i> Hemen Projeni Listele</a>
+        </section>
+
+    </main>
+
+</body>
+</html>

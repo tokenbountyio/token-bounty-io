@@ -205,10 +205,10 @@
             </a>
 
             <div class="sidebar-menu">
-                <button class="menu-btn active" onclick="switchTab('dashboard')"><i class="fa-solid fa-chart-pie"></i> Genel Bakış</button>
-                <button class="menu-btn" onclick="switchTab('users')"><i class="fa-solid fa-users"></i> Kullanıcı Yönetimi</button>
-                <button class="menu-btn" onclick="switchTab('projects')"><i class="fa-solid fa-layer-group"></i> Proje Yönetimi</button>
-                <button class="menu-btn" onclick="switchTab('add-project')"><i class="fa-solid fa-plus-circle"></i> Manuel Proje Ekle</button>
+                <button class="menu-btn active" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-chart-pie"></i> Genel Bakış</button>
+                <button class="menu-btn" onclick="switchTab('users', this)"><i class="fa-solid fa-users"></i> Kullanıcı Yönetimi</button>
+                <button class="menu-btn" onclick="switchTab('projects', this)"><i class="fa-solid fa-layer-group"></i> Proje Yönetimi</button>
+                <button class="menu-btn" onclick="switchTab('add-project', this)"><i class="fa-solid fa-plus-circle"></i> Manuel Proje Ekle</button>
             </div>
 
             <div style="margin-top: auto;">
@@ -422,10 +422,16 @@
             loadAdminData();
         });
 
-        function switchTab(tabId) {
+        function switchTab(tabId, btnElement) {
             currentTab = tabId;
             document.querySelectorAll('.menu-btn').forEach(btn => btn.classList.remove('active'));
-            event.currentTarget.classList.add('active');
+            if(btnElement) {
+                btnElement.classList.add('active');
+            } else {
+                // Fallback: active first or matching button
+                const matchingBtn = document.querySelector(`.sidebar-menu button[onclick*="${tabId}"]`);
+                if(matchingBtn) matchingBtn.classList.add('active');
+            }
 
             document.querySelectorAll('.admin-section').forEach(sec => sec.classList.remove('active'));
             document.getElementById(`${tabId}-section`).classList.add('active');

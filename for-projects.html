@@ -129,6 +129,21 @@
         .fc-4 { animation-delay: 0.7s; }
 
         /* --- EPIC NEW B2B BACKGROUND & CHART ANIMATIONS --- */
+        html {
+            scroll-behavior: smooth;
+        }
+
+        .reveal {
+            opacity: 0;
+            transform: translateY(50px);
+            transition: all 0.8s cubic-bezier(0.175, 0.885, 0.32, 1.275);
+        }
+        
+        .reveal.active {
+            opacity: 1;
+            transform: translateY(0);
+        }
+
         body {
             background-color: #050505;
             background-image: 
@@ -368,7 +383,7 @@
         </section>
 
         <!-- Auto-Volume Deep Dive -->
-        <section id="how-it-works" style="max-width: 1200px; margin: 80px auto; padding: 0 20px;">
+        <section id="how-it-works" class="reveal" style="max-width: 1200px; margin: 80px auto; padding: 0 20px;">
             <div style="background: var(--bg-surface-elevated); border: 1px solid var(--neon-cyan); border-radius: 32px; padding: 60px; box-shadow: 0 0 60px rgba(0, 242, 254, 0.1); display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center;">
                 <div>
                     <h2 style="font-family: var(--font-heading); font-size: 42px; margin-bottom: 24px; color: var(--text-primary); line-height: 1.2;">Piyasayı <span style="color: var(--neon-cyan);">Bot Ağımızla</span> Manipüle Edin</h2>
@@ -437,8 +452,51 @@
             </div>
         </section>
 
+        <!-- Investor Psychology Deep Dive -->
+        <section class="reveal" style="max-width: 1200px; margin: 80px auto; padding: 0 20px;">
+            <div style="background: var(--bg-surface-elevated); border: 1px solid var(--neon-purple); border-radius: 32px; padding: 60px; box-shadow: 0 0 60px rgba(168, 85, 247, 0.1); display: grid; grid-template-columns: 1fr 1fr; gap: 60px; align-items: center; direction: rtl;">
+                <div style="direction: ltr;">
+                    <h2 style="font-family: var(--font-heading); font-size: 42px; margin-bottom: 24px; color: var(--text-primary); line-height: 1.2;">Yatırımcı Psikolojisi ve <span style="color: var(--neon-purple);">Balina Avı</span></h2>
+                    <p style="color: var(--text-secondary); font-size: 18px; margin-bottom: 30px; line-height: 1.7;">İnsanlar yükselen bir trene binmek ister. Kırmızı mumlarla dolu bir tahtaya kimse yatırım yapmaz. Sistemimiz, tokeninize <strong>"durdurulamaz yükseliş" (Unstoppable Pump)</strong> görünümü kazandırır.</p>
+                    <p style="color: var(--text-secondary); font-size: 18px; margin-bottom: 40px; line-height: 1.7;">Aralıksız gelen bot alımları sayesinde projeyi yeni keşfeden organik yatırımcılar, "Büyük bir hype başlıyor, kaçırmamalıyım" diyerek <strong>FOMO (Fear Of Missing Out)</strong> krizine girer ve hemen alım yaparlar.</p>
+                    
+                    <ul style="list-style: none; padding: 0; display: flex; flex-direction: column; gap: 20px;">
+                        <li style="display: flex; gap: 15px; align-items: flex-start;">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: rgba(168, 85, 247, 0.1); color: var(--neon-purple); display: flex; align-items: center; justify-content: center; font-size: 18px; flex-shrink: 0;"><i class="fa-solid fa-brain"></i></div>
+                            <div>
+                                <h4 style="font-size: 18px; font-weight: 700; margin-bottom: 5px;">Sürü Psikolojisi Tetikleyici</h4>
+                                <p style="color: var(--text-secondary); font-size: 15px;">DEXTools'ta peş peşe düşen onlarca "BUY" işlemini gören yatırımcı, projenin arka planını araştırmadan saniyeler içinde alım yapar.</p>
+                            </div>
+                        </li>
+                    </ul>
+                </div>
+                
+                <!-- Visual Mockup (FOMO Notification) -->
+                <div style="direction: ltr; position: relative; border-radius: 24px; overflow: hidden; background: #000; border: 1px solid var(--border-subtle); padding: 30px;">
+                    <div style="position: absolute; top: -50%; right: -50%; width: 200%; height: 200%; background: radial-gradient(circle, rgba(168, 85, 247, 0.15) 0%, transparent 60%); z-index: 1;"></div>
+                    
+                    <div style="position: relative; z-index: 2; display: flex; flex-direction: column; gap: 20px;">
+                        <div style="display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border-left: 4px solid var(--neon-purple);">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--neon-purple); display: flex; justify-content: center; align-items: center; color: #fff;"><i class="fa-solid fa-whale"></i></div>
+                            <div>
+                                <strong style="color: #fff; display: block;">Balina Alarmı! (New Whale)</strong>
+                                <span style="color: var(--text-secondary); font-size: 12px;">0x9A3...11c az önce 15,000$ alım yaptı.</span>
+                            </div>
+                        </div>
+                        <div style="display: flex; align-items: center; gap: 15px; background: rgba(255,255,255,0.05); padding: 15px; border-radius: 12px; border-left: 4px solid var(--neon-green);">
+                            <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--neon-green); display: flex; justify-content: center; align-items: center; color: #000;"><i class="fa-solid fa-rocket"></i></div>
+                            <div>
+                                <strong style="color: #fff; display: block;">Trend Hedefi Aşıldı</strong>
+                                <span style="color: var(--text-secondary); font-size: 12px;">Son 1 saatte +540 yeni holder katıldı.</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+
         <!-- Pricing Section (Web3 Payments) -->
-        <section id="pricing" style="max-width: 1200px; margin: 120px auto; padding: 0 20px;">
+        <section id="pricing" class="reveal" style="max-width: 1200px; margin: 120px auto; padding: 0 20px;">
             <div style="text-align: center; margin-bottom: 60px;">
                 <h2 style="font-family: var(--font-heading); font-size: 48px; margin-bottom: 20px;">Garanti <span style="color: var(--neon-purple);">Holder Paketleri</span></h2>
                 <p style="color: var(--text-secondary); font-size: 18px; max-width: 800px; margin: 0 auto;">Piyasadaki bot sistemlerinin aksine <strong>gerçek hacim</strong> yaratıyoruz. Seçtiğiniz paketteki her bir cüzdan, tokeninizden <strong>$10 ile $13 arası alım yapar</strong>. İsterseniz aldığımız bu tokenleri sistemimizde istediğiniz kadar tutabiliriz (Floor Destek), isterseniz de 72 saat içerisinde yavaşça satıp anaparanızı (satış tutarını) size iade edebiliriz.</p>
@@ -584,6 +642,38 @@
                 `;
             }, 3500); // 3.5 seconds wait for "crypto transaction"
         }
+        // Scroll Reveal Animation Logic
+        document.addEventListener('DOMContentLoaded', () => {
+            const reveals = document.querySelectorAll('.reveal');
+            
+            const revealOptions = {
+                threshold: 0.15,
+                rootMargin: "0px 0px -50px 0px"
+            };
+
+            const revealOnScroll = new IntersectionObserver(function(entries, observer) {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.classList.add('active');
+                        observer.unobserve(entry.target); // Stop observing once revealed
+                    }
+                });
+            }, revealOptions);
+
+            reveals.forEach(reveal => {
+                revealOnScroll.observe(reveal);
+            });
+            
+            // Trigger immediately for elements already in view on load
+            setTimeout(() => {
+                reveals.forEach(reveal => {
+                    const rect = reveal.getBoundingClientRect();
+                    if(rect.top < window.innerHeight) {
+                        reveal.classList.add('active');
+                    }
+                });
+            }, 100);
+        });
     </script>
 
 </body>

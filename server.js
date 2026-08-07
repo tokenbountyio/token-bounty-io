@@ -181,6 +181,9 @@ app.post('/api/auth/login', async (req, res) => {
     const validPassword = await bcrypt.compare(password, user.password);
     if (!validPassword) return res.status(400).json({ success: false, error: "E-posta veya şifre hatalı!" });
 
+    user.lastLoginDate = new Date();
+    await user.save();
+
     res.json({
         success: true,
         user: { id: user._id, email: user.email, isVerified: user.isVerified, wallets: user.wallets },
@@ -428,6 +431,11 @@ app.post('/api/admin/reject-project', adminAuth, async (req, res) => {
 app.get('/api/admin/stats', adminAuth, async (req, res) => {
     try {
         const totalUsers = await User.countDocuments();
+        
+        const today = new Date();
+        today.setHours(0,0,0,0);
+        const dailyActiveUsers = await User.countDocuments({ lastLoginDate: { $gte: today } });
+
         const users = await User.find({}, 'balances');
         let totalPaid = 0;
         users.forEach(u => {
@@ -437,7 +445,7 @@ app.get('/api/admin/stats', adminAuth, async (req, res) => {
         });
         const totalProjects = await Project.countDocuments();
         
-        res.json({ success: true, stats: { totalUsers, totalPaid, totalProjects } });
+        res.json({ success: true, stats: { totalUsers, dailyActiveUsers, totalPaid, totalProjects } });
     } catch (err) {
         res.status(500).json({ success: false, error: "Stats calculation failed" });
     }
@@ -458,6 +466,60 @@ app.delete('/api/admin/users/:id', adminAuth, async (req, res) => {
         res.json({ success: true, message: "Kullanıcı başarıyla banlandı ve silindi." });
     } catch (err) {
         res.status(500).json({ success: false, error: "Failed to delete user" });
+    }
+});
+
+app.delete('/api/admin/projects/:id', adminAuth, async (req, res) => {
+    try {
+        await Project.findByIdAndDelete(req.params.id);
+        res.json({ success: true, message: "Proje başarıyla silindi." });
+    } catch (err) {
+        res.status(500).json({ success: false, error: "Failed to delete project" });
+    }
+});
+
+app.post('/api/admin/projects', adminAuth, async (req, res) => {
+    try {
+        const p = req.body;
+        const newProj = new Project({
+            name: p.name,
+            ticker: p.ticker,
+            network: p.network || 'bsc',
+            price: p.price || 0.001,
+            bountyTotalUSD: p.bountyTotalUSD,
+            bountyRemainingUSD: p.bountyTotalUSD,
+            rewardPerUserUSD: p.rewardPerUserUSD || 5.0,
+            contractAddress: p.contractAddress,
+            logo: p.logo || "https://cryptologos.cc/logos/ethereum-eth-logo.png",
+            websiteUrl: p.websiteUrl,
+            telegramGroup: p.telegramGroup,
+            twitterHandle: p.twitterHandle,
+            status: 'active', // Direct to active
+            rank: 99,
+            tasks: []
+        });
+
+        if (p.twitterHandle) {
+            newProj.tasks.push({
+                id: "task_admin_" + Date.now() + "_1",
+                title: "X'te Takip Et",
+                type: "twitter_follow",
+                target: p.twitterHandle
+            });
+        }
+        if (p.telegramGroup) {
+            newProj.tasks.push({
+                id: "task_admin_" + Date.now() + "_2",
+                title: "Telegram Grubuna Katıl",
+                type: "telegram",
+                target: p.telegramGroup
+            });
+        }
+
+        await newProj.save();
+        res.json({ success: true, project: newProj });
+    } catch (err) {
+        res.status(500).json({ success: false, error: "Manuel proje eklenemedi." });
     }
 });
 

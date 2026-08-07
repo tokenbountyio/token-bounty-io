@@ -200,7 +200,7 @@
 
     <div class="admin-layout">
         <aside class="admin-sidebar">
-            <a href="index.html" class="brand-logo" style="justify-content: center; margin-bottom: 20px;">
+            <a href="/" class="brand-logo" style="justify-content: center; margin-bottom: 20px;">
                 <div class="logo-icon"><i class="fa-solid fa-shield-halved"></i></div>
                 <div class="logo-text">
                     <span class="logo-name">TokenBounty</span>
@@ -471,7 +471,7 @@
                     sessionStorage.setItem("TB_ADMIN_AUTH", "true");
                 } else {
                     alert("Hatalı şifre! İzinsiz giriş engellendi.");
-                    window.location.href = "index.html";
+                    window.location.href = "/";
                     return;
                 }
             }
@@ -672,7 +672,7 @@
         function logoutAdmin() {
             sessionStorage.removeItem("TB_ADMIN_AUTH");
             showToast("🚪 Güvenli çıkış yapıldı.", "info");
-            setTimeout(() => window.location.href = "index.html", 800);
+            setTimeout(() => window.location.href = "/", 800);
         }
     </script>
 </body>

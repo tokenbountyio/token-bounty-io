@@ -37,7 +37,7 @@ function updateWalletUI() {
         }
         
         actionsDiv.innerHTML = `
-            <a href="profile.html" class="btn-wallet" style="text-decoration:none;">
+            <a href="profile" class="btn-wallet" style="text-decoration:none;">
                 <i class="fa-solid fa-user-astronaut" style="color:var(--neon-green);"></i> ${displayLabel}
             </a>
             <button onclick="handleUserLogout()" class="btn-secondary" style="padding:10px 18px;font-size:12px;border-color:rgba(244,63,94,0.5);color:#f43f5e;" title="Çıkış Yap">
@@ -244,7 +244,7 @@ function renderTokenTable(networkFilter = "all", searchQuery = "") {
                 </td>
                 <td class="th-actions">
                     <div class="action-btns" style="display: flex; gap: 8px; white-space: nowrap;" onclick="event.stopPropagation();">
-                        <a href="coin-detail.html?id=${item.id}" class="btn-table-quest"><i class="fa-solid fa-gift"></i> Görev Yap</a>
+                        <a href="coin-detail?id=${item.id}" class="btn-table-quest"><i class="fa-solid fa-gift"></i> Görev Yap</a>
                         <a href="${item.buyUrl || 'https://raydium.io'}" target="_blank" onclick="event.stopPropagation();" class="btn-table-buy"><i class="fa-solid fa-cart-shopping"></i> Satın Al</a>
                     </div>
                 </td>
@@ -591,7 +591,7 @@ function verifyAdminAuth() {
         sessionStorage.setItem("TB_ADMIN_AUTH", "true");
         showToast("🔑 Admin Girişi Başarılı! Yönlendiriliyorsunuz...", "success");
         setTimeout(() => {
-            window.location.href = "admin.html";
+            window.location.href = "admin";
         }, 600);
     } else {
         showToast("⛔ Geçersiz Admin Şifresi! Erişim reddedildi.", "error");

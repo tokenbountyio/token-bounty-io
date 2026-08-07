@@ -15,14 +15,14 @@
     <!-- Header Navigation -->
     <header class="main-header">
         <div class="container header-container">
-            <a href="index.html" class="brand-logo">
+            <a href="/" class="brand-logo">
                 <div class="logo-icon"><i class="fa-solid fa-gem"></i></div>
                 <span class="logo-name">TokenBounty</span><span class="logo-ext">.io</span>
             </a>
 
             <nav class="nav-links">
-                <a href="index.html" class="nav-item"><i class="fa-solid fa-fire"></i> Canlı Liste</a>
-                <a href="list-project.html" class="nav-item highlight-nav"><i class="fa-solid fa-circle-plus"></i> Projeni Listeleyin ($100)</a>
+                <a href="/" class="nav-item"><i class="fa-solid fa-fire"></i> Canlı Liste</a>
+                <a href="list-project" class="nav-item highlight-nav"><i class="fa-solid fa-circle-plus"></i> Projeni Listeleyin ($100)</a>
             </nav>
 
             <div class="header-actions">
@@ -103,7 +103,7 @@
                     <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
                         <i class="fa-solid fa-ghost" style="font-size: 32px; margin-bottom: 15px; opacity: 0.5;"></i>
                         <p>Henüz herhangi bir airdrop görevini tamamlamadınız veya ödül kazanmadınız.</p>
-                        <a href="index.html" class="btn-main" style="display: inline-block; margin-top: 15px; font-size: 13px;">Görevlere Göz At</a>
+                        <a href="/" class="btn-main" style="display: inline-block; margin-top: 15px; font-size: 13px;">Görevlere Göz At</a>
                     </div>
                 </div>
             </div>
@@ -146,7 +146,7 @@
                             <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
                                 <i class="fa-solid fa-ghost" style="font-size: 32px; margin-bottom: 15px; opacity: 0.5;"></i>
                                 <p>Henüz herhangi bir airdrop görevini tamamlamadınız veya ödül kazanmadınız.</p>
-                                <a href="index.html" class="btn-main" style="display: inline-block; margin-top: 15px; font-size: 13px;">Görevlere Göz At</a>
+                                <a href="/" class="btn-main" style="display: inline-block; margin-top: 15px; font-size: 13px;">Görevlere Göz At</a>
                             </div>
                         `;
                         return;
@@ -219,7 +219,7 @@
             TokenBountyStore.userState.isLoggedIn = false;
             TokenBountyStore.saveToStorage();
             showToast("🚪 Hesaptan çıkış yapıldı!", "info");
-            setTimeout(() => window.location.href = "index.html", 800);
+            setTimeout(() => window.location.href = "/", 800);
         }
 
         function disconnectWallet() {

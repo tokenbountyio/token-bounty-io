@@ -182,7 +182,7 @@
 
     <header class="main-header">
         <div class="container header-container">
-            <a href="index.html" class="brand-logo">
+            <a href="/" class="brand-logo">
                 <div class="logo-icon"><i class="fa-solid fa-gem"></i></div>
                 <div class="logo-text">
                     <span class="logo-name">TokenBounty</span>
@@ -190,7 +190,7 @@
                 </div>
             </a>
             <div style="display: flex; gap: 15px; align-items: center;">
-                <a href="index.html" style="color: var(--text-muted); font-size: 14px; font-weight:600; text-decoration:none; transition: color 0.3s;"><i class="fa-solid fa-arrow-left"></i> Ana Sayfaya Dön</a>
+                <a href="/" style="color: var(--text-muted); font-size: 14px; font-weight:600; text-decoration:none; transition: color 0.3s;"><i class="fa-solid fa-arrow-left"></i> Ana Sayfaya Dön</a>
             </div>
         </div>
     </header>
@@ -469,7 +469,7 @@
                 
                 if (resData.success) {
                     alert(`📌 BAŞVURUNUZ ALINDI!\n\nProjeniz onay bekleyenler listesine eklendi. Yetkili ekibimiz inceleyip "${adminContactTelegram}" Telegram adresinizden sizinle iletişime geçecektir.`);
-                    window.location.href = "index.html";
+                    window.location.href = "/";
                 } else {
                     alert("⛔ Hata: " + resData.error);
                 }

@@ -450,55 +450,76 @@
             <div style="display: grid; grid-template-columns: repeat(3, 1fr); gap: 30px;">
                 
                 <!-- Package 1: 100 Wallets -->
-                <div class="pricing-card" style="background: var(--bg-glass-card); border: 1px solid var(--border-subtle); border-radius: 24px; padding: 40px; position: relative; transition: transform 0.3s;">
+                <div class="pricing-card" style="background: var(--bg-glass-card); border: 1px solid var(--border-subtle); border-radius: 24px; padding: 40px; position: relative; transition: transform 0.3s; cursor: pointer;" onclick="toggleDetails('details-pkg1')">
                     <h3 style="font-size: 24px; margin-bottom: 10px;">Başlangıç Dalgalanması</h3>
                     <div style="color: var(--neon-cyan); font-weight: 700; margin-bottom: 5px;">100 Benzersiz Cüzdan</div>
                     <div style="font-size: 48px; font-weight: 800; font-family: var(--font-heading); margin-bottom: 20px; color: #fff;">$1,699</div>
                     <p style="color: var(--text-secondary); margin-bottom: 30px; font-size: 15px;">Projeye ilk can suyunu vermek ve algoritmayı uyandırmak için ideal.</p>
                     
-                    <ul style="list-style: none; padding: 0; margin-bottom: 40px; display: flex; flex-direction: column; gap: 15px;">
+                    <ul style="list-style: none; padding: 0; margin-bottom: 20px; display: flex; flex-direction: column; gap: 15px;">
                         <li><i class="fa-solid fa-check" style="color: var(--neon-green); margin-right: 10px;"></i> 100 Farklı Cüzdandan Alım</li>
                         <li><i class="fa-solid fa-check" style="color: var(--neon-green); margin-right: 10px;"></i> Her Cüzdan $10-$13 Alır</li>
                         <li><i class="fa-solid fa-check" style="color: var(--neon-green); margin-right: 10px;"></i> 72 Saatte İade veya Süresiz Tutma</li>
                         <li><i class="fa-solid fa-check" style="color: var(--neon-green); margin-right: 10px;"></i> Telegram / X Görev Kampanyası</li>
                     </ul>
 
-                    <button onclick="processCryptoPayment(1699, '100 Cüzdan Paketi')" class="btn-main" style="width: 100%; justify-content: center; background: rgba(255,255,255,0.05); color: #fff;"><i class="fa-brands fa-ethereum"></i> Web3 ile Satın Al</button>
+                    <div id="details-pkg1" style="display: none; text-align: left; background: rgba(0, 242, 254, 0.05); padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid rgba(0, 242, 254, 0.2); animation: fadeInUp 0.4s ease;">
+                        <h4 style="color: var(--neon-cyan); font-size: 16px; margin-bottom: 10px;"><i class="fa-solid fa-wand-magic-sparkles"></i> Büyüleyici Etki:</h4>
+                        <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 10px;"><strong><i class="fa-solid fa-angle-right"></i> FOMO Başlangıcı:</strong> Tahtanızda peş peşe yanan 100 yeşil mum, projeyi inceleyen yatırımcıların gözünde "Burada bir şeyler oluyor" algısı yaratır.</p>
+                        <p style="font-size: 14px; color: var(--text-secondary);"><strong><i class="fa-solid fa-angle-right"></i> Risksiz Hacim:</strong> Alınan tokenler sistemimizde "Floor" desteği olarak kilitlenir. Asla dump yemezsiniz. Piyasaya güven aşılarsınız.</p>
+                    </div>
+                    <div style="text-align: center; color: var(--text-muted); font-size: 12px; margin-bottom: 15px;"><i class="fa-solid fa-chevron-down"></i> Genişletmek için karta tıklayın</div>
+
+                    <button onclick="event.stopPropagation(); processCryptoPayment(1699, '100 Cüzdan Paketi')" class="btn-main" style="width: 100%; justify-content: center; background: rgba(255,255,255,0.05); color: #fff; position: relative; z-index: 10;"><i class="fa-brands fa-ethereum"></i> Web3 ile Satın Al</button>
                 </div>
 
                 <!-- Package 2: 250 Wallets (POPULAR) -->
-                <div class="pricing-card" style="background: var(--bg-surface-elevated); border: 2px solid var(--neon-purple); border-radius: 24px; padding: 40px; position: relative; transform: scale(1.05); z-index: 10; box-shadow: 0 0 50px rgba(168,85,247,0.2);">
+                <div class="pricing-card" style="background: var(--bg-surface-elevated); border: 2px solid var(--neon-purple); border-radius: 24px; padding: 40px; position: relative; transform: scale(1.05); z-index: 10; box-shadow: 0 0 50px rgba(168,85,247,0.2); cursor: pointer;" onclick="toggleDetails('details-pkg2')">
                     <div style="position: absolute; top: -15px; left: 50%; transform: translateX(-50%); background: var(--gradient-brand); color: #fff; padding: 6px 20px; border-radius: 20px; font-weight: 700; font-size: 13px; letter-spacing: 1px;">ÖNERİLEN KAMPANYA</div>
                     <h3 style="font-size: 24px; margin-bottom: 10px;">Algoritma Patlaması</h3>
                     <div style="color: var(--neon-purple); font-weight: 700; margin-bottom: 5px;">250 Benzersiz Cüzdan</div>
                     <div style="font-size: 48px; font-weight: 800; font-family: var(--font-heading); margin-bottom: 20px; color: #fff;">$3,799</div>
                     <p style="color: var(--text-secondary); margin-bottom: 30px; font-size: 15px;">DexScreener Hot Pairs listesini zorlamak isteyen ciddi projeler için.</p>
                     
-                    <ul style="list-style: none; padding: 0; margin-bottom: 40px; display: flex; flex-direction: column; gap: 15px;">
+                    <ul style="list-style: none; padding: 0; margin-bottom: 20px; display: flex; flex-direction: column; gap: 15px;">
                         <li><i class="fa-solid fa-check" style="color: var(--neon-green); margin-right: 10px;"></i> 250 Farklı Cüzdandan Alım</li>
                         <li><i class="fa-solid fa-check" style="color: var(--neon-green); margin-right: 10px;"></i> Ciddi "Buy Pressure" Oluşturma</li>
                         <li><i class="fa-solid fa-check" style="color: var(--neon-green); margin-right: 10px;"></i> 72 Saatte İade veya Süresiz Tutma</li>
                         <li><i class="fa-solid fa-check" style="color: var(--neon-green); margin-right: 10px;"></i> Hediye Airdrop Listelemesi</li>
                     </ul>
 
-                    <button onclick="processCryptoPayment(3799, '250 Cüzdan Paketi')" class="btn-main" style="width: 100%; justify-content: center; background: var(--gradient-brand); border: none; box-shadow: 0 0 20px rgba(168,85,247,0.4);"><i class="fa-brands fa-ethereum"></i> Web3 ile Satın Al</button>
+                    <div id="details-pkg2" style="display: none; text-align: left; background: rgba(168, 85, 247, 0.05); padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid rgba(168, 85, 247, 0.2); animation: fadeInUp 0.4s ease;">
+                        <h4 style="color: var(--neon-purple); font-size: 16px; margin-bottom: 10px;"><i class="fa-solid fa-fire"></i> Benzersiz Algoritma Hilesi:</h4>
+                        <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 10px;"><strong><i class="fa-solid fa-angle-right"></i> Radar Yakalanma:</strong> 250 farklı IP ve cüzdandan gelen doğal alımlar, DexScreener'ın "Trend Algoritmasını" doğrudan tetikler. Sistem sizi organik bir patlama yaşıyor sanır.</p>
+                        <p style="font-size: 14px; color: var(--text-secondary);"><strong><i class="fa-solid fa-angle-right"></i> Balina Tuzağı:</strong> Gerçek balinalar sadece hacmi yüksek ve "Unique Maker" sayısı artan tokenlere yatırım yapar. Bu paket balinaları projenize çeker.</p>
+                    </div>
+                    <div style="text-align: center; color: var(--text-muted); font-size: 12px; margin-bottom: 15px;"><i class="fa-solid fa-chevron-down"></i> Genişletmek için karta tıklayın</div>
+
+                    <button onclick="event.stopPropagation(); processCryptoPayment(3799, '250 Cüzdan Paketi')" class="btn-main" style="width: 100%; justify-content: center; background: var(--gradient-brand); border: none; box-shadow: 0 0 20px rgba(168,85,247,0.4); position: relative; z-index: 10;"><i class="fa-brands fa-ethereum"></i> Web3 ile Satın Al</button>
                 </div>
 
                 <!-- Package 3: 500 Wallets (THE WHALE) -->
-                <div class="pricing-card" style="background: var(--bg-glass-card); border: 1px solid var(--neon-cyan); border-radius: 24px; padding: 40px; position: relative; transition: transform 0.3s; box-shadow: inset 0 0 40px rgba(0, 242, 254, 0.05);">
+                <div class="pricing-card" style="background: var(--bg-glass-card); border: 1px solid var(--neon-cyan); border-radius: 24px; padding: 40px; position: relative; transition: transform 0.3s; box-shadow: inset 0 0 40px rgba(0, 242, 254, 0.05); cursor: pointer;" onclick="toggleDetails('details-pkg3')">
                     <h3 style="font-size: 24px; margin-bottom: 10px; color: var(--neon-cyan);">Piyasa Hakimi (Balina)</h3>
                     <div style="color: var(--neon-cyan); font-weight: 700; margin-bottom: 5px;">500 Benzersiz Cüzdan</div>
                     <div style="font-size: 48px; font-weight: 800; font-family: var(--font-heading); margin-bottom: 20px; color: #fff;">$7,499</div>
                     <p style="color: var(--text-secondary); margin-bottom: 30px; font-size: 15px;">Doğrudan trendlere girip yüzlerce yeni organik balinayı çekin.</p>
                     
-                    <ul style="list-style: none; padding: 0; margin-bottom: 40px; display: flex; flex-direction: column; gap: 15px;">
+                    <ul style="list-style: none; padding: 0; margin-bottom: 20px; display: flex; flex-direction: column; gap: 15px;">
                         <li><i class="fa-solid fa-check" style="color: var(--neon-cyan); margin-right: 10px;"></i> 500 Farklı Cüzdandan Alım</li>
                         <li><i class="fa-solid fa-check" style="color: var(--neon-cyan); margin-right: 10px;"></i> Garantili Unique Maker Dalgası</li>
                         <li><i class="fa-solid fa-check" style="color: var(--neon-cyan); margin-right: 10px;"></i> 72 Saatte İade veya Süresiz Tutma</li>
                         <li><i class="fa-solid fa-check" style="color: var(--neon-cyan); margin-right: 10px;"></i> Tam Kapsamlı Sosyal Medya Şovu</li>
                     </ul>
 
-                    <button onclick="processCryptoPayment(7499, '500 Cüzdan Balina Paketi')" class="btn-main" style="width: 100%; justify-content: center; background: rgba(0, 242, 254, 0.1); color: var(--neon-cyan); border: 1px solid var(--neon-cyan);"><i class="fa-brands fa-ethereum"></i> Web3 ile Satın Al</button>
+                    <div id="details-pkg3" style="display: none; text-align: left; background: rgba(16, 185, 129, 0.05); padding: 20px; border-radius: 16px; margin-bottom: 20px; border: 1px solid rgba(16, 185, 129, 0.2); animation: fadeInUp 0.4s ease;">
+                        <h4 style="color: var(--neon-green); font-size: 16px; margin-bottom: 10px;"><i class="fa-solid fa-crown"></i> Kusursuz Pazar Manipülasyonu:</h4>
+                        <p style="font-size: 14px; color: var(--text-secondary); margin-bottom: 10px;"><strong><i class="fa-solid fa-angle-right"></i> Mutlak Trend Garantisi:</strong> 500 tamamen farklı cüzdandan gelen dalga dalga alımlar, herhangi bir meme coini saatler içinde DexScreener Top 10 listesine kilitlemeye yeter.</p>
+                        <p style="font-size: 14px; color: var(--text-secondary);"><strong><i class="fa-solid fa-angle-right"></i> Sarsılmaz Güven:</strong> Holder sayınızdaki bir gecedeki devasa artış ve "Floor" fiyatının asla aşağı inmemesi, topluluğunuzu adeta fanatiklere dönüştürür. Ekip satmıyor, yatırımcılar sürekli alıyor algısı yaratılır.</p>
+                    </div>
+                    <div style="text-align: center; color: var(--text-muted); font-size: 12px; margin-bottom: 15px;"><i class="fa-solid fa-chevron-down"></i> Genişletmek için karta tıklayın</div>
+
+                    <button onclick="event.stopPropagation(); processCryptoPayment(7499, '500 Cüzdan Balina Paketi')" class="btn-main" style="width: 100%; justify-content: center; background: rgba(0, 242, 254, 0.1); color: var(--neon-cyan); border: 1px solid var(--neon-cyan); position: relative; z-index: 10;"><i class="fa-brands fa-ethereum"></i> Web3 ile Satın Al</button>
                 </div>
 
             </div>
@@ -532,6 +553,15 @@
     </main>
 
     <script>
+        function toggleDetails(id) {
+            const detailsDiv = document.getElementById(id);
+            if (detailsDiv.style.display === "none") {
+                detailsDiv.style.display = "block";
+            } else {
+                detailsDiv.style.display = "none";
+            }
+        }
+
         async function processCryptoPayment(amountUSD, packageName) {
             // First check if wallet is connected (simulate checking store)
             const walletModal = document.getElementById("walletModal");

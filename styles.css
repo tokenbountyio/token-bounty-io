@@ -55,6 +55,12 @@
     -webkit-font-smoothing: antialiased;
 }
 
+button, a, input, select, textarea, .menu-btn {
+    pointer-events: auto !important;
+    position: relative;
+    z-index: 99999;
+}
+
 body {
     background-color: var(--bg-base);
     color: var(--text-primary);

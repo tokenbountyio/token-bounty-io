@@ -405,12 +405,64 @@
         </main>
     </div>
 
-    <script src="store.js"></script>
-    <script src="app.js"></script>
     <script>
         const ADMIN_KEY = "admin123";
         let currentTab = 'dashboard';
         const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : '';
+
+        // Standalone Toast System for Admin Panel
+        function showToast(message, type = 'info') {
+            let container = document.getElementById("toastContainer");
+            if (!container) {
+                container = document.createElement("div");
+                container.id = "toastContainer";
+                container.style.position = "fixed";
+                container.style.top = "24px";
+                container.style.right = "24px";
+                container.style.zIndex = "999999";
+                container.style.display = "flex";
+                container.style.flexDirection = "column";
+                container.style.gap = "12px";
+                container.style.pointerEvents = "none";
+                document.body.appendChild(container);
+            }
+
+            const toast = document.createElement("div");
+            toast.style.background = "var(--bg-glass-card)";
+            toast.style.backdropFilter = "blur(14px)";
+            toast.style.border = "1px solid var(--border-subtle)";
+            toast.style.padding = "16px 20px";
+            toast.style.borderRadius = "var(--radius-md)";
+            toast.style.color = "#fff";
+            toast.style.display = "flex";
+            toast.style.alignItems = "center";
+            toast.style.gap = "12px";
+            toast.style.boxShadow = "0 20px 40px rgba(0,0,0,0.6)";
+            toast.style.transform = "translateX(100%)";
+            toast.style.opacity = "0";
+            toast.style.transition = "all 0.3s ease";
+            toast.style.pointerEvents = "auto";
+
+            let icon = "fa-circle-info";
+            let iconColor = "var(--text-secondary)";
+            if(type === 'success') { icon = "fa-check-circle"; iconColor = "var(--neon-green)"; }
+            if(type === 'error') { icon = "fa-triangle-exclamation"; iconColor = "var(--color-down)"; }
+
+            toast.innerHTML = `<i class="fa-solid ${icon}" style="color: ${iconColor}; font-size: 18px;"></i> <span style="font-weight:600; font-size:14px;">${message}</span>`;
+            
+            container.appendChild(toast);
+            
+            setTimeout(() => {
+                toast.style.transform = "translateX(0)";
+                toast.style.opacity = "1";
+            }, 10);
+
+            setTimeout(() => {
+                toast.style.transform = "translateX(100%)";
+                toast.style.opacity = "0";
+                setTimeout(() => toast.remove(), 300);
+            }, 3000);
+        }
 
         document.addEventListener("DOMContentLoaded", () => {
             if (sessionStorage.getItem("TB_ADMIN_AUTH") !== "true") {

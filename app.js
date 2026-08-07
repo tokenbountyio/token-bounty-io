@@ -190,7 +190,36 @@ function renderTokenTable(networkFilter = "all", searchQuery = "") {
     tableBody.innerHTML = projects.map((item, index) => {
         const rankBadge = index < 3 ? ['🥇 1', '🥈 2', '🥉 3'][index] : index + 1;
         const progressPercent = Math.round((item.bountyRemainingUSD / item.bountyTotalUSD) * 100);
-        const timeAgo = item.addedTimeText || "Az önce";
+        
+        // Zaman Hesaplama (Relative Time)
+        let timeAgo = "Az önce";
+        if (item.createdAt) {
+            const date = new Date(item.createdAt);
+            if (!isNaN(date.getTime())) {
+                const seconds = Math.floor((new Date() - date) / 1000);
+                let interval = seconds / 31536000;
+                if (interval > 1) timeAgo = Math.floor(interval) + " yıl önce";
+                else {
+                    interval = seconds / 2592000;
+                    if (interval > 1) timeAgo = Math.floor(interval) + " ay önce";
+                    else {
+                        interval = seconds / 86400;
+                        if (interval > 1) timeAgo = Math.floor(interval) + " gün önce";
+                        else {
+                            interval = seconds / 3600;
+                            if (interval > 1) timeAgo = Math.floor(interval) + " saat önce";
+                            else {
+                                interval = seconds / 60;
+                                if (interval >= 1) timeAgo = Math.floor(interval) + " dakika önce";
+                            }
+                        }
+                    }
+                }
+            }
+        } else if (item.addedTimeText) {
+            timeAgo = item.addedTimeText;
+        }
+
         const isUp = item.change24h >= 0;
         const changeClass = isUp ? "up" : "down";
         const changeIcon = isUp ? '<i class="fa-solid fa-caret-up"></i>' : '<i class="fa-solid fa-caret-down"></i>';

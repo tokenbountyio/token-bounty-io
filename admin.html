@@ -212,6 +212,7 @@
                 <button class="menu-btn active" onclick="switchTab('dashboard', this)"><i class="fa-solid fa-chart-pie"></i> Genel Bakış</button>
                 <button class="menu-btn" onclick="switchTab('users', this)"><i class="fa-solid fa-users"></i> Kullanıcı Yönetimi</button>
                 <button class="menu-btn" onclick="switchTab('projects', this)"><i class="fa-solid fa-layer-group"></i> Proje Yönetimi</button>
+                <button class="menu-btn" onclick="switchTab('withdrawals', this)"><i class="fa-solid fa-money-bill-transfer"></i> Ödeme Talepleri</button>
                 <button class="menu-btn" onclick="switchTab('add-project', this)"><i class="fa-solid fa-plus-circle"></i> Manuel Proje Ekle</button>
             </div>
 
@@ -402,6 +403,46 @@
                 </div>
             </div>
 
+            <!-- WITHDRAWALS SECTION -->
+            <div id="withdrawals-section" class="admin-section">
+                <div style="background: var(--bg-surface); padding: 24px; border-radius: 16px; border: 1px solid var(--border-color); margin-bottom: 24px;">
+                    <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 20px;">
+                        <h2 style="font-size: 20px; font-weight: 700; margin: 0;"><i class="fa-solid fa-money-bill-transfer" style="color: var(--neon-gold); margin-right: 10px;"></i> Bekleyen Çekim Talepleri</h2>
+                        
+                        <div style="display: flex; gap: 10px; align-items: center;">
+                            <select id="networkFilter" onchange="loadWithdrawals()" style="background: rgba(255,255,255,0.05); color: #fff; border: 1px solid var(--border-color); padding: 10px 16px; border-radius: var(--radius-md); outline: none;">
+                                <option value="all">Tüm Ağlar</option>
+                                <option value="solana">Solana</option>
+                                <option value="base">Base</option>
+                                <option value="ethereum">Ethereum</option>
+                                <option value="bsc">BNB Chain</option>
+                            </select>
+                            
+                            <button onclick="batchDistribute()" class="btn-main" style="background: rgba(16, 185, 129, 0.1); color: var(--neon-green); border: 1px solid var(--neon-green);"><i class="fa-solid fa-rocket"></i> Seçili Ağı Toplu Dağıt</button>
+                        </div>
+                    </div>
+
+                    <div style="overflow-x: auto;">
+                        <table class="admin-table">
+                            <thead>
+                                <tr>
+                                    <th>Kullanıcı Email</th>
+                                    <th>Token</th>
+                                    <th>Miktar</th>
+                                    <th>Cüzdan (Ağ)</th>
+                                    <th>Değer</th>
+                                    <th>Tarih</th>
+                                    <th>Durum</th>
+                                </tr>
+                            </thead>
+                            <tbody id="withdrawalsTableBody">
+                                <!-- JS Injected -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
         </main>
     </div>
 
@@ -496,6 +537,7 @@
                 'dashboard': 'Genel Bakış',
                 'users': 'Kullanıcı Yönetimi',
                 'projects': 'Proje Yönetimi',
+                'withdrawals': 'Ödeme Talepleri',
                 'add-project': 'Manuel Proje Ekle'
             };
             document.getElementById('pageTitle').innerText = titles[tabId];
@@ -541,6 +583,10 @@
                 } catch(e) { console.error(e); }
             }
 
+            // Load Withdrawals if in Withdrawals Tab
+            if (currentTab === 'withdrawals') {
+                loadWithdrawals();
+            }
             // 3. Load Projects if in Projects Tab
             if (currentTab === 'projects') {
                 try {
@@ -666,6 +712,91 @@
             } catch (err) {
                 console.error(err);
                 showToast("Proje eklenirken bağlantı hatası.", "error");
+            }
+        }
+
+        // --- WITHDRAWAL SYSTEM ---
+        async function loadWithdrawals() {
+            const network = document.getElementById('networkFilter').value;
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/admin/withdrawals?network=${network}&status=pending`, {
+                    headers: { 'x-admin-key': ADMIN_KEY }
+                });
+                const data = await res.json();
+                if (data.success) {
+                    const tbody = document.getElementById('withdrawalsTableBody');
+                    if (data.withdrawals.length === 0) {
+                        tbody.innerHTML = `<tr><td colspan="7" style="text-align:center; color:var(--text-muted); padding: 30px;">Bu ağda bekleyen çekim talebi bulunmuyor.</td></tr>`;
+                    } else {
+                        tbody.innerHTML = data.withdrawals.map(w => `
+                            <tr>
+                                <td>${w.userId.email}</td>
+                                <td><strong>${w.tokenName}</strong></td>
+                                <td>${w.tokenAmount.toLocaleString()}</td>
+                                <td>
+                                    <div style="font-size: 11px; color: var(--text-secondary); margin-bottom: 4px;">${w.network.toUpperCase()}</div>
+                                    <div style="font-family: monospace; color: var(--neon-cyan);">${w.walletAddress.substring(0, 6)}...${w.walletAddress.substring(w.walletAddress.length - 4)}</div>
+                                </td>
+                                <td><strong style="color:var(--neon-green)">$${w.valueUSD.toFixed(2)}</strong></td>
+                                <td>${new Date(w.createdAt).toLocaleDateString()}</td>
+                                <td><span style="background: rgba(245, 158, 11, 0.2); color: var(--neon-gold); padding: 4px 8px; border-radius: 4px; font-size: 12px;">Bekliyor</span></td>
+                            </tr>
+                        `).join('');
+                    }
+                    
+                    // Store IDs for batch processing
+                    window.currentPendingWithdrawals = data.withdrawals.map(w => w._id);
+                }
+            } catch (e) {
+                console.error(e);
+            }
+        }
+
+        async function batchDistribute() {
+            const ids = window.currentPendingWithdrawals || [];
+            if (ids.length === 0) {
+                return showToast("Dağıtılacak bekleyen talep yok.", "warning");
+            }
+            
+            const network = document.getElementById('networkFilter').value;
+            if (network === 'all') {
+                return showToast("Lütfen toplu dağıtım yapmadan önce belirli bir AĞ (Örn: Solana) seçin.", "warning");
+            }
+
+            if(!confirm(`⚠️ DİKKAT: ${network.toUpperCase()} ağındaki ${ids.length} kişiye Kasa Cüzdanınızdan OTOMATİK dağıtım başlatılacaktır. Onaylıyor musunuz?`)) return;
+            
+            const btn = document.querySelector(`button[onclick="batchDistribute()"]`);
+            const oldText = btn.innerHTML;
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Akıllı Kontrat Tetikleniyor...`;
+            btn.disabled = true;
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/admin/distribute-batch`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-admin-key': ADMIN_KEY },
+                    body: JSON.stringify({ withdrawalIds: ids })
+                });
+                const data = await res.json();
+                
+                if (data.success) {
+                    showToast(data.message, "success");
+                    // Wait for the server simulation to finish, then reload
+                    setTimeout(() => {
+                        showToast(`✅ ${ids.length} adet işlem blockchain üzerinde onaylandı!`, "success");
+                        loadWithdrawals();
+                        btn.innerHTML = oldText;
+                        btn.disabled = false;
+                    }, 2500);
+                } else {
+                    showToast(data.error, "error");
+                    btn.innerHTML = oldText;
+                    btn.disabled = false;
+                }
+            } catch (e) {
+                console.error(e);
+                showToast("Bağlantı hatası.", "error");
+                btn.innerHTML = oldText;
+                btn.disabled = false;
             }
         }
 

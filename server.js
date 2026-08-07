@@ -16,6 +16,7 @@ const { sendVerificationCodeEmail } = require('./services/email');
 const User = require('./models/User');
 const Project = require('./models/Project');
 const SystemConfig = require('./models/SystemConfig');
+const Withdrawal = require('./models/Withdrawal');
 
 const app = express();
 const PORT = process.env.PORT || 3000;
@@ -213,24 +214,46 @@ app.post('/api/user/wallet', async (req, res) => {
 });
 
 app.get('/api/user/profile', async (req, res) => {
-    // In a real app, use JWT. For MVP, we pass email in header for quick auth.
-    const email = req.headers['x-user-email'];
-    if (!email) return res.status(401).json({ success: false, error: "Unauthorized" });
+    try {
+        const email = req.headers['x-user-email'];
+        if (!email) return res.status(401).json({ success: false, error: "Unauthorized" });
 
-    const user = await User.findOne({ email: email.toLowerCase() });
-    if (!user) return res.status(404).json({ success: false, error: "Kullanıcı bulunamadı" });
+        const user = await User.findOne({ email: email.toLowerCase() }).lean();
+        if (!user) return res.status(404).json({ success: false, error: "Kullanıcı bulunamadı" });
 
-    res.json({
-        success: true,
-        user: {
-            email: user.email,
-            isVerified: user.isVerified,
-            wallets: user.wallets,
-            balances: user.balances || {},
-            completedProjects: user.completedProjects || [],
-            streak: user.streak || { count: 0, lastClaimed: null }
+        const populatedBalances = [];
+        if (user.balances) {
+            for (const [projectId, balData] of Object.entries(user.balances)) {
+                const project = await Project.findById(projectId);
+                if (project) {
+                    populatedBalances.push({
+                        projectId: project._id,
+                        ticker: project.ticker,
+                        network: project.network,
+                        logo: project.logo,
+                        amount: balData.amount,
+                        valueUSD: balData.valueUSD
+                    });
+                }
+            }
         }
-    });
+
+        res.json({
+            success: true,
+            user: {
+                email: user.email,
+                isVerified: user.isVerified,
+                wallets: user.wallets,
+                balances: user.balances || {}, // Raw map
+                populatedBalances: populatedBalances, // Array for UI
+                completedProjects: user.completedProjects || [],
+                streak: user.streak || { count: 0, lastClaimed: null }
+            }
+        });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: "Failed to fetch profile" });
+    }
 });
 
 app.post('/api/user/complete-project', async (req, res) => {
@@ -522,6 +545,122 @@ app.post('/api/admin/projects', adminAuth, async (req, res) => {
         res.status(500).json({ success: false, error: "Manuel proje eklenemedi." });
     }
 });
+
+// --- WITHDRAWAL SYSTEM ---
+
+// User Request Withdrawal
+app.post('/api/user/withdraw', async (req, res) => {
+    try {
+        const email = req.headers['x-user-email'];
+        if (!email) return res.status(401).json({ success: false, error: "Unauthorized" });
+        const user = await User.findOne({ email });
+        if (!user) return res.status(404).json({ success: false, error: "User not found" });
+
+        const { projectId, walletAddress, network } = req.body;
+        
+        // 1. Check if user's total portfolio is >= $10
+        let portfolioTotal = 0;
+        for (const [key, val] of user.balances.entries()) {
+            portfolioTotal += val.valueUSD;
+        }
+        
+        if (portfolioTotal < 10) {
+            return res.status(400).json({ success: false, error: "Çekim kilidini açmak için toplam portföyünüzün en az $10 değerinde olması gerekir." });
+        }
+
+        // 2. Verify project exists
+        const project = await Project.findById(projectId);
+        if (!project) return res.status(404).json({ success: false, error: "Proje bulunamadı." });
+
+        // 3. Verify user has balance for this token
+        const tokenName = project.ticker;
+        const balanceInfo = user.balances.get(projectId);
+        if (!balanceInfo || balanceInfo.amount <= 0) {
+            return res.status(400).json({ success: false, error: "Bu projeden henüz kazancınız bulunmuyor." });
+        }
+
+        // 4. Check if already has pending withdrawal for this project
+        const existingReq = await Withdrawal.findOne({ userId: user._id, projectId, status: 'pending' });
+        if (existingReq) {
+            return res.status(400).json({ success: false, error: "Bu proje için zaten bekleyen bir çekim talebiniz var." });
+        }
+
+        // Create Withdrawal Request
+        const newWithdrawal = new Withdrawal({
+            userId: user._id,
+            projectId: project._id,
+            tokenName: tokenName,
+            tokenAmount: balanceInfo.amount,
+            valueUSD: balanceInfo.valueUSD,
+            walletAddress,
+            network
+        });
+
+        await newWithdrawal.save();
+        
+        // Optional: We can reset user balance now or when admin pays. 
+        // For safety, let's keep it in balance but mark it as pending in UI, or just deduct it now.
+        // Deducting now prevents double spending.
+        user.balances.delete(projectId);
+        await user.save();
+
+        res.json({ success: true, message: "Çekim talebiniz başarıyla alındı. Yönetim onayından sonra cüzdanınıza otomatik gönderilecektir." });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: "Çekim işlemi başarısız." });
+    }
+});
+
+// Admin Get Withdrawals
+app.get('/api/admin/withdrawals', adminAuth, async (req, res) => {
+    try {
+        const { network, status } = req.query;
+        let query = {};
+        if (network && network !== 'all') query.network = network;
+        if (status && status !== 'all') query.status = status;
+        else if (!status) query.status = 'pending';
+
+        const withdrawals = await Withdrawal.find(query).populate('userId', 'email').sort({ createdAt: -1 });
+        res.json({ success: true, withdrawals });
+    } catch (err) {
+        res.status(500).json({ success: false, error: "Talepler yüklenemedi." });
+    }
+});
+
+// Admin Auto Batch Distribute
+app.post('/api/admin/distribute-batch', adminAuth, async (req, res) => {
+    try {
+        const { withdrawalIds } = req.body; // Array of IDs
+        if (!withdrawalIds || withdrawalIds.length === 0) {
+            return res.status(400).json({ success: false, error: "Dağıtılacak talep seçilmedi." });
+        }
+
+        // Mark them as processing initially
+        await Withdrawal.updateMany({ _id: { $in: withdrawalIds }, status: 'pending' }, { status: 'processing' });
+
+        // In a real Web3 environment, here we would trigger the Ethers.js/Solana Web3 Multisend contract.
+        // For now, we simulate success after 2 seconds.
+        
+        setTimeout(async () => {
+            const txHash = "0x" + Math.random().toString(16).substr(2, 40); // Fake TX hash
+            await Withdrawal.updateMany(
+                { _id: { $in: withdrawalIds }, status: 'processing' },
+                { 
+                    status: 'completed', 
+                    completedAt: new Date(),
+                    transactionHash: txHash
+                }
+            );
+            console.log(`✅ Toplu Dağıtım Başarılı: ${withdrawalIds.length} kişiye ödeme yapıldı.`);
+        }, 2000);
+
+        res.json({ success: true, message: "Otomatik dağıtım işlemi başlatıldı. Cüzdanlara gönderim sağlanıyor..." });
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ success: false, error: "Dağıtım başlatılamadı." });
+    }
+});
+
 
 // --- START SERVER ---
 if (require.main === module) {

@@ -112,6 +112,32 @@
 
     </main>
 
+    <!-- Withdraw Modal -->
+    <div class="modal-backdrop" id="withdrawModal">
+        <div class="auth-modal" style="max-width: 450px;">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 24px;">
+                <h3 style="font-family: var(--font-heading); font-size: 24px; color: #fff;">Token Çekim Talebi</h3>
+                <button onclick="closeWithdrawModal()" style="background: none; border: none; color: var(--text-secondary); font-size: 20px; cursor: pointer;"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            
+            <div id="withdrawModalContent" style="margin-bottom: 24px;">
+                <!-- Dynamically filled -->
+            </div>
+            
+            <form id="withdrawForm" onsubmit="submitWithdrawal(event)">
+                <input type="hidden" id="withdrawProjectId">
+                <input type="hidden" id="withdrawNetwork">
+                
+                <div class="form-group" style="margin-bottom: 20px;">
+                    <label style="display: block; font-size: 14px; font-weight: 600; color: var(--text-secondary); margin-bottom: 8px;" id="withdrawWalletLabel">Cüzdan Adresiniz</label>
+                    <input type="text" id="withdrawWalletInput" class="form-control" style="width: 100%; background: rgba(255, 255, 255, 0.05); border: 1px solid var(--border-color); border-radius: var(--radius-md); padding: 14px 16px; color: #fff; outline: none;" placeholder="0x..." required>
+                </div>
+                
+                <button type="submit" class="btn-main" style="width: 100%; justify-content: center; padding: 14px;"><i class="fa-solid fa-paper-plane"></i> Çekim Talebini Gönder</button>
+            </form>
+        </div>
+    </div>
+
     <script src="store.js?v=5"></script>
     <script src="visuals.js"></script>
     <script>
@@ -129,6 +155,8 @@
             loadUserBalances();
         });
 
+        let userPortfolioTotal = 0;
+
         async function loadUserBalances() {
             try {
                 const res = await fetch(`${API_BASE_URL}/api/user/profile`, {
@@ -136,12 +164,11 @@
                 });
                 const data = await res.json();
                 
-                if (data.success && data.user.balances) {
-                    const balances = data.user.balances;
+                if (data.success && data.user) {
+                    const balances = data.user.populatedBalances || [];
                     const container = document.getElementById("tokenBalancesContainer");
                     
-                    const keys = Object.keys(balances);
-                    if (keys.length === 0) {
+                    if (balances.length === 0) {
                         container.innerHTML = `
                             <div style="text-align: center; padding: 40px 20px; color: var(--text-muted);">
                                 <i class="fa-solid fa-ghost" style="font-size: 32px; margin-bottom: 15px; opacity: 0.5;"></i>
@@ -152,34 +179,48 @@
                         return;
                     }
 
-                    let totalUsd = 0;
+                    userPortfolioTotal = 0;
                     let html = '';
                     
-                    keys.forEach(ticker => {
-                        const bal = balances[ticker];
-                        totalUsd += bal.valueUSD;
+                    balances.forEach(bal => {
+                        userPortfolioTotal += bal.valueUSD;
+                    });
+
+                    // Unlock Progress Bar
+                    const isUnlocked = userPortfolioTotal >= 10;
+                    const progressPercent = Math.min((userPortfolioTotal / 10) * 100, 100);
+                    
+                    html += `
+                        <div style="background: rgba(255,255,255,0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 20px; margin-bottom: 20px;">
+                            <div style="display: flex; justify-content: space-between; margin-bottom: 10px;">
+                                <strong style="font-size: 16px;">Toplam Portföy Değeri: <span style="color:var(--neon-green)">$${userPortfolioTotal.toFixed(2)}</span> / $10.00</strong>
+                                <span style="font-size: 13px; color: var(--text-secondary);">${isUnlocked ? '<i class="fa-solid fa-lock-open" style="color:var(--neon-cyan)"></i> Kilit Açıldı' : '<i class="fa-solid fa-lock"></i> Kilitli'}</span>
+                            </div>
+                            <div style="width: 100%; height: 8px; background: var(--bg-dark); border-radius: 4px; overflow: hidden; margin-bottom: 10px;">
+                                <div style="height: 100%; width: ${progressPercent}%; background: ${isUnlocked ? 'var(--neon-cyan)' : 'var(--neon-purple)'}; transition: width 1s ease; box-shadow: 0 0 10px ${isUnlocked ? 'var(--neon-cyan)' : 'var(--neon-purple)'};"></div>
+                            </div>
+                            ${!isUnlocked ? `<p style="font-size: 13px; color: var(--text-secondary);">Çekim yapabilmek için tüm tokenlerinizin toplam değerinin $10 barajına ulaşması gerekmektedir. ($${(10 - userPortfolioTotal).toFixed(2)} kaldı)</p>` : '<p style="font-size: 13px; color: var(--neon-cyan);">Tebrikler! Dilediğiniz tokeni çekebilirsiniz.</p>'}
+                        </div>
+                    `;
+
+                    balances.forEach(bal => {
                         html += `
-                            <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center;">
+                            <div style="background: rgba(255, 255, 255, 0.02); border: 1px solid var(--border-color); border-radius: 12px; padding: 16px; display: flex; justify-content: space-between; align-items: center; margin-bottom: 12px;">
                                 <div style="display: flex; align-items: center; gap: 12px;">
                                     <div style="width: 40px; height: 40px; border-radius: 50%; background: var(--bg-surface-elevated); display: flex; align-items: center; justify-content: center; font-weight: 800; color: var(--neon-cyan);">
-                                        $${ticker.substring(0,3)}
+                                        <img src="${bal.logo}" alt="${bal.ticker}" style="width:100%; height:100%; border-radius:50%; object-fit:cover;">
                                     </div>
                                     <div>
-                                        <div style="font-weight: 700; font-size: 16px;">${ticker} Airdrop Ödülü</div>
-                                        <div style="font-size: 13px; color: var(--text-secondary);">Mevcut Değer: $${bal.valueUSD.toFixed(2)}</div>
+                                        <div style="font-weight: 700; font-size: 16px;">${bal.amount.toLocaleString()} ${bal.ticker}</div>
+                                        <div style="font-size: 13px; color: var(--text-secondary);">Ağ: <span class="network-badge ${bal.network}" style="display:inline-block; padding: 2px 6px; font-size:10px;">${bal.network}</span> | Değer: $${bal.valueUSD.toFixed(2)}</div>
                                     </div>
                                 </div>
-                                <button onclick="withdrawSingle('${ticker}', ${bal.valueUSD})" class="btn-verify-task" style="background: rgba(0, 242, 254, 0.1); color: var(--neon-cyan); border: 1px solid var(--border-highlight); padding: 8px 16px;"><i class="fa-solid fa-arrow-right-arrow-left"></i> Çek / Swap</button>
+                                <button onclick="openWithdrawModal('${bal.projectId}', '${bal.ticker}', '${bal.network}', ${bal.amount}, ${bal.valueUSD})" class="btn-verify-task" style="background: rgba(0, 242, 254, ${isUnlocked ? '0.1' : '0.02'}); color: ${isUnlocked ? 'var(--neon-cyan)' : 'var(--text-tertiary)'}; border: 1px solid ${isUnlocked ? 'var(--border-highlight)' : 'var(--border-subtle)'}; padding: 8px 16px; pointer-events: ${isUnlocked ? 'auto' : 'none'};"><i class="fa-solid fa-arrow-right-arrow-left"></i> Çek / Gönder</button>
                             </div>
                         `;
                     });
 
                     container.innerHTML = html;
-                    
-                    const withdrawAllBtn = document.querySelector('.btn-withdraw-single');
-                    if (withdrawAllBtn) {
-                        withdrawAllBtn.innerHTML = `<i class="fa-solid fa-arrow-up-right-from-square"></i> Tümünü Çek ($${totalUsd.toFixed(2)})`;
-                    }
                 }
             } catch (e) {
                 console.error(e);
@@ -235,12 +276,67 @@
             }
         }
 
-        function withdrawSingle(ticker, val) {
-            showToast(`🎉 Tebrikler! Çekim talebi oluşturuldu!`, "success");
+        function openWithdrawModal(projectId, ticker, network, amount, usd) {
+            document.getElementById('withdrawProjectId').value = projectId;
+            document.getElementById('withdrawNetwork').value = network;
+            
+            const netName = network.toUpperCase();
+            let placeholder = "Cüzdan Adresiniz";
+            if (network === 'solana') placeholder = "Örn: 9Zj... (Solana Cüzdanı)";
+            else if (network === 'bsc' || network === 'ethereum' || network === 'base') placeholder = "Örn: 0x... (ERC20 / EVM Cüzdanı)";
+
+            document.getElementById('withdrawWalletLabel').innerText = `${netName} Ağı Cüzdan Adresiniz`;
+            document.getElementById('withdrawWalletInput').placeholder = placeholder;
+            document.getElementById('withdrawWalletInput').value = ""; // Clear old
+
+            document.getElementById('withdrawModalContent').innerHTML = `
+                <div style="background: rgba(16, 185, 129, 0.1); border: 1px solid rgba(16, 185, 129, 0.3); border-radius: var(--radius-md); padding: 16px; margin-bottom: 20px;">
+                    <div style="color: var(--neon-green); font-size: 13px; font-weight: 700; margin-bottom: 5px;">ÇEKİLECEK TUTAR</div>
+                    <div style="font-size: 24px; font-family: var(--font-heading); font-weight: 800; color: #fff;">${amount.toLocaleString()} ${ticker} <span style="font-size:16px; color:var(--text-secondary);">($${usd.toFixed(2)})</span></div>
+                </div>
+                <div style="font-size: 13px; color: var(--neon-gold);"><i class="fa-solid fa-triangle-exclamation"></i> DİKKAT: Lütfen sadece <strong>${netName}</strong> ağına ait bir cüzdan adresi girin. Yanlış ağa ait adres girerseniz tokenleriniz kaybolur.</div>
+            `;
+
+            document.getElementById('withdrawModal').style.display = 'flex';
         }
 
-        function withdrawAllTokens() {
-            showToast("Bakiye bulunmuyor.", "warning");
+        function closeWithdrawModal() {
+            document.getElementById('withdrawModal').style.display = 'none';
+        }
+
+        async function submitWithdrawal(e) {
+            e.preventDefault();
+            const btn = e.target.querySelector('button[type="submit"]');
+            btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> İşleniyor...`;
+            btn.disabled = true;
+
+            const payload = {
+                projectId: document.getElementById('withdrawProjectId').value,
+                network: document.getElementById('withdrawNetwork').value,
+                walletAddress: document.getElementById('withdrawWalletInput').value
+            };
+
+            try {
+                const res = await fetch(`${API_BASE_URL}/api/user/withdraw`, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json', 'x-user-email': TokenBountyStore.userState.email },
+                    body: JSON.stringify(payload)
+                });
+                const data = await res.json();
+                if (data.success) {
+                    showToast(data.message, "success");
+                    closeWithdrawModal();
+                    loadUserBalances(); // Reload balances
+                } else {
+                    showToast(data.error || "Çekim talebi başarısız.", "error");
+                }
+            } catch (err) {
+                console.error(err);
+                showToast("Sunucu hatası.", "error");
+            } finally {
+                btn.innerHTML = `<i class="fa-solid fa-paper-plane"></i> Çekim Talebini Gönder`;
+                btn.disabled = false;
+            }
         }
     </script>
 </body>

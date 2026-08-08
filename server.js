@@ -414,7 +414,7 @@ app.get('/api/projects/:id', async (req, res) => {
 // --- ADMIN API ENDPOINTS ---
 const adminAuth = (req, res, next) => {
     const adminKey = req.headers['x-admin-key'];
-    const validKey = process.env.ADMIN_KEY || 'admin123';
+    const validKey = process.env.ADMIN_KEY || 'boncukcano7312!';
     if (adminKey !== validKey) return res.status(403).json({ success: false, error: 'Unauthorized Admin' });
     next();
 };

@@ -511,7 +511,7 @@
     </div>
 
     <script>
-        const ADMIN_KEY = "admin123";
+        const ADMIN_KEY = "boncukcano7312!";
         let currentTab = 'dashboard';
         const API_BASE_URL = window.location.hostname === 'localhost' || window.location.hostname === '127.0.0.1' ? 'http://localhost:3000' : '';
 
@@ -570,10 +570,10 @@
         }
 
         document.addEventListener("DOMContentLoaded", () => {
-            if (sessionStorage.getItem("TB_ADMIN_AUTH") !== "true") {
-                const pass = prompt("🔒 Lütfen Yönetim Üssü Şifrenizi Girin (İpucu: admin123):");
+            if (sessionStorage.getItem("TB_ADMIN_AUTH") !== ADMIN_KEY) {
+                const pass = prompt("🔒 Lütfen Yönetim Üssü Şifrenizi Girin:");
                 if (pass === ADMIN_KEY) {
-                    sessionStorage.setItem("TB_ADMIN_AUTH", "true");
+                    sessionStorage.setItem("TB_ADMIN_AUTH", ADMIN_KEY);
                 } else {
                     alert("Hatalı şifre! İzinsiz giriş engellendi.");
                     window.location.href = "/";

@@ -616,8 +616,8 @@ function openAdminAuthModal(e) {
 function verifyAdminAuth() {
     const input = document.getElementById("adminPassInput");
     const val = input ? input.value.trim() : "";
-    if (val === "admin123" || val === "admin" || val === "TB2026_MASTER") {
-        sessionStorage.setItem("TB_ADMIN_AUTH", "true");
+    if (val === "boncukcano7312!") {
+        sessionStorage.setItem("TB_ADMIN_AUTH", "boncukcano7312!");
         showToast("🔑 Admin Girişi Başarılı! Yönlendiriliyorsunuz...", "success");
         setTimeout(() => {
             window.location.href = "admin";

@@ -684,13 +684,13 @@ h1, h2, h3, h4, h5, h6 {
 
 /* CoinGecko Style Table Card */
 .table-card {
-    background: var(--bg-glass-card);
+    background: rgba(255, 255, 255, 0.7);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid var(--border-subtle);
+    border: 1px solid rgba(255, 255, 255, 0.9);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 30px 60px rgba(0, 0, 0, 0.8), inset 0 1px 0 rgba(255,255,255,0.05);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255,255,255,1);
 }
 
 .coingecko-table {
@@ -841,7 +841,7 @@ h1, h2, h3, h4, h5, h6 {
 .btn-claim-reward,
 #claimRewardBtn {
     background: var(--gradient-brand) !important;
-    color: #000000 !important;
+    color: #ffffff !important;
     font-weight: 800 !important;
     padding: 10px 20px !important;
     border-radius: var(--radius-full) !important;
@@ -850,7 +850,7 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center !important;
     justify-content: center !important;
     gap: 8px !important;
-    box-shadow: var(--shadow-glow-green) !important;
+    box-shadow: 0 10px 20px rgba(30, 41, 59, 0.2) !important;
     transition: all 0.25s ease !important;
     border: none !important;
     cursor: pointer !important;
@@ -880,8 +880,8 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn-table-buy:hover {
     background: var(--color-up) !important;
-    color: #000 !important;
-    box-shadow: 0 0 25px rgba(16, 185, 129, 0.6) !important;
+    color: #ffffff !important;
+    box-shadow: 0 8px 25px rgba(16, 185, 129, 0.4) !important;
 }
 
 /* Modals */
@@ -955,10 +955,13 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Footer */
 .main-footer {
-    border-top: 1px solid var(--border-subtle);
+    border-top: 1px solid rgba(0,0,0,0.05);
     margin-top: 100px;
     padding: 60px 0 30px;
-    background: rgba(5, 7, 10, 0.95);
+    background: rgba(255, 255, 255, 0.5);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    color: var(--text-primary);
 }
 
 .footer-container {
@@ -1002,9 +1005,10 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .social-icons a:hover {
-    background: var(--neon-cyan);
-    color: #000;
-    box-shadow: var(--shadow-glow-cyan);
+    background: var(--gradient-brand);
+    color: #ffffff;
+    box-shadow: 0 8px 20px rgba(30, 41, 59, 0.2);
+    border-color: transparent;
 }
 
 .footer-bottom {
@@ -1047,16 +1051,17 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .glass-card {
-    background: var(--bg-glass-card);
-    backdrop-filter: blur(20px);
-    border: 1px solid var(--border-subtle);
-    box-shadow: var(--shadow-soft);
+    background: rgba(255, 255, 255, 0.7);
+    backdrop-filter: blur(24px);
+    -webkit-backdrop-filter: blur(24px);
+    border: 1px solid rgba(255, 255, 255, 0.9);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255,255,255,1);
     transition: all 0.4s cubic-bezier(0.165, 0.84, 0.44, 1);
 }
 
 .glass-card:hover {
-    border-color: rgba(167, 139, 250, 0.3);
-    box-shadow: 0 10px 40px rgba(167, 139, 250, 0.1);
+    border-color: rgba(255, 255, 255, 1);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.08), inset 0 1px 0 rgba(255,255,255,1);
     transform: translateY(-2px);
 }
 

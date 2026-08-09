@@ -60,11 +60,7 @@
     z-index: -3;
     overflow: hidden;
     pointer-events: none;
-    background-color: #fafcff; /* Moved from body */
-    background-image: 
-        linear-gradient(rgba(203, 213, 225, 0.25) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(203, 213, 225, 0.25) 1px, transparent 1px);
-    background-size: 40px 40px;
+    background-color: #fafcff;
     transition: background-color 1s ease, transform 0.1s linear;
 }
 
@@ -129,11 +125,7 @@
     z-index: 10;
     opacity: 0;
     transition: opacity 0.3s;
-    background: radial-gradient(
-        500px circle at var(--mouse-x, 0) var(--mouse-y, 0),
-        rgba(59, 130, 246, 0.04),
-        transparent 40%
-    );
+    background: none;
 }
 
 .glow-card:hover::before, .glow-row:hover::before {
@@ -804,6 +796,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .coingecko-table {
     width: 100%;
+    min-width: 1100px;
     border-collapse: collapse;
     text-align: left;
 }

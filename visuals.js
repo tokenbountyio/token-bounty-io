@@ -25,10 +25,10 @@ function initCanvasParticles() {
     let width, height;
     let particles = [];
     
-    // Config for the Crazy Magnetic Network
-    const particleCount = 120; // Increased for a denser web
-    const maxDistance = 140; 
-    const mouseRadius = 250; // Larger interaction area
+    // Config for Elegant & Subtle Network
+    const particleCount = 80; // Reduced for cleaner look
+    const maxDistance = 150; 
+    const mouseRadius = 200; // Normal interaction area
 
     let mouse = { x: null, y: null, radius: mouseRadius };
 
@@ -54,24 +54,21 @@ function initCanvasParticles() {
         constructor() {
             this.x = Math.random() * width;
             this.y = Math.random() * height;
-            this.baseSize = Math.random() * 2 + 1;
+            this.baseSize = Math.random() * 1.5 + 1;
             this.size = this.baseSize;
-            this.speedX = Math.random() * 2 - 1;
-            this.speedY = Math.random() * 2 - 1;
+            this.speedX = Math.random() * 1 - 0.5;
+            this.speedY = Math.random() * 1 - 0.5;
             this.baseSpeedX = this.speedX;
             this.baseSpeedY = this.speedY;
             
-            // Theme colors: Neon Cyan, Neon Purple, and a touch of Gold
+            // Theme colors: Soft Cyan, Soft Purple
             const rand = Math.random();
-            if (rand > 0.66) {
-                this.color = 'rgba(0, 242, 254, 0.8)'; // Cyan
+            if (rand > 0.5) {
+                this.color = 'rgba(0, 242, 254, 0.4)'; 
                 this.lineColor = '0, 242, 254';
-            } else if (rand > 0.33) {
-                this.color = 'rgba(168, 85, 247, 0.8)'; // Purple
-                this.lineColor = '168, 85, 247';
             } else {
-                this.color = 'rgba(250, 204, 21, 0.8)'; // Gold
-                this.lineColor = '250, 204, 21';
+                this.color = 'rgba(168, 85, 247, 0.4)';
+                this.lineColor = '168, 85, 247';
             }
         }
 
@@ -79,47 +76,43 @@ function initCanvasParticles() {
             this.x += this.speedX;
             this.y += this.speedY;
 
-            // Bounce off edges with damping
-            if (this.x > width || this.x < 0) this.speedX = -this.speedX * 0.8;
-            if (this.y > height || this.y < 0) this.speedY = -this.speedY * 0.8;
+            // Bounce off edges smoothly
+            if (this.x > width || this.x < 0) this.speedX = -this.speedX;
+            if (this.y > height || this.y < 0) this.speedY = -this.speedY;
 
-            // Crazy Magnetic Mouse Interaction
+            // Subtle Magnetic Mouse Interaction
             if (mouse.x && mouse.y) {
                 let dx = mouse.x - this.x;
                 let dy = mouse.y - this.y;
                 let distance = Math.sqrt(dx * dx + dy * dy);
                 
                 if (distance < mouse.radius) {
-                    // Magnetic pull (Gravity well)
+                    // Very gentle pull
                     const forceDirectionX = dx / distance;
                     const forceDirectionY = dy / distance;
                     const force = (mouse.radius - distance) / mouse.radius;
                     
-                    // Acceleration towards mouse
-                    this.speedX += forceDirectionX * force * 0.6;
-                    this.speedY += forceDirectionY * force * 0.6;
+                    this.speedX += forceDirectionX * force * 0.05;
+                    this.speedY += forceDirectionY * force * 0.05;
                     
-                    // Grow in size when energized by mouse
-                    this.size = Math.min(this.size + 0.2, this.baseSize * 3);
+                    // Subtle glow
+                    this.size = Math.min(this.size + 0.05, this.baseSize * 1.5);
                 } else {
-                    // Return to normal size
-                    if (this.size > this.baseSize) this.size -= 0.1;
-                    
-                    // Slowly return to base speed
-                    this.speedX += (this.baseSpeedX - this.speedX) * 0.05;
-                    this.speedY += (this.baseSpeedY - this.speedY) * 0.05;
+                    if (this.size > this.baseSize) this.size -= 0.05;
+                    this.speedX += (this.baseSpeedX - this.speedX) * 0.02;
+                    this.speedY += (this.baseSpeedY - this.speedY) * 0.02;
                 }
             } else {
-                if (this.size > this.baseSize) this.size -= 0.1;
-                this.speedX += (this.baseSpeedX - this.speedX) * 0.05;
-                this.speedY += (this.baseSpeedY - this.speedY) * 0.05;
+                if (this.size > this.baseSize) this.size -= 0.05;
+                this.speedX += (this.baseSpeedX - this.speedX) * 0.02;
+                this.speedY += (this.baseSpeedY - this.speedY) * 0.02;
             }
             
-            // Friction/Speed limit to prevent them from flying off to infinity
+            // Speed limit to keep it relaxing
             let speedMag = Math.sqrt(this.speedX*this.speedX + this.speedY*this.speedY);
-            if(speedMag > 6) {
-                this.speedX = (this.speedX / speedMag) * 6;
-                this.speedY = (this.speedY / speedMag) * 6;
+            if(speedMag > 2) {
+                this.speedX = (this.speedX / speedMag) * 2;
+                this.speedY = (this.speedY / speedMag) * 2;
             }
         }
 
@@ -139,9 +132,8 @@ function initCanvasParticles() {
     }
 
     function animate() {
-        // Slight trail effect by using semi-transparent fill instead of clearRect
-        ctx.fillStyle = 'rgba(255, 255, 255, 0.2)'; 
-        ctx.fillRect(0, 0, width, height);
+        // Clear canvas normally for crisp lines, no motion blur chaos
+        ctx.clearRect(0, 0, width, height);
 
         for (let i = 0; i < particles.length; i++) {
             particles[i].update();
@@ -154,9 +146,8 @@ function initCanvasParticles() {
                 let distance = Math.sqrt(dx * dx + dy * dy);
 
                 if (distance < maxDistance) {
-                    let opacity = (1 - (distance / maxDistance)) * 0.5;
+                    let opacity = (1 - (distance / maxDistance)) * 0.25; // Soft opacity
                     ctx.beginPath();
-                    // Blend colors based on particle i
                     ctx.strokeStyle = `rgba(${particles[i].lineColor}, ${opacity})`; 
                     ctx.lineWidth = 1;
                     ctx.moveTo(particles[i].x, particles[i].y);
@@ -165,17 +156,17 @@ function initCanvasParticles() {
                 }
             }
             
-            // Laser thick connections to mouse
+            // Connect to mouse gently
             if (mouse.x && mouse.y) {
                 let dx = particles[i].x - mouse.x;
                 let dy = particles[i].y - mouse.y;
                 let distance = Math.sqrt(dx * dx + dy * dy);
 
-                if (distance < mouse.radius * 0.6) {
-                    let opacity = 1 - (distance / (mouse.radius * 0.6));
+                if (distance < mouse.radius * 0.8) {
+                    let opacity = (1 - (distance / (mouse.radius * 0.8))) * 0.3; // Very subtle
                     ctx.beginPath();
-                    ctx.strokeStyle = `rgba(${particles[i].lineColor}, ${opacity * 0.8})`;
-                    ctx.lineWidth = 2;
+                    ctx.strokeStyle = `rgba(${particles[i].lineColor}, ${opacity})`;
+                    ctx.lineWidth = 1;
                     ctx.moveTo(particles[i].x, particles[i].y);
                     ctx.lineTo(mouse.x, mouse.y);
                     ctx.stroke();

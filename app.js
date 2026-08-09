@@ -21,6 +21,14 @@ async function initApp() {
         renderTokenTable("all");
     });
 
+    // 3. Close Modal on Backdrop Click
+    window.addEventListener("click", (event) => {
+        const modal = document.getElementById("walletModal");
+        if (modal && event.target === modal) {
+            modal.classList.remove("active");
+        }
+    });
+
     await TokenBountyStore.syncUserProfile();
 }
 

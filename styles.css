@@ -992,23 +992,47 @@ h1, h2, h3, h4, h5, h6 {
 
 .footer-links a:hover { color: var(--neon-cyan); }
 
-.social-icons a {
-    width: 40px;
-    height: 40px;
-    background: rgba(255, 255, 255, 0.04);
-    border: 1px solid var(--border-subtle);
-    border-radius: 50%;
+.social-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.social-link {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    color: var(--text-secondary);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+    transition: all 0.25s ease;
+}
+
+.social-link i {
+    width: 28px;
+    height: 28px;
     display: flex;
     align-items: center;
     justify-content: center;
+    background: rgba(0,0,0,0.03);
+    border: 1px solid var(--border-subtle);
+    border-radius: 50%;
     color: var(--text-primary);
+    font-size: 13px;
+    transition: all 0.25s ease;
 }
 
-.social-icons a:hover {
+.social-link:hover {
+    color: var(--neon-cyan);
+}
+
+.social-link:hover i {
     background: var(--gradient-brand);
     color: #ffffff;
-    box-shadow: 0 8px 20px rgba(30, 41, 59, 0.2);
     border-color: transparent;
+    transform: scale(1.1);
+    box-shadow: 0 5px 15px rgba(30, 41, 59, 0.15);
 }
 
 .footer-bottom {

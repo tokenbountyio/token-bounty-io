@@ -10,260 +10,264 @@
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
     <style>
-        /* Detail Page specific layout overrides if any */
-
-        /* Detail Page Layout */
+        /* Premium Light Theme Detail Page Layout */
         .detail-layout {
             display: grid;
-            grid-template-columns: 1fr 400px;
-            gap: 40px;
+            grid-template-columns: 1fr 380px;
+            gap: 30px;
             margin-top: 30px;
         }
 
-        /* PURE GLASSMORPHISM PANELS */
+        /* PURE LIGHT GLASSMORPHISM PANELS */
         .glass-panel {
-            background: rgba(255, 255, 255, 0.03);
-            backdrop-filter: blur(40px);
-            -webkit-backdrop-filter: blur(40px);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 24px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255,255,255,0.6);
+            background: rgba(255, 255, 255, 0.95);
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-subtle);
+            border-radius: 20px;
+            box-shadow: 0 10px 40px rgba(0, 0, 0, 0.03);
             position: relative;
             overflow: hidden;
         }
 
         .token-header-card {
-            padding: 40px;
+            padding: 35px;
             margin-bottom: 30px;
         }
 
-        /* Fix Title Wrap & Alignment */
         .token-header-top {
             display: flex;
             align-items: center;
             justify-content: space-between;
             margin-bottom: 30px;
-            flex-wrap: nowrap; /* PREVENT WRAPPING */
+            flex-wrap: wrap;
+            gap: 20px;
         }
 
         .token-info-left {
             display: flex;
             align-items: center;
-            gap: 25px;
-            flex-shrink: 1; /* Allow shrinking if needed */
+            gap: 24px;
         }
 
+        /* Fixed Logo Wrapper */
         .detail-logo-wrapper {
-            width: 90px;
-            height: 90px;
-            border-radius: 24px;
-            padding: 3px;
-            background: linear-gradient(135deg, #00f2fe, #4facfe);
-            box-shadow: 0 0 30px rgba(0, 242, 254, 0.3);
-            animation: floatLogo 6s ease-in-out infinite;
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
+            padding: 4px;
+            background: var(--bg-surface);
+            border: 1px solid var(--border-subtle);
+            box-shadow: 0 8px 25px rgba(0,0,0,0.06);
             flex-shrink: 0;
-        }
-
-        @keyframes floatLogo {
-            0%, 100% { transform: translateY(0); }
-            50% { transform: translateY(-10px); }
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            overflow: hidden;
         }
 
         .detail-logo-img {
             width: 100%;
             height: 100%;
-            border-radius: 21px;
+            border-radius: 16px;
             object-fit: cover;
-            background: #000;
         }
 
         .token-title-container {
             display: flex;
             flex-direction: column;
-            gap: 5px;
+            gap: 6px;
         }
 
         .detail-title {
-            font-size: 38px;
+            font-size: 32px;
             font-weight: 800;
             display: flex;
             align-items: center;
             gap: 12px;
-            letter-spacing: -1px;
-            white-space: nowrap; /* FIX LINE BREAK */
-            text-shadow: 0 2px 10px rgba(0,0,0,0.5);
+            letter-spacing: -0.5px;
+            color: var(--text-primary);
+        }
+
+        .price-badge-group {
+            display: flex;
+            align-items: baseline;
+            gap: 12px;
         }
 
         .detail-price {
-            font-size: 42px;
+            font-size: 36px;
             font-weight: 800;
             font-family: var(--font-heading);
-            background: linear-gradient(to right, #fff, #b3c5e0);
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
-            text-shadow: 0 0 20px rgba(255,255,255,0.1);
+            color: var(--text-primary);
+            letter-spacing: -1px;
         }
 
-        /* Neon Buy Button */
+        /* Premium Buy Button */
         .btn-buy-hero {
-            background: linear-gradient(135deg, #00f2fe 0%, #4facfe 100%);
-            color: #000;
-            font-weight: 800;
-            padding: 16px 32px;
-            border-radius: 16px;
-            font-size: 16px;
+            background: var(--text-primary);
+            color: #fff;
+            font-weight: 700;
+            padding: 14px 28px;
+            border-radius: var(--radius-full);
+            font-size: 15px;
             display: inline-flex;
             align-items: center;
-            gap: 12px;
-            box-shadow: 0 0 25px rgba(0, 242, 254, 0.4);
-            transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+            gap: 10px;
+            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+            transition: all 0.3s ease;
             border: none;
-            flex-shrink: 0;
+            cursor: pointer;
+            text-decoration: none;
         }
 
         .btn-buy-hero:hover {
-            transform: scale(1.05);
-            box-shadow: 0 0 40px rgba(0, 242, 254, 0.6);
+            transform: translateY(-2px);
+            box-shadow: 0 15px 25px rgba(0, 0, 0, 0.15);
+            background: #000;
         }
 
         /* Sleek Contract Box */
         .contract-box {
-            background: rgba(255, 255, 255, 0.4);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            border-radius: 14px;
-            padding: 14px 20px;
+            background: var(--bg-body);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 12px 18px;
             display: flex;
             align-items: center;
             justify-content: space-between;
-            margin-top: 30px;
+            margin-top: 25px;
             font-size: 14px;
         }
 
         .contract-code {
             font-family: 'Space Grotesk', monospace;
-            color: #00f2fe;
-            font-weight: 500;
+            color: var(--text-primary);
+            font-weight: 600;
         }
 
         .btn-copy {
-            background: rgba(255, 255, 255, 0.1);
-            color: #fff;
-            border: none;
-            padding: 8px 16px;
+            background: #fff;
+            color: var(--text-primary);
+            border: 1px solid var(--border-subtle);
+            padding: 6px 14px;
             border-radius: 8px;
             font-size: 12px;
             font-weight: 700;
-            transition: background 0.2s;
+            transition: all 0.2s;
+            cursor: pointer;
         }
-        .btn-copy:hover { background: rgba(0, 242, 254, 0.2); color: #00f2fe; }
+        
+        .btn-copy:hover { 
+            background: var(--bg-body); 
+            box-shadow: 0 2px 8px rgba(0,0,0,0.05);
+        }
 
         .social-links-grid {
             display: flex;
             flex-wrap: wrap;
-            gap: 12px;
-            margin-top: 30px;
+            gap: 10px;
+            margin-top: 25px;
         }
 
         .social-link-btn {
-            background: rgba(255, 255, 255, 0.05);
-            border: 1px solid rgba(255, 255, 255, 0.1);
-            color: rgba(255, 255, 255, 0.8);
-            padding: 12px 20px;
-            border-radius: 12px;
-            font-size: 14px;
+            background: #fff;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-secondary);
+            padding: 10px 18px;
+            border-radius: var(--radius-full);
+            font-size: 13px;
             font-weight: 600;
             display: flex;
             align-items: center;
-            gap: 10px;
+            gap: 8px;
             transition: all 0.3s;
+            text-decoration: none;
         }
 
         .social-link-btn:hover {
-            background: rgba(255, 255, 255, 0.1);
-            border-color: rgba(255, 255, 255, 0.3);
-            color: #fff;
-            transform: translateY(-2px);
+            background: var(--bg-surface);
+            color: var(--text-primary);
+            border-color: #ccc;
         }
 
         /* Bento Stats Grid */
         .stats-grid {
             display: grid;
             grid-template-columns: repeat(3, 1fr);
-            gap: 20px;
+            gap: 15px;
             margin-top: 30px;
         }
 
         .stat-card {
-            background: rgba(255, 255, 255, 0.03);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 20px;
-            padding: 24px;
-            transition: transform 0.3s ease;
+            background: var(--bg-body);
+            border: 1px solid var(--border-subtle);
+            border-radius: 16px;
+            padding: 20px;
         }
-        .stat-card:hover { transform: translateY(-3px); background: rgba(255, 255, 255, 0.05); }
 
         .stat-label {
-            font-size: 13px;
-            color: rgba(255,255,255,0.5);
-            margin-bottom: 8px;
+            font-size: 12px;
+            color: var(--text-tertiary);
+            margin-bottom: 6px;
             text-transform: uppercase;
-            letter-spacing: 1px;
+            letter-spacing: 0.5px;
+            font-weight: 700;
         }
 
         .stat-val {
-            font-size: 24px;
+            font-size: 22px;
             font-weight: 800;
-            color: #fff;
+            color: var(--text-primary);
         }
 
         /* Chart Card */
         .chart-card {
             padding: 0;
-            height: 500px;
+            height: 400px;
         }
         
         .chart-placeholder {
             width: 100%; height: 100%;
-            background: rgba(0,0,0,0.2);
+            background: var(--bg-body);
             display: flex; flex-direction: column; align-items: center; justify-content: center;
+            color: var(--text-secondary);
         }
 
         /* QUEST PANEL (RIGHT SIDE) */
         .quest-box-card {
-            padding: 40px;
+            padding: 30px;
             position: sticky;
             top: 100px;
-            border: 1px solid rgba(168, 85, 247, 0.3); /* Purple glow border */
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08), inset 0 0 40px rgba(255, 255, 255, 0.5);
+            border-top: 4px solid var(--neon-purple); /* Subtle accent */
         }
 
         .quest-reward-banner {
-            background: linear-gradient(135deg, rgba(168, 85, 247, 0.15) 0%, rgba(168, 85, 247, 0.05) 100%);
-            border: 1px solid rgba(168, 85, 247, 0.3);
-            border-radius: 16px;
-            padding: 25px;
+            background: rgba(168, 85, 247, 0.05);
+            border: 1px solid rgba(168, 85, 247, 0.15);
+            border-radius: 12px;
+            padding: 20px;
             text-align: center;
-            margin-bottom: 30px;
+            margin-bottom: 25px;
         }
 
         .quest-reward-amount {
-            font-size: 32px;
+            font-size: 28px;
             font-weight: 800;
-            color: #d8b4fe;
-            text-shadow: 0 0 20px rgba(168, 85, 247, 0.4);
+            color: var(--neon-purple);
         }
 
         .task-list {
             display: flex;
             flex-direction: column;
-            gap: 16px;
+            gap: 12px;
         }
 
         .task-item-card {
-            background: rgba(255, 255, 255, 0.5);
-            border: 1px solid rgba(255, 255, 255, 0.08);
-            border-radius: 16px;
-            padding: 18px 20px;
+            background: var(--bg-body);
+            border: 1px solid var(--border-subtle);
+            border-radius: 12px;
+            padding: 16px;
             display: flex;
             align-items: center;
             justify-content: space-between;
@@ -271,65 +275,71 @@
         }
         
         .task-item-card:hover {
-            border-color: rgba(0, 242, 254, 0.3);
-            background: rgba(0, 242, 254, 0.05);
-            transform: translateX(5px);
+            border-color: rgba(168, 85, 247, 0.3);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.02);
         }
 
         .task-icon-circle {
-            width: 44px;
-            height: 44px;
+            width: 36px;
+            height: 36px;
             border-radius: 50%;
-            background: rgba(255, 255, 255, 0.05);
-            color: #fff;
+            background: #fff;
+            border: 1px solid var(--border-subtle);
+            color: var(--text-tertiary);
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 20px;
+            font-size: 16px;
         }
 
         .task-item-card:hover .task-icon-circle {
-            background: rgba(0, 242, 254, 0.2);
-            color: #00f2fe;
-            box-shadow: 0 0 15px rgba(0, 242, 254, 0.3);
+            color: var(--neon-purple);
+            border-color: var(--neon-purple);
         }
 
         .btn-verify-task {
             background: #fff;
-            color: #000;
-            font-weight: 800;
-            padding: 10px 24px;
-            border-radius: 12px;
-            font-size: 14px;
-            border: none;
-            transition: transform 0.2s;
+            color: var(--text-primary);
+            border: 1px solid var(--border-subtle);
+            font-weight: 700;
+            padding: 8px 16px;
+            border-radius: 8px;
+            font-size: 13px;
+            cursor: pointer;
+            transition: all 0.2s;
         }
-        .btn-verify-task:hover { transform: scale(1.05); }
+        .btn-verify-task:hover { 
+            background: var(--bg-surface); 
+            color: var(--neon-purple);
+        }
 
         .btn-claim-reward {
             width: 100%;
-            background: linear-gradient(135deg, #a855f7 0%, #d946ef 100%);
+            background: var(--text-primary);
             color: #fff;
             font-weight: 800;
-            padding: 20px;
-            border-radius: 16px;
-            font-size: 18px;
-            margin-top: 30px;
+            padding: 16px;
+            border-radius: 12px;
+            font-size: 15px;
+            margin-top: 25px;
             border: none;
-            box-shadow: 0 15px 30px rgba(168, 85, 247, 0.4);
             cursor: pointer;
             transition: all 0.3s;
         }
 
-        .btn-claim-reward:hover {
-            transform: translateY(-3px) scale(1.02);
-            box-shadow: 0 20px 40px rgba(168, 85, 247, 0.6);
+        .btn-claim-reward:hover:not(:disabled) {
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(0,0,0,0.1);
+        }
+        
+        .btn-claim-reward:disabled {
+            background: var(--border-subtle);
+            color: var(--text-tertiary);
+            cursor: not-allowed;
         }
 
         @media (max-width: 992px) {
             .detail-layout { grid-template-columns: 1fr; }
-            .token-header-top { flex-direction: column; align-items: stretch; gap: 20px; }
-            .btn-buy-hero { width: 100%; justify-content: center; }
             .stats-grid { grid-template-columns: 1fr; }
         }
     </style>
@@ -380,7 +390,9 @@
                 <div class="token-header-card glass-panel">
                     <div class="token-header-top">
                         <div class="token-info-left">
-                            <img id="detailLogo" src="" alt="Token Logo" class="detail-logo-img">
+                            <div class="detail-logo-wrapper">
+                                <img id="detailLogo" src="" alt="Token Logo" class="detail-logo-img">
+                            </div>
                             <div>
                                 <h1 class="detail-title">
                                     <span id="detailName">Aura Final Boss</span>
@@ -466,13 +478,13 @@
                 </div>
 
                     <!-- Gated Wall Warning (Shown if Wallet Not Connected) -->
-                    <div class="gated-wall" id="gatedWallWarning">
-                        <i class="fa-solid fa-lock" style="font-size: 32px; margin-bottom: 15px; color: #ff6b00;"></i>
-                        <h4 style="margin-bottom: 8px;">Görevleri Görmek ve Yapmak İçin Giriş Yapın</h4>
-                        <p style="font-size: 13px; color: rgba(255,255,255,0.6); margin-bottom: 15px;">
+                    <div class="gated-wall" id="gatedWallWarning" style="text-align:center; padding: 20px 0;">
+                        <i class="fa-solid fa-lock" style="font-size: 32px; margin-bottom: 15px; color: var(--neon-purple);"></i>
+                        <h4 style="margin-bottom: 8px; color: var(--text-primary); font-size: 16px;">Görevleri Görmek ve Yapmak İçin Giriş Yapın</h4>
+                        <p style="font-size: 13px; color: var(--text-secondary); margin-bottom: 20px;">
                             Görevlerin doğrulanması ve kazandığınız ödüllerin hesabınıza aktarılması için Web3 Cüzdanınızı bağlamanız gerekmektedir.
                         </p>
-                        <button class="btn-buy-hero" onclick="openWalletModal()" style="width: 100%; justify-content: center; background: linear-gradient(135deg, #ff6b00, #ff8e00);">
+                        <button class="btn-buy-hero" onclick="openWalletModal()" style="width: 100%; justify-content: center; background: var(--text-primary);">
                             <i class="fa-solid fa-wallet"></i> Cüzdan Bağla
                         </button>
                     </div>
@@ -607,12 +619,12 @@
             if (!tasks) return;
             const container = document.getElementById("taskListContainer");
             container.innerHTML = tasks.map((task, idx) => `
-                <div class="task-item" style="background: rgba(255,255,255,0.03); border: 1px solid var(--border-subtle); padding: 18px; border-radius: var(--radius-md); margin-bottom: 12px; display: flex; justify-content: space-between; align-items: center;">
+                <div class="task-item-card">
                     <div style="display: flex; align-items: center; gap: 14px;">
-                        <div id="icon_${task._id}" style="width: 36px; height: 36px; border-radius: 50%; background: rgba(255, 255, 255, 0.1); color: var(--text-muted); display: flex; align-items: center; justify-content: center; font-size: 16px;"><i class="fa-solid fa-clock"></i></div>
+                        <div id="icon_${task._id}" class="task-icon-circle"><i class="fa-solid fa-clock"></i></div>
                         <div>
-                            <div style="font-weight: 800; font-size: 15px;">${task.title}</div>
-                            <div style="font-size: 13px; color: var(--text-secondary);">${task.target}</div>
+                            <div style="font-weight: 800; font-size: 14px; color: var(--text-primary);">${task.title}</div>
+                            <div style="font-size: 12px; color: var(--text-secondary);">${task.target}</div>
                         </div>
                     </div>
                     <button id="btn_${task._id}" class="btn-verify-task" onclick="verifySingleTask('${task._id}', '${task.target}', '${task.type}')">

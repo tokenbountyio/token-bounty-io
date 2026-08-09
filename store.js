@@ -66,7 +66,9 @@ const TokenBountyStore = {
             isLoggedIn: this.userState.isLoggedIn,
             email: this.userState.email,
             connectedWallet: this.userState.connectedWallet,
-            walletType: this.userState.walletType
+            walletType: this.userState.walletType,
+            streakDays: this.userState.streakDays,
+            streakLastClaimed: this.userState.streakLastClaimed
         }));
     },
 

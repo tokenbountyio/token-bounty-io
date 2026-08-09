@@ -522,6 +522,10 @@ function submitVerifyCode(email) {
         if (data.success) {
             TokenBountyStore.userState.email = data.user.email;
             TokenBountyStore.userState.isLoggedIn = true;
+            if (data.user.streak) {
+                TokenBountyStore.userState.streakDays = data.user.streak.count;
+                TokenBountyStore.userState.streakLastClaimed = data.user.streak.lastClaimed;
+            }
             TokenBountyStore.saveLocalSession();
             closeAuthModals();
             updateWalletUI();
@@ -552,6 +556,10 @@ function submitLogin() {
         if (data.success) {
             TokenBountyStore.userState.email = data.user.email;
             TokenBountyStore.userState.isLoggedIn = true;
+            if (data.user.streak) {
+                TokenBountyStore.userState.streakDays = data.user.streak.count;
+                TokenBountyStore.userState.streakLastClaimed = data.user.streak.lastClaimed;
+            }
             TokenBountyStore.saveLocalSession();
             closeAuthModals();
             updateWalletUI();

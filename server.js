@@ -168,7 +168,7 @@ app.post('/api/auth/verify-code', async (req, res) => {
 
     res.json({
         success: true,
-        user: { id: newUser._id, email: newUser.email, isVerified: true, wallets: newUser.wallets },
+        user: { id: newUser._id, email: newUser.email, isVerified: true, wallets: newUser.wallets, streak: { count: 0, lastClaimed: null } },
         token: "tb_jwt_" + Math.random().toString(36).substring(2)
     });
 });
@@ -187,7 +187,7 @@ app.post('/api/auth/login', async (req, res) => {
 
     res.json({
         success: true,
-        user: { id: user._id, email: user.email, isVerified: user.isVerified, wallets: user.wallets },
+        user: { id: user._id, email: user.email, isVerified: user.isVerified, wallets: user.wallets, streak: user.streak || { count: 0, lastClaimed: null } },
         token: "tb_jwt_" + Math.random().toString(36).substring(2)
     });
 });

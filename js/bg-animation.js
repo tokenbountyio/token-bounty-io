@@ -18,17 +18,15 @@ document.addEventListener("DOMContentLoaded", () => {
     document.body.prepend(bgWrapper);
 
     // 2. Create the image layer that will scale and pan
-    const bgImage = document.createElement("div");
+    const bgImage = document.createElement("img");
+    bgImage.src = "/images/bg-arch.png";
     bgImage.style.position = "absolute";
     // Make it slightly larger than the screen so we can pan/parallax without showing edges
     bgImage.style.top = "-5%";
     bgImage.style.left = "-5%";
     bgImage.style.width = "110%";
     bgImage.style.height = "115%";
-    bgImage.style.backgroundImage = "url('images/bg-arch.png')";
-    bgImage.style.backgroundSize = "cover";
-    bgImage.style.backgroundPosition = "center top";
-    bgImage.style.backgroundRepeat = "no-repeat";
+    bgImage.style.objectFit = "cover";
     // Transition for smooth breathing/ken-burns if we wanted purely CSS, 
     // but we'll use JS for parallax
     bgWrapper.appendChild(bgImage);

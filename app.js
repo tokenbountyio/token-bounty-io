@@ -54,6 +54,9 @@ function updateWalletUI() {
         // User is logged in
         actionsDiv.innerHTML = `
             <div style="display:flex; align-items:center; gap:8px;">
+                <button onclick="toggleTheme()" class="btn-wallet" style="padding: 8px 12px; margin-right: 4px;" title="Gece/Gündüz Modu">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
                 <a href="profile" class="btn-wallet" style="text-decoration:none; background:var(--bg-surface); border:1px solid var(--border-subtle); box-shadow:0 4px 12px rgba(0,0,0,0.03); padding:8px 16px;">
                     <i class="fa-solid fa-circle-user" style="color:var(--neon-cyan); font-size:16px;"></i> ${displayLabel}
                 </a>
@@ -62,16 +65,29 @@ function updateWalletUI() {
                 </button>
             </div>
         `;
+        // Make sure to re-apply the correct icon state since we just replaced the DOM element
+        if(window.updateThemeIcon && document.documentElement.getAttribute('data-theme')) {
+            window.updateThemeIcon(document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+        }
     } else {
         // Logged out header - Giriş Yap & Kayıt Ol
         actionsDiv.innerHTML = `
-            <button onclick="openLoginModal(event)" class="btn-wallet">
-                <i class="fa-solid fa-key" style="color:var(--neon-cyan);"></i> Giriş Yap
-            </button>
-            <button onclick="openRegisterModal(event)" class="btn-main" style="padding:11px 24px;font-size:14px;">
-                <i class="fa-solid fa-user-plus"></i> Kayıt Ol
-            </button>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <button onclick="toggleTheme()" class="btn-wallet" style="padding: 11px 14px; margin-right: 4px;" title="Gece/Gündüz Modu">
+                    <i id="theme-icon" class="fa-solid fa-moon"></i>
+                </button>
+                <button onclick="openLoginModal(event)" class="btn-wallet">
+                    <i class="fa-solid fa-key" style="color:var(--neon-cyan);"></i> Giriş Yap
+                </button>
+                <button onclick="openRegisterModal(event)" class="btn-main" style="padding:11px 24px;font-size:14px;">
+                    <i class="fa-solid fa-user-plus"></i> Kayıt Ol
+                </button>
+            </div>
         `;
+        // Make sure to re-apply the correct icon state since we just replaced the DOM element
+        if(window.updateThemeIcon && document.documentElement.getAttribute('data-theme')) {
+            window.updateThemeIcon(document.documentElement.getAttribute('data-theme') === 'dark' ? 'dark' : 'light');
+        }
     }
 }
 

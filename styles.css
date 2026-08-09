@@ -54,11 +54,11 @@
    DARK MODE OVERRIDES
    ----------------------------------------------------------- */
 [data-theme="dark"] {
-    --bg-base: #0f172a;
-    --bg-surface: #1e293b;
-    --bg-surface-elevated: #334155;
-    --bg-glass: rgba(15, 23, 42, 0.7);
-    --bg-glass-card: rgba(30, 41, 59, 0.85);
+    --bg-base: #020617;
+    --bg-surface: #0f172a;
+    --bg-surface-elevated: #1e293b;
+    --bg-glass: rgba(2, 6, 23, 0.7);
+    --bg-glass-card: rgba(15, 23, 42, 0.85);
     --bg-glass-hover: rgba(30, 41, 59, 0.95);
     
     --border-subtle: rgba(255, 255, 255, 0.08);
@@ -133,6 +133,11 @@ body, .glass-card, .glass-panel, .table-card, .stats-card, .sidebar, .coingecko-
     background: radial-gradient(circle, var(--dynamic-accent3, rgba(16, 185, 129, 0.2)) 0%, transparent 70%);
     animation-delay: -10s;
     animation-duration: 18s;
+}
+
+[data-theme="dark"] .orb,
+[data-theme="dark"] .ambient-blob {
+    opacity: 0.05 !important;
 }
 
 @keyframes floatBlob {

@@ -597,6 +597,14 @@
 
             if (currentProj) {
                 populateDetailView(currentProj);
+                
+                // Chameleon Effect: Update ambient background colors based on token
+                if (currentProj.accentColor) {
+                    document.documentElement.style.setProperty('--dynamic-accent', currentProj.accentColor);
+                    // Create a slightly modified version for the secondary blob
+                    const accent2 = currentProj.accentColor.replace('0.25', '0.35'); 
+                    document.documentElement.style.setProperty('--dynamic-accent2', accent2);
+                }
             }
             checkWalletGatedStatus();
         });

@@ -73,14 +73,26 @@ const TokenBountyStore = {
     populatePlaceholders() {
         if (!this.projects) this.projects = [];
         let currentLen = this.projects.length;
+        
+        // Define accent colors for Chameleon effect based on Network
+        const networks = ['Solana', 'Base', 'Ethereum', 'BNB Chain'];
+        const accents = [
+            'rgba(168, 85, 247, 0.25)', // Solana (Purple)
+            'rgba(59, 130, 246, 0.25)', // Base (Blue)
+            'rgba(16, 185, 129, 0.25)', // Ethereum (Greenish/Cyan for contrast)
+            'rgba(245, 158, 11, 0.25)'  // BNB (Gold)
+        ];
+
         for (let i = currentLen + 1; i <= 20; i++) {
+            const netIdx = i % 4;
             this.projects.push({
                 _id: 'mock' + i,
                 id: 'mock-coin-' + i,
                 name: 'Yükleniyor...',
                 ticker: '...',
                 logo: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
-                network: ['Solana', 'Base', 'Ethereum', 'BNB Chain'][i % 4],
+                network: networks[netIdx],
+                accentColor: accents[netIdx],
                 price: "0.00",
                 change24h: "0.00",
                 bountyRemainingUSD: 1000 + (i * 100),
@@ -97,6 +109,17 @@ const TokenBountyStore = {
             const data = await res.json();
             if (data && data.success) {
                 this.projects = data.projects || [];
+                
+                // Ensure all projects have an accent color for the Chameleon effect
+                this.projects.forEach(p => {
+                    if (!p.accentColor) {
+                        const net = (p.network || "").toLowerCase();
+                        if (net.includes('solana')) p.accentColor = 'rgba(168, 85, 247, 0.25)';
+                        else if (net.includes('base')) p.accentColor = 'rgba(59, 130, 246, 0.25)';
+                        else if (net.includes('bsc') || net.includes('bnb')) p.accentColor = 'rgba(245, 158, 11, 0.25)';
+                        else p.accentColor = 'rgba(16, 185, 129, 0.25)'; // Default Ethereum/Other
+                    }
+                });
             }
         } catch (err) {
             console.error("Failed to load DB projects:", err);

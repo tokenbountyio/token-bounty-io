@@ -178,4 +178,22 @@ function initCanvasParticles() {
 
     init();
     animate();
+
+    /* -------------------------------------------------------------
+       Premium Visuals: Parallax Depth Effect
+       ------------------------------------------------------------- */
+    window.addEventListener('scroll', () => {
+        const scrolled = window.scrollY;
+        
+        // Translate the canvas and the ambient-bg slightly slower than the scroll speed
+        // This gives a 3D depth effect (parallax)
+        if (canvas) {
+            canvas.style.transform = `translateY(${scrolled * 0.4}px)`;
+        }
+        
+        const ambientBg = document.querySelector('.ambient-bg');
+        if (ambientBg) {
+            ambientBg.style.transform = `translateY(${scrolled * 0.2}px)`;
+        }
+    });
 }

@@ -48,6 +48,104 @@
     --radius-full: 9999px;
 }
 
+/* -----------------------------------------------------------
+   AMBILIGHT GRADIENT MESH (Dynamic Background)
+   ----------------------------------------------------------- */
+.ambient-bg {
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    z-index: -2;
+    overflow: hidden;
+    pointer-events: none;
+    background-color: var(--bg-base);
+    transition: background-color 1s ease, transform 0.1s linear;
+}
+
+.ambient-blob {
+    position: absolute;
+    border-radius: 50%;
+    filter: blur(80px);
+    opacity: 0.6;
+    animation: floatBlob 20s infinite alternate ease-in-out;
+    transition: background 1s ease;
+}
+
+/* Base blobs (colors will be overridden by --dynamic-accent dynamically) */
+.ambient-blob.blob-1 {
+    width: 600px;
+    height: 600px;
+    top: -100px;
+    left: -100px;
+    background: radial-gradient(circle, var(--dynamic-accent, rgba(59, 130, 246, 0.3)) 0%, transparent 70%);
+    animation-delay: 0s;
+}
+
+.ambient-blob.blob-2 {
+    width: 800px;
+    height: 800px;
+    bottom: -200px;
+    right: -100px;
+    background: radial-gradient(circle, var(--dynamic-accent2, rgba(99, 102, 241, 0.3)) 0%, transparent 70%);
+    animation-delay: -5s;
+    animation-duration: 25s;
+}
+
+.ambient-blob.blob-3 {
+    width: 500px;
+    height: 500px;
+    top: 40%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    background: radial-gradient(circle, var(--dynamic-accent3, rgba(16, 185, 129, 0.2)) 0%, transparent 70%);
+    animation-delay: -10s;
+    animation-duration: 18s;
+}
+
+@keyframes floatBlob {
+    0% { transform: translate(0, 0) scale(1); }
+    33% { transform: translate(30px, -50px) scale(1.1); }
+    66% { transform: translate(-20px, 20px) scale(0.9); }
+    100% { transform: translate(0, 0) scale(1); }
+}
+
+/* Spotlight Hover Effect Classes */
+.glow-card, .glow-row {
+    position: relative;
+    overflow: hidden;
+}
+
+.glow-card::before, .glow-row::before {
+    content: '';
+    position: absolute;
+    top: 0; left: 0; right: 0; bottom: 0;
+    pointer-events: none;
+    z-index: 10;
+    opacity: 0;
+    transition: opacity 0.3s;
+    background: radial-gradient(
+        600px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+        rgba(59, 130, 246, 0.08),
+        transparent 40%
+    );
+}
+
+.glow-card:hover::before, .glow-row:hover::before {
+    opacity: 1;
+}
+
+/* Micro-interaction Burst Animation */
+@keyframes buttonBurst {
+    0% { box-shadow: 0 0 0 0 rgba(59, 130, 246, 0.4); }
+    100% { box-shadow: 0 0 0 15px rgba(59, 130, 246, 0); }
+}
+
+.burst-active {
+    animation: buttonBurst 0.6s cubic-bezier(0.16, 1, 0.3, 1) !important;
+}
+
 * {
     margin: 0;
     padding: 0;

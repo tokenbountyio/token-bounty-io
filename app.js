@@ -644,3 +644,76 @@ function verifyAdminAuth() {
         showToast("⛔ Geçersiz Admin Şifresi! Erişim reddedildi.", "error");
     }
 }
+
+/* -------------------------------------------------------------
+   Premium Visuals: Spotlight Hover (Glow Card) & Button Bursts
+   ------------------------------------------------------------- */
+
+// Spotlight Effect Tracking
+document.addEventListener("mousemove", e => {
+    // Sadece glow-card ve glow-row class'ına sahip elementlerde çalışsın
+    const glowElements = document.querySelectorAll(".glow-card, .glow-row");
+    glowElements.forEach(el => {
+        const rect = el.getBoundingClientRect();
+        // Mouse'un element içindeki (x, y) piksel pozisyonu
+        const x = e.clientX - rect.left;
+        const y = e.clientY - rect.top;
+        
+        // CSS Variable'larını anlık olarak güncelle
+        el.style.setProperty("--mouse-x", `${x}px`);
+        el.style.setProperty("--mouse-y", `${y}px`);
+    });
+});
+
+// Micro-Animation Burst Function (Confetti-like subtle click effect)
+window.createBurst = function(event) {
+    const btn = event.currentTarget;
+    
+    // Add CSS ripple burst
+    btn.classList.remove("burst-active");
+    // Trigger reflow to restart animation
+    void btn.offsetWidth;
+    btn.classList.add("burst-active");
+    
+    // DOM Particle Burst (Creates 8 tiny neon particles)
+    const rect = btn.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    for (let i = 0; i < 8; i++) {
+        const particle = document.createElement("div");
+        particle.style.position = "absolute";
+        particle.style.width = "4px";
+        particle.style.height = "4px";
+        particle.style.background = (i % 2 === 0) ? "var(--neon-cyan)" : "var(--neon-purple)";
+        particle.style.borderRadius = "50%";
+        particle.style.left = `${x}px`;
+        particle.style.top = `${y}px`;
+        particle.style.pointerEvents = "none";
+        
+        // Random trajectory
+        const angle = Math.random() * Math.PI * 2;
+        const velocity = 20 + Math.random() * 20;
+        const tx = Math.cos(angle) * velocity;
+        const ty = Math.sin(angle) * velocity;
+        
+        particle.animate([
+            { transform: 'translate(0,0) scale(1)', opacity: 1 },
+            { transform: `translate(${tx}px, ${ty}px) scale(0)`, opacity: 0 }
+        ], {
+            duration: 500 + Math.random() * 300,
+            easing: 'cubic-bezier(0, .9, .57, 1)'
+        });
+        
+        btn.appendChild(particle);
+        setTimeout(() => particle.remove(), 800);
+    }
+};
+
+// Bind burst effect to important buttons globally
+document.addEventListener("DOMContentLoaded", () => {
+    // Any button with btn-main or btn-wallet
+    document.querySelectorAll(".btn-main, .btn-wallet, .btn-claim, .btn-buy-hero").forEach(btn => {
+        btn.addEventListener("click", createBurst);
+    });
+});

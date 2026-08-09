@@ -43,13 +43,16 @@ function updateWalletUI() {
             if (displayLabel.length > 12) displayLabel = displayLabel.substring(0, 12) + '...';
         }
         
+        // User is logged in
         actionsDiv.innerHTML = `
-            <a href="profile" class="btn-wallet" style="text-decoration:none;">
-                <i class="fa-solid fa-user-astronaut" style="color:var(--neon-green);"></i> ${displayLabel}
-            </a>
-            <button onclick="handleUserLogout()" class="btn-secondary" style="padding:10px 18px;font-size:12px;border-color:rgba(244,63,94,0.5);color:#f43f5e;" title="Çıkış Yap">
-                <i class="fa-solid fa-right-from-bracket"></i>
-            </button>
+            <div style="display:flex; align-items:center; gap:8px;">
+                <a href="profile" class="btn-wallet" style="text-decoration:none; background:var(--bg-surface); border:1px solid var(--border-subtle); box-shadow:0 4px 12px rgba(0,0,0,0.03); padding:8px 16px;">
+                    <i class="fa-solid fa-circle-user" style="color:var(--neon-cyan); font-size:16px;"></i> ${displayLabel}
+                </a>
+                <button onclick="handleUserLogout()" style="background:transparent; border:none; color:var(--text-tertiary); font-size:18px; cursor:pointer; transition:all 0.2s; padding:8px;" title="Çıkış Yap" onmouseover="this.style.color='#f43f5e'" onmouseout="this.style.color='var(--text-tertiary)'">
+                    <i class="fa-solid fa-power-off"></i>
+                </button>
+            </div>
         `;
     } else {
         // Logged out header - Giriş Yap & Kayıt Ol

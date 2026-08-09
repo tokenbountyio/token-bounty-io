@@ -217,40 +217,46 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Top FOMO Live Ticker Bar */
 .top-ticker-bar {
-    background: rgba(255, 255, 255, 0.95);
-    border-bottom: 1px solid var(--border-subtle);
-    padding: 8px 0;
+    background: #0f172a;
+    color: #ffffff;
+    padding: 10px 0;
     font-size: 13px;
     overflow: hidden;
-    box-shadow: 0 4px 20px rgba(0,0,0,0.03);
 }
 
 .ticker-wrapper {
     display: flex;
     align-items: center;
-    gap: 20px;
     max-width: 1320px;
     margin: 0 auto;
     padding: 0 24px;
     overflow: hidden;
+    position: relative;
 }
 
 .ticker-badge {
-    background: linear-gradient(135deg, rgba(0, 255, 135, 0.25) 0%, rgba(0, 242, 254, 0.25) 100%);
-    border: 1px solid var(--neon-green);
+    background: #0f172a;
     color: var(--neon-green);
-    padding: 4px 14px;
-    border-radius: var(--radius-full);
+    padding: 0 20px 0 0;
     font-weight: 800;
     font-size: 11px;
-    letter-spacing: 0.5px;
+    letter-spacing: 1px;
     white-space: nowrap;
     display: flex;
     align-items: center;
-    gap: 6px;
-    box-shadow: 0 0 15px rgba(0, 255, 135, 0.3);
-    flex-shrink: 0;
-    z-index: 2;
+    gap: 8px;
+    z-index: 10;
+    position: relative;
+}
+
+.ticker-badge::after {
+    content: '';
+    position: absolute;
+    right: 0;
+    top: -10px;
+    bottom: -10px;
+    width: 1px;
+    background: rgba(255,255,255,0.1);
 }
 
 .ticker-content {
@@ -259,7 +265,7 @@ h1, h2, h3, h4, h5, h6 {
     white-space: nowrap;
     animation: tickerScroll 30s linear infinite;
     flex-grow: 1;
-    overflow: hidden;
+    padding-left: 20px;
 }
 
 @keyframes tickerScroll {
@@ -267,8 +273,8 @@ h1, h2, h3, h4, h5, h6 {
     100% { transform: translateX(-50%); }
 }
 
-.ticker-item { color: var(--text-secondary); }
-.ticker-item strong { color: var(--text-primary); }
+.ticker-item { color: rgba(255,255,255,0.6); }
+.ticker-item strong { color: #ffffff; }
 
 /* Floating Frosted Navbar */
 .main-header {
@@ -356,9 +362,9 @@ h1, h2, h3, h4, h5, h6 {
     left: 0;
     width: 0%;
     height: 2px;
-    background: var(--gradient-brand);
+    background: var(--neon-cyan);
     transition: width 0.3s ease;
-    box-shadow: 0 0 10px rgba(167, 139, 250, 0.5);
+    box-shadow: 0 0 8px rgba(0, 242, 254, 0.4);
     border-radius: 2px;
 }
 

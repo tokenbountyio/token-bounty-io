@@ -219,23 +219,27 @@
     <div class="modal-backdrop" id="walletModal">
         <div class="modal-card">
             <div class="modal-header">
-                <h3><i class="fa-solid fa-wallet"></i> Web3 Cüzdanınızı Bağlayın</h3>
+                <h3><i class="fa-solid fa-wallet" style="color: var(--neon-purple);"></i> Web3 Cüzdanınızı Bağlayın</h3>
                 <button class="modal-close" onclick="closeWalletModal()"><i class="fa-solid fa-xmark"></i></button>
             </div>
             <div class="modal-body">
                 <p class="modal-desc">Görev yapmak ve kazandığınız token ödüllerini çekmek için tercih ettiğiniz cüzdanı seçin:</p>
                 <div class="wallet-options">
                     <button class="wallet-option-btn" onclick="connectPhantom()">
-                        <img src="https://phantom.app/img/phantom-logo.svg" alt="Phantom" class="wallet-icon-img">
+                        <div class="wallet-icon-wrapper" style="background: linear-gradient(135deg, #ab9ff2 0%, #4facfe 100%);">
+                            <i class="fa-solid fa-ghost"></i>
+                        </div>
                         <div class="wallet-info">
                             <span class="wallet-name">Phantom Wallet</span>
-                            <span class="wallet-badge sol">Solana</span>
+                            <span class="wallet-badge sol">Solana Ağı</span>
                         </div>
                         <i class="fa-solid fa-chevron-right"></i>
                     </button>
 
                     <button class="wallet-option-btn" onclick="connectMetaMask()">
-                        <img src="https://upload.wikimedia.org/wikipedia/commons/3/36/MetaMask_Fox.svg" alt="MetaMask" class="wallet-icon-img">
+                        <div class="wallet-icon-wrapper" style="background: linear-gradient(135deg, #f6851b 0%, #fcd261 100%);">
+                            <i class="fa-brands fa-ethereum"></i>
+                        </div>
                         <div class="wallet-info">
                             <span class="wallet-name">MetaMask</span>
                             <span class="wallet-badge evm">EVM / BSC / Base</span>
@@ -244,7 +248,9 @@
                     </button>
 
                     <button class="wallet-option-btn" onclick="connectTrustWallet()">
-                        <img src="https://trustwallet.com/assets/images/media/assets/trust_platform.svg" alt="Trust Wallet" class="wallet-icon-img">
+                        <div class="wallet-icon-wrapper" style="background: linear-gradient(135deg, #0500ff 0%, #00f2fe 100%);">
+                            <i class="fa-solid fa-shield-halved"></i>
+                        </div>
                         <div class="wallet-info">
                             <span class="wallet-name">Trust Wallet</span>
                             <span class="wallet-badge multi">Çoklu Ağ</span>

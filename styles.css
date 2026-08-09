@@ -62,7 +62,13 @@ button, a, input, select, textarea, .menu-btn {
 }
 
 body {
-    background-color: transparent;
+    background-color: #f8fafc;
+    background-image: 
+        radial-gradient(at 0% 0%, rgba(224, 231, 255, 0.6) 0px, transparent 50%),
+        radial-gradient(at 100% 0%, rgba(204, 251, 241, 0.5) 0px, transparent 50%),
+        radial-gradient(at 100% 100%, rgba(241, 245, 249, 1) 0px, transparent 50%),
+        radial-gradient(at 0% 100%, rgba(226, 232, 240, 0.7) 0px, transparent 50%);
+    background-attachment: fixed;
     color: var(--text-primary);
     font-family: var(--font-body);
     line-height: 1.6;

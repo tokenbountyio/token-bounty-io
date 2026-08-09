@@ -1,5 +1,5 @@
 /* -------------------------------------------------------------
-   TokenBounty.io - Bulletproof Scroll-Scrubbed Video Background
+   TokenBounty.io - 60 FPS Buttery Smooth Scroll Video (Canvas Cache)
    ------------------------------------------------------------- */
 
 document.addEventListener("DOMContentLoaded", () => {
@@ -28,71 +28,151 @@ document.addEventListener("DOMContentLoaded", () => {
         }
     }
 
-    // 2. Setup Video element directly (Canvas extract can fail due to CORS on CloudFront)
-    const video = document.createElement("video");
-    video.src = videoUrl;
-    video.muted = true;
-    video.playsInline = true;
-    video.preload = "auto";
-    // crossOrigin causes issues if Cloudfront isn't configured for it, so we don't use Canvas extraction fallback
-    video.style.position = "absolute";
-    video.style.top = "0";
-    video.style.left = "0";
-    video.style.width = "100%";
-    video.style.height = "100%";
-    video.style.objectFit = "cover";
-    bgWrapper.appendChild(video);
+    // 2. Setup Canvas for 60fps rendering
+    const canvas = document.createElement("canvas");
+    canvas.style.position = "absolute";
+    canvas.style.top = "0";
+    canvas.style.left = "0";
+    canvas.style.width = "100%";
+    canvas.style.height = "100%";
+    canvas.style.opacity = "1"; 
+    bgWrapper.appendChild(canvas);
+    
+    const ctx = canvas.getContext("2d", { alpha: false });
+    const frames = [];
+    let isCacheReady = false;
 
-    // Force video to load its metadata
-    video.load();
+    // Resizing
+    function resizeCanvas() {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        canvas.width = window.innerWidth * dpr;
+        canvas.height = window.innerHeight * dpr;
+    }
+    window.addEventListener("resize", resizeCanvas);
+    resizeCanvas();
 
     // 3. Scroll state
     let targetProgress = 0;
     let smoothedProgress = 0;
 
     window.addEventListener("scroll", () => {
-        // Calculate progress: 0 at top, 1 at bottom
-        // We calculate maxScroll based on body to be absolutely safe
         const scrollY = window.scrollY || window.pageYOffset;
-        const maxScroll = Math.max(
-            document.body.scrollHeight, 
-            document.documentElement.scrollHeight
-        ) - window.innerHeight;
-        
+        const maxScroll = Math.max(document.body.scrollHeight, document.documentElement.scrollHeight) - window.innerHeight;
         if (maxScroll > 0) {
             targetProgress = Math.min(Math.max(scrollY / maxScroll, 0), 1);
         }
     });
 
-    // To prevent the browser from blocking video updates, we briefly play and pause it
-    const initPlay = () => {
-        video.play().then(() => {
-            video.pause();
-        }).catch(e => console.log("Autoplay blocked, safe to ignore for scrubbing"));
-        window.removeEventListener("touchstart", initPlay);
-        window.removeEventListener("click", initPlay);
-    };
-    window.addEventListener("touchstart", initPlay);
-    window.addEventListener("click", initPlay);
+    // Draw object-cover
+    function drawImageCover(img) {
+        const dpr = Math.min(window.devicePixelRatio || 1, 2);
+        const cw = window.innerWidth * dpr;
+        const ch = window.innerHeight * dpr;
+        
+        const imgRatio = img.width / img.height;
+        const canvasRatio = cw / ch;
+        
+        let drawWidth, drawHeight, offsetX, offsetY;
+        
+        if (imgRatio > canvasRatio) {
+            drawHeight = ch;
+            drawWidth = ch * imgRatio;
+            offsetX = (cw - drawWidth) / 2;
+            offsetY = 0;
+        } else {
+            drawWidth = cw;
+            drawHeight = cw / imgRatio;
+            offsetX = 0;
+            offsetY = (ch - drawHeight) / 2;
+        }
+        
+        ctx.drawImage(img, offsetX, offsetY, drawWidth, drawHeight);
+    }
 
-    // 4. Animation Loop
+    // Animation Loop
     function renderLoop() {
         // Lerp progress for that "agency" smoothness
-        smoothedProgress += (targetProgress - smoothedProgress) * 0.08;
+        smoothedProgress += (targetProgress - smoothedProgress) * 0.12;
 
-        if (video.readyState >= 1) { // 1 = HAVE_METADATA
-            const duration = video.duration || 5;
-            const targetTime = smoothedProgress * (duration - 0.05); // slightly avoid the very last frame
-            
-            // Only update if there is a meaningful change to save CPU
-            if (Math.abs(video.currentTime - targetTime) > 0.01) {
-                video.currentTime = targetTime;
-            }
+        if (isCacheReady && frames.length > 0) {
+            let frameIndex = Math.floor(smoothedProgress * (frames.length - 1));
+            frameIndex = Math.max(0, Math.min(frameIndex, frames.length - 1));
+            drawImageCover(frames[frameIndex]);
         }
         
         requestAnimationFrame(renderLoop);
     }
     
-    // Start loop
     requestAnimationFrame(renderLoop);
+
+    // 4. The Magic: Fetch Video as Blob -> Extract Frames -> Render to Canvas
+    // This is the ONLY way to get 60fps scrubbing without CPU decode lag
+    async function initUltraSmoothScrubbing() {
+        try {
+            // Display loading state on canvas (optional, but good for UX)
+            ctx.fillStyle = "#0a0a0a";
+            ctx.fillRect(0, 0, canvas.width, canvas.height);
+            
+            // Fetch video into RAM
+            const response = await fetch(videoUrl);
+            const blob = await response.blob();
+            const blobUrl = URL.createObjectURL(blob);
+
+            const video = document.createElement("video");
+            video.src = blobUrl;
+            video.muted = true;
+            video.playsInline = true;
+            video.preload = "auto";
+            
+            // Wait for metadata
+            await new Promise((resolve) => {
+                video.addEventListener("loadedmetadata", resolve, { once: true });
+            });
+            
+            const duration = video.duration || 5;
+            const totalFrames = 80; // High frame count for buttery smoothness
+            
+            const extractCanvas = document.createElement("canvas");
+            const exCtx = extractCanvas.getContext("2d", { willReadFrequently: true });
+            
+            // Limit resolution slightly for RAM safety, 960px width is plenty for background
+            const targetWidth = Math.min(960, video.videoWidth);
+            const targetHeight = (targetWidth / video.videoWidth) * video.videoHeight;
+            extractCanvas.width = targetWidth;
+            extractCanvas.height = targetHeight;
+
+            // Extract frames
+            for (let i = 0; i < totalFrames; i++) {
+                const time = (i / (totalFrames - 1)) * (duration - 0.05);
+                
+                await new Promise((resolve) => {
+                    const onSeeked = () => {
+                        video.removeEventListener("seeked", onSeeked);
+                        resolve();
+                    };
+                    video.addEventListener("seeked", onSeeked);
+                    video.currentTime = time;
+                });
+                
+                exCtx.drawImage(video, 0, 0, targetWidth, targetHeight);
+                const bitmap = await createImageBitmap(extractCanvas);
+                frames.push(bitmap);
+                
+                // Draw the first frame immediately so the screen isn't black
+                if (i === 0) {
+                    isCacheReady = true; 
+                    drawImageCover(bitmap);
+                }
+            }
+            
+            // Cleanup
+            URL.revokeObjectURL(blobUrl);
+            video.remove();
+            
+        } catch (e) {
+            console.error("Frame extraction failed:", e);
+        }
+    }
+
+    initUltraSmoothScrubbing();
 });

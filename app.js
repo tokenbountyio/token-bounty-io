@@ -249,7 +249,8 @@ function renderTokenTable(networkFilter = "all", searchQuery = "") {
             ? `<div class="sparkline-container"><svg viewBox="0 0 80 26"><path d="M0,20 Q20,24 40,10 T80,4" fill="none" stroke="${sparklineColor}" stroke-width="2.2" stroke-linecap="round"/></svg></div>`
             : `<div class="sparkline-container"><svg viewBox="0 0 80 26"><path d="M0,4 Q20,10 40,20 T80,24" fill="none" stroke="${sparklineColor}" stroke-width="2.2" stroke-linecap="round"/></svg></div>`;
 
-        const rowClass = index === 0 ? "token-row laser-row" : "token-row";
+        let rowClass = index === 0 ? "token-row laser-row glow-row" : "token-row glow-row";
+        if (item.isSponsor) rowClass += " sponsored-row";
 
         return `
             <tr class="${rowClass}" onclick="openTokenDetail('${item._id || item.id}')">

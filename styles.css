@@ -72,7 +72,7 @@
     position: absolute;
     border-radius: 50%;
     filter: blur(80px);
-    opacity: 0.6;
+    opacity: 0.9;
     animation: floatBlob 20s infinite alternate ease-in-out;
     transition: background 1s ease;
 }
@@ -130,8 +130,8 @@
     opacity: 0;
     transition: opacity 0.3s;
     background: radial-gradient(
-        600px circle at var(--mouse-x, 0) var(--mouse-y, 0),
-        rgba(59, 130, 246, 0.08),
+        800px circle at var(--mouse-x, 0) var(--mouse-y, 0),
+        rgba(59, 130, 246, 0.4),
         transparent 40%
     );
 }

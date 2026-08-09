@@ -450,9 +450,9 @@
                 <!-- Live Chart Container -->
                 <div class="chart-card glass-panel" style="margin-top: 30px;">
                     <div class="chart-placeholder" id="chartPlaceholder">
-                        <i class="fa-solid fa-chart-area" style="font-size: 48px; color: #00f2fe; margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(0,242,254,0.5));"></i>
-                        <h3 style="font-weight: 800;">DexScreener Canlı Fiyat Grafiği</h3>
-                        <p style="font-size: 13px; margin-top: 5px; color: rgba(255,255,255,0.6);">Anlık mum verileri DexScreener API üzerinden çekilmektedir.</p>
+                        <i class="fa-solid fa-chart-area" style="font-size: 48px; color: var(--neon-cyan); margin-bottom: 15px; filter: drop-shadow(0 0 10px rgba(0,242,254,0.3));"></i>
+                        <h3 style="font-weight: 800; color: var(--text-primary);">DexScreener Canlı Fiyat Grafiği</h3>
+                        <p style="font-size: 13px; margin-top: 5px; color: var(--text-secondary);">Anlık mum verileri DexScreener API üzerinden çekilmektedir.</p>
                     </div>
                 </div>
 
@@ -461,19 +461,24 @@
             <!-- Right Column: Interactive Quest Execution Card -->
             <div class="quest-box-card glass-panel">
                 
-                <div class="quest-box-header">
-                    <h3 style="font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 10px;">
-                        <i class="fa-solid fa-gift text-green" style="color: #00f2fe; text-shadow: 0 0 15px rgba(0,242,254,0.5);"></i> 
+                <div class="quest-box-header" style="margin-bottom: 25px;">
+                    <h3 style="font-size: 22px; font-weight: 800; display: flex; align-items: center; gap: 10px; color: var(--text-primary);">
+                        <i class="fa-solid fa-gift" style="color: var(--neon-purple); font-size: 24px;"></i> 
                         Airdrop Ödül Görevleri
                     </h3>
-                    <p style="font-size: 14px; color: rgba(255,255,255,0.6); margin-top: 5px;">Görevleri tamamlayın, ücretsiz tokenları kazanın!</p>
+                    <p style="font-size: 14px; color: var(--text-secondary); margin-top: 5px;">Görevleri tamamlayın, anında ücretsiz token kazanın!</p>
                 </div>
 
-                <div class="quest-reward-banner">
-                    <div style="font-size: 13px; color: rgba(255,255,255,0.7); letter-spacing: 1px; margin-bottom: 5px; font-weight: 600;">GÖREV BAŞINA KAZANILACAK ÖDÜL</div>
-                    <div class="quest-reward-amount" id="detailRewardPerUser">$3.00 Değerinde Token</div>
-                    <div style="font-size: 13px; color: rgba(255,255,255,0.5); margin-top: 8px;">
-                        <i class="fa-solid fa-vault"></i> Kalan Ödül Havuzu: <strong id="detailBountyRemaining" style="color: #fff;">$250 / $350</strong>
+                <div class="quest-reward-banner" style="background: linear-gradient(135deg, rgba(168, 85, 247, 0.1) 0%, rgba(0, 242, 254, 0.05) 100%); border: 1px solid rgba(168, 85, 247, 0.2); border-radius: 16px; padding: 25px; text-align: center; margin-bottom: 30px; position: relative; overflow: hidden; box-shadow: 0 10px 25px rgba(168,85,247,0.05);">
+                    <!-- Decorative background element -->
+                    <div style="position: absolute; top: -20px; right: -20px; width: 100px; height: 100px; background: radial-gradient(circle, rgba(168,85,247,0.2) 0%, rgba(255,255,255,0) 70%); border-radius: 50%;"></div>
+                    
+                    <div style="font-size: 12px; color: var(--text-tertiary); letter-spacing: 1px; margin-bottom: 8px; font-weight: 800;">GÖREV BAŞINA KAZANÇ</div>
+                    <div class="quest-reward-amount" id="detailRewardPerUser" style="font-size: 36px; font-weight: 900; background: linear-gradient(135deg, var(--neon-purple) 0%, var(--neon-cyan) 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; text-shadow: 0 4px 15px rgba(168,85,247,0.15); margin-bottom: 10px;">
+                        $3.00 Değerinde Token
+                    </div>
+                    <div style="font-size: 13px; color: var(--text-secondary); margin-top: 12px; display: inline-flex; align-items: center; gap: 8px; background: #fff; padding: 6px 14px; border-radius: var(--radius-full); border: 1px solid var(--border-subtle); box-shadow: 0 4px 10px rgba(0,0,0,0.02); font-weight: 600;">
+                        <i class="fa-solid fa-vault" style="color: var(--neon-green);"></i> Kalan Ödül Havuzu: <strong id="detailBountyRemaining" style="color: var(--text-primary);">$250 / $350</strong>
                     </div>
                 </div>
 

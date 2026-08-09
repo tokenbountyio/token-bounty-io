@@ -10,6 +10,7 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function initArchitecture() {
     const archHTML = `
+    <canvas id="bg-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -4; pointer-events: none; opacity: 0.6;"></canvas>
     <div class="arch-background" id="archBg"></div>
     <div class="arch-ceiling" id="archCeiling"></div>
     <div class="arch-pillar left" id="archPillarLeft"></div>

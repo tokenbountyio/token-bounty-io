@@ -70,6 +70,27 @@ const TokenBountyStore = {
         }));
     },
 
+    populatePlaceholders() {
+        if (!this.projects) this.projects = [];
+        let currentLen = this.projects.length;
+        for (let i = currentLen + 1; i <= 20; i++) {
+            this.projects.push({
+                _id: 'mock' + i,
+                id: 'mock-coin-' + i,
+                name: 'Yükleniyor...',
+                ticker: '...',
+                logo: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
+                network: ['Solana', 'Base', 'Ethereum', 'BNB Chain'][i % 4],
+                price: "0.00",
+                change24h: "0.00",
+                bountyRemainingUSD: 1000 + (i * 100),
+                bountyTotalUSD: 5000,
+                questCount: 2,
+                addedTimeText: "Sistem yükleniyor"
+            });
+        }
+    },
+
     async fetchProjects() {
         try {
             const res = await fetch(`${API_BASE_URL}/api/projects`);
@@ -81,25 +102,9 @@ const TokenBountyStore = {
             console.error("Failed to load DB projects:", err);
             this.projects = [];
         }
-
-        // Add Placeholder items to ensure we have at least 20 items to test scroll/theme layout
-        let currentLen = this.projects.length;
-        for (let i = currentLen + 1; i <= 20; i++) {
-            this.projects.push({
-                _id: 'mock' + i,
-                id: 'mock-coin-' + i,
-                name: 'Placeholder Token ' + i,
-                ticker: 'TK' + i,
-                logo: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
-                network: ['Solana', 'Base', 'Ethereum', 'BNB Chain'][i % 4],
-                price: (Math.random() * 10).toFixed(4),
-                change24h: (Math.random() * 20 - 10).toFixed(2),
-                bountyRemainingUSD: 1000 + (i * 100),
-                bountyTotalUSD: 5000,
-                questCount: 2,
-                addedTimeText: i + " saat önce"
-            });
-        }
+        
+        // Veritabanı boşsa veya az token varsa bile sayfa yapısını bozmamak için dolgu yap
+        this.populatePlaceholders();
     },
 
     async syncUserProfile() {

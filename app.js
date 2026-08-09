@@ -8,13 +8,20 @@ document.addEventListener("DOMContentLoaded", () => {
 });
 
 async function initApp() {
-    await TokenBountyStore.fetchProjects(); // Gerçek veritabanından projeleri çeker
-    await TokenBountyStore.syncUserProfile();
+    // 1. Anında (Optimistic) UI Yüklemesi - Kullanıcıyı bekletmemek için
+    TokenBountyStore.populatePlaceholders(); 
     renderTokenTable("all");
     setupFilterTabs();
     setupSearchInput();
     updateWalletUI();
     updateStreakUI();
+
+    // 2. Arka planda gerçek verileri çek ve gelince tabloyu yenile (Non-blocking)
+    TokenBountyStore.fetchProjects().then(() => {
+        renderTokenTable("all");
+    });
+
+    await TokenBountyStore.syncUserProfile();
 }
 
 // Update Header UI for Auth State (Giriş Yap / Kayıt Ol or User Badge)

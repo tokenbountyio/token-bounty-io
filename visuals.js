@@ -4,8 +4,19 @@
    ------------------------------------------------------------- */
 
 document.addEventListener("DOMContentLoaded", () => {
+    initArchitecture();
     initCanvasParticles();
 });
+
+function initArchitecture() {
+    const archHTML = `
+    <div class="arch-background"></div>
+    <div class="arch-pillar left"></div>
+    <div class="arch-pillar right"></div>
+    <div class="arch-curve"></div>
+    `;
+    document.body.insertAdjacentHTML('afterbegin', archHTML);
+}
 
 function initCanvasParticles() {
     const canvas = document.getElementById("bg-canvas");

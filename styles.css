@@ -53,14 +53,18 @@
    ----------------------------------------------------------- */
 .ambient-bg {
     position: fixed;
-    top: 0;
+    top: -10vh;
     left: 0;
     width: 100vw;
-    height: 100vh;
-    z-index: -2;
+    height: 120vh;
+    z-index: -3;
     overflow: hidden;
     pointer-events: none;
-    background-color: var(--bg-base);
+    background-color: #fafcff; /* Moved from body */
+    background-image: 
+        linear-gradient(rgba(203, 213, 225, 0.25) 1px, transparent 1px),
+        linear-gradient(90deg, rgba(203, 213, 225, 0.25) 1px, transparent 1px);
+    background-size: 40px 40px;
     transition: background-color 1s ease, transform 0.1s linear;
 }
 
@@ -164,11 +168,7 @@ button, a, input, select, textarea, .menu-btn {
    ------------------------------------------------------------- */
 
 body {
-    background-color: #fafcff; /* Özel off-white premium ton */
-    background-image: 
-        linear-gradient(rgba(203, 213, 225, 0.25) 1px, transparent 1px),
-        linear-gradient(90deg, rgba(203, 213, 225, 0.25) 1px, transparent 1px);
-    background-size: 40px 40px;
+    background-color: transparent; /* Changed to transparent so .ambient-bg can show */
     color: var(--text-primary);
     font-family: var(--font-body);
     line-height: 1.6;

@@ -796,7 +796,6 @@ h1, h2, h3, h4, h5, h6 {
 
 .coingecko-table {
     width: 100%;
-    min-width: 1100px;
     border-collapse: collapse;
     text-align: left;
 }
@@ -807,15 +806,15 @@ h1, h2, h3, h4, h5, h6 {
     color: var(--text-tertiary);
     font-size: 11px;
     font-weight: 800;
-    padding: 20px 16px;
+    padding: 14px 10px;
     text-transform: uppercase;
     letter-spacing: 1.2px;
 }
 
 .coingecko-table td {
-    padding: 18px 16px;
+    padding: 14px 10px;
     border-bottom: 1px solid rgba(255,255,255,0.03);
-    font-size: 14px;
+    font-size: 13px;
     vertical-align: middle;
 }
 

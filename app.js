@@ -291,7 +291,7 @@ function renderTokenTable(networkFilter = "all", searchQuery = "") {
                     <span style="font-weight: 700; color: var(--neon-cyan);">${item.questCount || 2} Görev</span>
                 </td>
                 <td class="th-actions">
-                    <div class="action-btns" style="display: flex; gap: 8px; white-space: nowrap;" onclick="event.stopPropagation();">
+                    <div class="action-btns" style="display: flex; gap: 8px; flex-wrap: wrap;" onclick="event.stopPropagation();">
                         <a href="coin-detail?id=${item.id}" class="btn-table-quest"><i class="fa-solid fa-gift"></i> Görev Yap</a>
                         <a href="${item.buyUrl || 'https://raydium.io'}" target="_blank" onclick="event.stopPropagation();" class="btn-table-buy"><i class="fa-solid fa-cart-shopping"></i> Satın Al</a>
                     </div>

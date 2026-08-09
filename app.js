@@ -30,6 +30,8 @@ async function initApp() {
     });
 
     await TokenBountyStore.syncUserProfile();
+    // Refresh UI with synced data
+    updateStreakUI();
 }
 
 // Update Header UI for Auth State (Giriş Yap / Kayıt Ol or User Badge)

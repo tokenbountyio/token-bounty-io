@@ -143,6 +143,7 @@ const TokenBountyStore = {
                 if (data.user.streak) {
                     this.userState.streakDays = data.user.streak.count || 1;
                     this.userState.streakLastClaimed = data.user.streak.lastClaimed;
+                    this.saveLocalSession();
                 }
             }
         } catch (err) {

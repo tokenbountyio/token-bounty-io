@@ -157,7 +157,7 @@ function initCanvasParticles() {
                     let opacity = (1 - (distance / maxDistance)) * 0.5;
                     ctx.beginPath();
                     // Blend colors based on particle i
-                    ctx.strokeStyle = \`rgba(\${particles[i].lineColor}, \${opacity})\`; 
+                    ctx.strokeStyle = `rgba(${particles[i].lineColor}, ${opacity})`; 
                     ctx.lineWidth = 1;
                     ctx.moveTo(particles[i].x, particles[i].y);
                     ctx.lineTo(particles[j].x, particles[j].y);
@@ -174,7 +174,7 @@ function initCanvasParticles() {
                 if (distance < mouse.radius * 0.6) {
                     let opacity = 1 - (distance / (mouse.radius * 0.6));
                     ctx.beginPath();
-                    ctx.strokeStyle = \`rgba(\${particles[i].lineColor}, \${opacity * 0.8})\`;
+                    ctx.strokeStyle = `rgba(${particles[i].lineColor}, ${opacity * 0.8})`;
                     ctx.lineWidth = 2;
                     ctx.moveTo(particles[i].x, particles[i].y);
                     ctx.lineTo(mouse.x, mouse.y);

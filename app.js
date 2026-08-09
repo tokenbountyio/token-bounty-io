@@ -103,7 +103,22 @@ function updateStreakUI() {
     
     // Ensure config exists (fallback if needed)
     const rewards = TokenBountyStore.systemConfig?.dailyStreakRewardsUSD || [0.10, 0.20, 0.30, 0.40, 0.50, 1.00, 2.00];
-    const currentStreak = TokenBountyStore.userState.streakDays || 1;
+    
+    // Calculate display streak based on time elapsed
+    let currentStreak = TokenBountyStore.userState.streakDays || 0;
+    const lastClaimed = TokenBountyStore.userState.streakLastClaimed;
+    let timeDiff = 25 * 3600 * 1000; // Default past 24h
+    if (lastClaimed) {
+        timeDiff = new Date().getTime() - new Date(lastClaimed).getTime();
+    }
+    
+    if (timeDiff >= 24 * 3600 * 1000 && timeDiff <= 48 * 3600 * 1000) {
+        currentStreak += 1; // Next day is ready
+    } else if (timeDiff > 48 * 3600 * 1000) {
+        currentStreak = 1; // Streak reset
+    }
+    if (currentStreak === 0) currentStreak = 1;
+    if (currentStreak > 7) currentStreak = 7;
 
     // Render Grid Dynamically
     if (gridContainer) {
@@ -142,14 +157,7 @@ function updateStreakUI() {
     } else {
         // Unlocked state when wallet IS connected
         if (streakBadge) streakBadge.innerText = `${currentStreak} Gün Seri 🔥`;
-        
         if (streakBtn) {
-            const lastClaimed = TokenBountyStore.userState.streakLastClaimed;
-            let timeDiff = 25 * 3600 * 1000; // Default past 24h
-            if (lastClaimed) {
-                timeDiff = new Date().getTime() - new Date(lastClaimed).getTime();
-            }
-
             if (streakInterval) clearInterval(streakInterval);
 
             if (timeDiff < 24 * 3600 * 1000) {

@@ -135,8 +135,9 @@ const TokenBountyStore = {
     async syncUserProfile() {
         if (!this.userState.isLoggedIn || !this.userState.email) return;
         try {
-            const res = await fetch(`${API_BASE_URL}/api/user/profile`, {
-                headers: { 'x-user-email': this.userState.email }
+            const res = await fetch(`${API_BASE_URL}/api/user/profile?t=${new Date().getTime()}`, {
+                headers: { 'x-user-email': this.userState.email },
+                cache: 'no-store'
             });
             const data = await res.json();
             if (data && data.success) {

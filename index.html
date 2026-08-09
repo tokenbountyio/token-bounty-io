@@ -10,6 +10,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Outfit:wght@300;400;500;600;700;800&family=Space+Grotesk:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <link rel="stylesheet" href="styles.css">
+    <script src="theme.js"></script>
 </head>
 <body>
 
@@ -50,6 +51,7 @@
             </nav>
 
             <div class="header-actions">
+                <button onclick="toggleTheme()" class="btn-wallet" style="padding: 11px 14px;" title="Gece/Gündüz Modu"><i id="theme-icon" class="fa-solid fa-moon"></i></button>
                 <button onclick="openLoginModal(event)" class="btn-wallet"><i class="fa-solid fa-key" style="color:var(--neon-cyan);"></i> Giriş Yap</button>
                 <button onclick="openRegisterModal(event)" class="btn-main" style="padding:11px 24px;font-size:14px;"><i class="fa-solid fa-user-plus"></i> Kayıt Ol</button>
             </div>

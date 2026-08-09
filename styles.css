@@ -31,6 +31,8 @@
     --text-primary: #0f172a;
     --text-secondary: #475569;
     --text-tertiary: #94a3b8;
+    --text-on-dark: #ffffff;
+    --bg-glass-hover: rgba(255, 255, 255, 0.9);
     
     --color-up: #10b981; 
     --color-down: #ef4444; 
@@ -49,6 +51,35 @@
 }
 
 /* -----------------------------------------------------------
+   DARK MODE OVERRIDES
+   ----------------------------------------------------------- */
+[data-theme="dark"] {
+    --bg-base: #0f172a;
+    --bg-surface: #1e293b;
+    --bg-surface-elevated: #334155;
+    --bg-glass: rgba(15, 23, 42, 0.7);
+    --bg-glass-card: rgba(30, 41, 59, 0.85);
+    --bg-glass-hover: rgba(30, 41, 59, 0.95);
+    
+    --border-subtle: rgba(255, 255, 255, 0.08);
+    --border-hover: rgba(255, 255, 255, 0.15); 
+    --border-glow: rgba(255, 255, 255, 0.1);  
+    
+    --text-primary: #f8fafc;
+    --text-secondary: #cbd5e1;
+    --text-tertiary: #94a3b8;
+    --text-on-dark: #ffffff;
+    
+    --gradient-brand: linear-gradient(135deg, #3b82f6 0%, #6366f1 100%);
+    --gradient-card: linear-gradient(180deg, rgba(30,41,59,0.9) 0%, rgba(15,23,42,0.6) 100%);
+}
+
+/* Base transitions for smooth theme switching */
+body, .glass-card, .glass-panel, .table-card, .stats-card, .sidebar, .coingecko-table th, .coingecko-table td, h1, h2, h3, h4, h5, h6, p, span, a {
+    transition: background-color 0.4s ease, color 0.4s ease, border-color 0.4s ease, box-shadow 0.4s ease;
+}
+
+/* -----------------------------------------------------------
    AMBILIGHT GRADIENT MESH (Dynamic Background)
    ----------------------------------------------------------- */
 .ambient-bg {
@@ -60,7 +91,7 @@
     z-index: -3;
     overflow: hidden;
     pointer-events: none;
-    background-color: #fafcff;
+    background-color: var(--bg-base);
     transition: background-color 1s ease, transform 0.1s linear;
 }
 
@@ -172,7 +203,7 @@ body::before {
     content: '';
     position: fixed;
     top: 0; left: 0; width: 100vw; height: 100vh;
-    background: radial-gradient(circle at 50% 0%, rgba(255, 255, 255, 0.9) 0%, rgba(255, 255, 255, 0) 80%);
+    background: radial-gradient(circle at 50% 0%, var(--bg-surface) 0%, transparent 80%);
     pointer-events: none;
     z-index: -1;
 }
@@ -363,12 +394,12 @@ h1, h2, h3, h4, h5, h6 {
     100% { transform: translateX(-50%); }
 }
 
-.ticker-item { color: rgba(255,255,255,0.6); }
-.ticker-item strong { color: #ffffff; }
+.ticker-item { color: var(--text-tertiary); }
+.ticker-item strong { color: var(--text-on-dark); }
 
 /* Floating Frosted Navbar */
 .main-header {
-    background: rgba(255, 255, 255, 0.2);
+    background: var(--bg-glass);
     backdrop-filter: blur(40px);
     -webkit-backdrop-filter: blur(40px);
     position: sticky;
@@ -400,7 +431,7 @@ h1, h2, h3, h4, h5, h6 {
     display: flex;
     align-items: center;
     justify-content: center;
-    color: #fff;
+    color: var(--text-on-dark);
     font-size: 22px;
     box-shadow: 0 4px 15px rgba(0,0,0,0.1);
     transition: transform 0.3s cubic-bezier(0.4, 0, 0.2, 1);
@@ -422,14 +453,14 @@ h1, h2, h3, h4, h5, h6 {
     font-family: var(--font-heading);
     font-size: 26px;
     font-weight: 800;
-    color: var(--neon-cyan); /* Switched from green to ice blue */
+    color: var(--neon-cyan);
 }
 
 /* Minimalist Premium Navigation */
 .nav-links {
     display: flex;
     align-items: center;
-    gap: 28px; /* Spaced out elegantly */
+    gap: 28px;
 }
 
 .nav-item {
@@ -566,7 +597,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn-main {
     background: var(--gradient-brand) !important;
-    color: #fff !important;
+    color: var(--text-on-dark) !important;
     font-weight: 800 !important;
     font-size: 15px !important;
     padding: 14px 30px !important;
@@ -588,7 +619,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .btn-secondary {
-    background: rgba(255, 255, 255, 0.05);
+    background: var(--bg-surface-elevated);
     border: 1px solid var(--border-subtle);
     color: var(--text-primary);
     font-weight: 700;
@@ -657,7 +688,7 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 .streak-day {
-    background: rgba(255, 255, 255, 0.03);
+    background: var(--bg-surface-elevated);
     border: 1px solid var(--border-subtle);
     border-radius: var(--radius-sm);
     padding: 14px 4px;
@@ -686,26 +717,26 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn-claim-streak {
     width: 100%;
-    background: rgba(255, 255, 255, 0.6) !important;
-    backdrop-filter: blur(20px);
+    background: var(--bg-glass) !important;
+    backdrop-filter: blur(24px) !important;
     color: var(--text-primary) !important;
     padding: 14px !important;
-    border-radius: var(--radius-md) !important;
+    border-radius: var(--radius-lg) !important;
     font-weight: 800 !important;
     font-size: 14px !important;
     display: flex;
     align-items: center;
     justify-content: center;
     gap: 10px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), inset 0 0 15px rgba(255, 255, 255, 1) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05) !important;
     transition: all 0.3s ease !important;
-    border: 1px solid rgba(255, 255, 255, 0.9) !important;
+    border: 1px solid var(--border-hover) !important;
 }
 
 .btn-claim-streak:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08), inset 0 0 20px rgba(255, 255, 255, 1) !important;
-    background: rgba(255, 255, 255, 0.9) !important;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08) !important;
+    background: var(--bg-glass-hover) !important;
 }
 
 /* Controls & Filter Tabs */
@@ -780,13 +811,13 @@ h1, h2, h3, h4, h5, h6 {
 
 /* CoinGecko Style Table Card */
 .table-card {
-    background: rgba(255, 255, 255, 0.7);
+    background: var(--bg-glass-card);
     backdrop-filter: blur(24px);
     -webkit-backdrop-filter: blur(24px);
-    border: 1px solid rgba(255, 255, 255, 0.9);
+    border: 1px solid var(--border-hover);
     border-radius: var(--radius-lg);
     overflow: hidden;
-    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05), inset 0 1px 0 rgba(255,255,255,1);
+    box-shadow: 0 20px 50px rgba(0, 0, 0, 0.05);
 }
 
 .table-responsive {
@@ -802,7 +833,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .coingecko-table th {
     background: rgba(255, 255, 255, 0.01);
-    border-bottom: 1px solid rgba(0, 0, 0, 0.08); /* Estetik ince çizgi */
+    border-bottom: 1px solid var(--border-subtle); /* Estetik ince çizgi */
     color: var(--text-tertiary);
     font-size: 11px;
     font-weight: 800;
@@ -813,7 +844,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .coingecko-table td {
     padding: 14px 10px;
-    border-bottom: 1px solid rgba(0, 0, 0, 0.06); /* Estetik ince çizgi */
+    border-bottom: 1px solid var(--border-subtle); /* Estetik ince çizgi */
     font-size: 13px;
     vertical-align: middle;
 }

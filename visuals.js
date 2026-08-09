@@ -10,28 +10,60 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function initArchitecture() {
     const archHTML = `
-    <canvas id="bg-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -4; pointer-events: none; opacity: 0.6;"></canvas>
-    <div class="arch-background" id="archBg"></div>
-    <div class="arch-ceiling" id="archCeiling"></div>
-    <div class="arch-pillar left" id="archPillarLeft"></div>
-    <div class="arch-pillar right" id="archPillarRight"></div>
-    <div class="arch-curve" id="archCurve"></div>
+    <div class="masterpiece-bg"></div>
+    <canvas id="bg-canvas" style="position: fixed; top: 0; left: 0; width: 100vw; height: 100vh; z-index: -4; pointer-events: none; opacity: 0.4;"></canvas>
+    
+    <!-- Top Arch -->
+    <div class="intruder arch layer-mid" id="archTop"></div>
+
+    <!-- Massive Sweeping Curves (Dynamic Scroll Intruders) -->
+    <div class="intruder left layer-back" data-start="50" data-end="1200" data-dir="-1" style="top: 5vh;"></div>
+    <div class="intruder right layer-mid" data-start="300" data-end="1600" data-dir="1" style="top: 15vh;"></div>
+    
+    <div class="intruder left layer-front" data-start="1000" data-end="2300" data-dir="-1" style="top: 30vh; border-top-right-radius: 600px; border-bottom-right-radius: 100px;"></div>
+    <div class="intruder right layer-back" data-start="1400" data-end="2800" data-dir="1" style="top: 10vh; height: 160vh; border-top-left-radius: 200px; border-bottom-left-radius: 600px;"></div>
+
+    <div class="masterpiece-floor"></div>
     `;
     document.body.insertAdjacentHTML('afterbegin', archHTML);
 
-    // Parallax Scroll Animation
-    window.addEventListener('scroll', () => {
-        const scrolled = window.scrollY;
-        
-        const pillarLeft = document.getElementById('archPillarLeft');
-        const pillarRight = document.getElementById('archPillarRight');
-        const ceiling = document.getElementById('archCeiling');
-        const curve = document.getElementById('archCurve');
+    const intruders = document.querySelectorAll('.intruder');
+    const archTop = document.getElementById('archTop');
 
-        if (pillarLeft) pillarLeft.style.transform = `translateY(${scrolled * -0.15}px)`;
-        if (pillarRight) pillarRight.style.transform = `translateY(${scrolled * 0.1}px)`;
-        if (ceiling) ceiling.style.transform = `translateY(${scrolled * 0.2}px)`;
-        if (curve) curve.style.transform = `translateY(${scrolled * -0.05}px)`;
+    // Advanced Mathematical Scroll Intrusion (Masterpiece Curve)
+    window.addEventListener('scroll', () => {
+        const y = window.scrollY;
+
+        // Arch Top slides up smoothly
+        if (archTop) {
+            const archProg = Math.min(y / 600, 1);
+            archTop.style.transform = `translateY(${ -150 - (archProg * 50) }%)`;
+        }
+
+        // Horizontal Intruders (Sine Wave Ease-in / Ease-out)
+        intruders.forEach(el => {
+            if (el.id === 'archTop') return;
+            const start = parseInt(el.getAttribute('data-start'));
+            const end = parseInt(el.getAttribute('data-end'));
+            const dir = parseInt(el.getAttribute('data-dir')); // -1 for left, 1 for right
+            
+            if (y >= start && y <= end) {
+                const progress = (y - start) / (end - start); // 0.0 to 1.0
+                const sine = Math.sin(progress * Math.PI); // Smooth 0 -> 1 -> 0 curve
+                
+                // offset: 150 (offscreen) down to roughly 0 (fully onscreen)
+                const offset = 150 - (sine * 140);
+                
+                // Add a very slight 3D rotation shift to make it look like a physical sweep
+                const rotation = dir === -1 ? 5 - (sine * 5) : -5 + (sine * 5);
+                
+                el.style.transform = `translateX(${dir * offset}%) rotate(${rotation}deg)`;
+            } else if (y < start) {
+                el.style.transform = `translateX(${dir * 150}%)`;
+            } else if (y > end) {
+                el.style.transform = `translateX(${dir * 150}%)`;
+            }
+        });
     });
 }
 

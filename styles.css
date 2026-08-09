@@ -62,7 +62,7 @@ button, a, input, select, textarea, .menu-btn {
 }
 
 body {
-    background-color: var(--bg-base);
+    background-color: transparent;
     color: var(--text-primary);
     font-family: var(--font-body);
     line-height: 1.6;

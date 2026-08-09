@@ -606,7 +606,7 @@ function openAdminAuthModal(e) {
                 <p style="color:var(--text-secondary);font-size:14px;margin-bottom:20px;">Lütfen yönetim paneline erişmek için Admin Giriş Şifrenizi girin.</p>
                 <div style="margin-bottom:20px;">
                     <label style="display:block;font-size:12px;font-weight:800;color:var(--text-tertiary);margin-bottom:8px;text-transform:uppercase;">Admin Parolası</label>
-                    <input type="password" id="adminPassInput" placeholder="🔑 Parolanızı yazın..." style="width:100%;padding:14px;background:var(--bg-surface-elevated);border:1px solid var(--border-hover);border-radius:12px;color:#fff;font-size:15px;outline:none;" onkeyup="if(event.key==='Enter')verifyAdminAuth()">
+                    <input type="password" id="adminPassInput" placeholder="🔑 Parolanızı yazın..." style="width:100%;padding:14px;background:transparent;border:1px solid var(--border-hover);border-radius:12px;color:var(--text-primary);font-size:15px;outline:none;" onkeyup="if(event.key==='Enter')verifyAdminAuth()">
                 </div>
                 <button onclick="verifyAdminAuth()" class="btn-main" style="width:100%;justify-content:center;"><i class="fa-solid fa-lock-open"></i> Admin Paneline Giriş Yap</button>
             </div>

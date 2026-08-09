@@ -80,6 +80,27 @@ const TokenBountyStore = {
         } catch (err) {
             console.error("Failed to load DB projects:", err);
         }
+
+        // Add 20 Placeholder items if DB is empty to test scroll/theme layout
+        if (!this.projects || this.projects.length === 0) {
+            this.projects = [];
+            for (let i = 1; i <= 20; i++) {
+                this.projects.push({
+                    _id: 'mock' + i,
+                    id: 'mock-coin-' + i,
+                    name: 'Placeholder Token ' + i,
+                    ticker: 'TK' + i,
+                    logo: 'https://raw.githubusercontent.com/solana-labs/token-list/main/assets/mainnet/So11111111111111111111111111111111111111112/logo.png',
+                    network: ['Solana', 'Base', 'Ethereum', 'BNB Chain'][i % 4],
+                    price: (Math.random() * 10).toFixed(4),
+                    change24h: (Math.random() * 20 - 10).toFixed(2),
+                    bountyRemainingUSD: 1000 + (i * 100),
+                    bountyTotalUSD: 5000,
+                    questCount: 2,
+                    addedTimeText: i + " saat önce"
+                });
+            }
+        }
     },
 
     async syncUserProfile() {

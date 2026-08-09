@@ -791,7 +791,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .table-responsive {
     width: 100%;
-    overflow-x: auto;
+    overflow-x: hidden;
 }
 
 .coingecko-table {
@@ -802,7 +802,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .coingecko-table th {
     background: rgba(255, 255, 255, 0.01);
-    border-bottom: 1px solid var(--border-subtle);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.08); /* Estetik ince çizgi */
     color: var(--text-tertiary);
     font-size: 11px;
     font-weight: 800;
@@ -813,7 +813,7 @@ h1, h2, h3, h4, h5, h6 {
 
 .coingecko-table td {
     padding: 14px 10px;
-    border-bottom: 1px solid rgba(255,255,255,0.03);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.06); /* Estetik ince çizgi */
     font-size: 13px;
     vertical-align: middle;
 }

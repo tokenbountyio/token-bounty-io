@@ -10,12 +10,28 @@ document.addEventListener("DOMContentLoaded", () => {
 
 function initArchitecture() {
     const archHTML = `
-    <div class="arch-background"></div>
-    <div class="arch-pillar left"></div>
-    <div class="arch-pillar right"></div>
-    <div class="arch-curve"></div>
+    <div class="arch-background" id="archBg"></div>
+    <div class="arch-ceiling" id="archCeiling"></div>
+    <div class="arch-pillar left" id="archPillarLeft"></div>
+    <div class="arch-pillar right" id="archPillarRight"></div>
+    <div class="arch-curve" id="archCurve"></div>
     `;
     document.body.insertAdjacentHTML('afterbegin', archHTML);
+
+    // Parallax Scroll Animation
+    window.addEventListener('scroll', () => {
+        const scrolled = window.scrollY;
+        
+        const pillarLeft = document.getElementById('archPillarLeft');
+        const pillarRight = document.getElementById('archPillarRight');
+        const ceiling = document.getElementById('archCeiling');
+        const curve = document.getElementById('archCurve');
+
+        if (pillarLeft) pillarLeft.style.transform = `translateY(${scrolled * -0.15}px)`;
+        if (pillarRight) pillarRight.style.transform = `translateY(${scrolled * 0.1}px)`;
+        if (ceiling) ceiling.style.transform = `translateY(${scrolled * 0.2}px)`;
+        if (curve) curve.style.transform = `translateY(${scrolled * -0.05}px)`;
+    });
 }
 
 function initCanvasParticles() {

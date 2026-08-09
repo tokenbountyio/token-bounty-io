@@ -77,60 +77,76 @@ body {
     width: 100vw;
     height: 100vh;
     z-index: -3;
-    background: linear-gradient(180deg, #f1f5f9 0%, #cbd5e1 100%);
+    background: radial-gradient(circle at 50% 0%, #ffffff 0%, #e2e8f0 70%, #cbd5e1 100%);
     overflow: hidden;
     pointer-events: none;
+}
+
+/* Architectural Ceiling / Arch */
+.arch-ceiling {
+    position: absolute;
+    top: -15vh;
+    left: -5vw;
+    width: 110vw;
+    height: 35vh;
+    background: linear-gradient(180deg, #ffffff 0%, #f1f5f9 80%, #e2e8f0 100%);
+    border-radius: 0 0 50% 50%;
+    box-shadow: 
+        0 40px 100px rgba(0, 0, 0, 0.05),
+        inset 0 -20px 40px rgba(255, 255, 255, 1);
+    z-index: -1;
 }
 
 /* Massive 3D Pillars */
 .arch-pillar {
     position: absolute;
     top: -10vh;
-    width: 15vw;
-    height: 120vh;
-    background: #ffffff;
-    border-radius: 60px;
-    box-shadow: 
-        inset -20px 0 50px rgba(0, 0, 0, 0.03),
-        inset 20px 0 50px rgba(255, 255, 255, 1),
-        30px 0 80px rgba(0, 0, 0, 0.1);
+    width: 22vw;
+    height: 130vh;
+    border-radius: 80px;
     z-index: -2;
 }
 
 .arch-pillar.left {
-    left: 2%;
-    transform: rotate(2deg);
+    left: -5%;
+    background: linear-gradient(90deg, #cbd5e1 0%, #ffffff 40%, #e2e8f0 100%);
+    box-shadow: 
+        inset 20px 0 60px rgba(255, 255, 255, 1),
+        inset -10px 0 30px rgba(0, 0, 0, 0.05),
+        50px 0 100px rgba(0, 0, 0, 0.08);
 }
 
 .arch-pillar.right {
-    right: 2%;
-    transform: rotate(-2deg);
+    right: -5%;
+    background: linear-gradient(270deg, #cbd5e1 0%, #ffffff 40%, #e2e8f0 100%);
     box-shadow: 
-        inset 20px 0 50px rgba(0, 0, 0, 0.03),
-        inset -20px 0 50px rgba(255, 255, 255, 1),
-        -30px 0 80px rgba(0, 0, 0, 0.1);
+        inset -20px 0 60px rgba(255, 255, 255, 1),
+        inset 10px 0 30px rgba(0, 0, 0, 0.05),
+        -50px 0 100px rgba(0, 0, 0, 0.08);
 }
 
 /* Swooping Architectural Curve */
 .arch-curve {
     position: absolute;
-    bottom: -15vh;
+    bottom: -20vh;
     left: -10vw;
     width: 120vw;
-    height: 40vh;
-    background: #ffffff;
+    height: 50vh;
+    background: linear-gradient(0deg, #ffffff 0%, #f1f5f9 60%, #e2e8f0 100%);
     border-radius: 50% 50% 0 0;
     box-shadow: 
-        inset 0 30px 60px rgba(255, 255, 255, 1),
-        0 -30px 80px rgba(0, 0, 0, 0.08);
-    z-index: -1;
+        inset 0 40px 80px rgba(255, 255, 255, 1),
+        0 -40px 100px rgba(0, 0, 0, 0.06);
+    z-index: -2;
 }
 
 @media (max-width: 1024px) {
-    .arch-pillar { width: 10vw; }
+    .arch-pillar { width: 15vw; }
+    .arch-ceiling { height: 25vh; }
 }
 @media (max-width: 768px) {
     .arch-pillar { display: none; }
+    .arch-ceiling { height: 15vh; border-radius: 0 0 20% 20%; }
     .arch-curve { border-radius: 20% 20% 0 0; }
 }
 
@@ -309,9 +325,9 @@ h1, h2, h3, h4, h5, h6 {
 
 /* Floating Frosted Navbar */
 .main-header {
-    background: rgba(255, 255, 255, 0.65);
-    backdrop-filter: blur(28px);
-    -webkit-backdrop-filter: blur(28px);
+    background: rgba(255, 255, 255, 0.2);
+    backdrop-filter: blur(40px);
+    -webkit-backdrop-filter: blur(40px);
     position: sticky;
     top: 0;
     z-index: 100;
@@ -627,8 +643,9 @@ h1, h2, h3, h4, h5, h6 {
 
 .btn-claim-streak {
     width: 100%;
-    background: var(--gradient-brand) !important;
-    color: #000 !important;
+    background: rgba(255, 255, 255, 0.6) !important;
+    backdrop-filter: blur(20px);
+    color: var(--text-primary) !important;
     padding: 14px !important;
     border-radius: var(--radius-md) !important;
     font-weight: 800 !important;
@@ -637,14 +654,15 @@ h1, h2, h3, h4, h5, h6 {
     align-items: center;
     justify-content: center;
     gap: 10px;
-    box-shadow: var(--shadow-glow-cyan) !important;
+    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05), inset 0 0 15px rgba(255, 255, 255, 1) !important;
     transition: all 0.3s ease !important;
-    border: none !important;
+    border: 1px solid rgba(255, 255, 255, 0.9) !important;
 }
 
 .btn-claim-streak:hover {
     transform: translateY(-2px) !important;
-    box-shadow: 0 0 35px rgba(0, 242, 254, 0.5) !important;
+    box-shadow: 0 15px 40px rgba(0, 0, 0, 0.08), inset 0 0 20px rgba(255, 255, 255, 1) !important;
+    background: rgba(255, 255, 255, 0.9) !important;
 }
 
 /* Controls & Filter Tabs */

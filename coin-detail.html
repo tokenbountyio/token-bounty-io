@@ -669,15 +669,18 @@
         });
 
         function populateDetailView(proj) {
-            document.getElementById("detailLogo").src = proj.logo;
-            document.getElementById("detailName").innerText = proj.name;
-            document.getElementById("detailTicker").innerText = proj.ticker;
-            document.getElementById("detailNetworkBadge").innerText = proj.network.toUpperCase();
-            document.getElementById("detailNetworkBadge").className = `network-badge ${proj.network}`;
+            document.getElementById("detailLogo").src = proj.logo || '';
+            document.getElementById("detailName").innerText = proj.name || 'Unknown';
+            document.getElementById("detailTicker").innerText = proj.ticker || '';
+            document.getElementById("detailNetworkBadge").innerText = (proj.network || '').toUpperCase();
+            document.getElementById("detailNetworkBadge").className = `network-badge ${proj.network || 'solana'}`;
 
-            document.getElementById("detailPrice").innerText = proj.price < 0.01 ? `$${proj.price.toFixed(5)}` : `$${proj.price.toFixed(2)}`;
-            document.getElementById("detailContract").innerText = proj.contractAddress;
-            document.getElementById("detailBuyBtn").href = proj.buyUrl;
+            const price = parseFloat(proj.price) || 0;
+            document.getElementById("detailPrice").innerText = price < 0.01 ? `$${price.toFixed(5)}` : `$${price.toFixed(2)}`;
+            document.getElementById("detailContract").innerText = proj.contractAddress || '';
+            if (document.getElementById("detailBuyBtn")) {
+                document.getElementById("detailBuyBtn").href = proj.buyUrl || '#';
+            }
 
             document.getElementById("linkWebsite").href = proj.websiteUrl || "#";
             document.getElementById("linkTwitter").href = `https://x.com/${(proj.twitterHandle || '').replace('@','')}`;

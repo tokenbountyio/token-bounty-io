@@ -262,10 +262,15 @@ app.get('/api/user/profile', async (req, res) => {
 // ─────────────────────────────────────────────────────────────────────────────
 app.post('/api/user/verify-task', async (req, res) => {
     try {
-        const { email, projectId, taskId, taskType, taskTarget } = req.body;
+        const { email, projectId, taskId, taskType, taskTarget, telegramUsername } = req.body;
 
         if (!email || !projectId || !taskId || !taskType) {
             return res.status(400).json({ success: false, error: "Eksik parametreler" });
+        }
+
+        // For Telegram tasks, username is required
+        if ((taskType === 'telegram' || taskType.includes('telegram')) && !telegramUsername) {
+            return res.status(400).json({ success: false, error: "Telegram kullanıcı adı gerekli" });
         }
 
         const user = await User.findOne({ email: email.toLowerCase() });
@@ -283,8 +288,8 @@ app.post('/api/user/verify-task', async (req, res) => {
         let verificationResult = { verified: false, message: "Bilinmeyen görev tipi" };
 
         if (taskType === 'telegram' || taskType === 'telegram_group' || taskType === 'telegram_channel') {
-            // Telegram: verify group/channel is real and accessible
-            verificationResult = await SocialVerificationService.verifyTelegramMember(taskTarget, email);
+            // Telegram: verify user is actually a member of the group using their username
+            verificationResult = await SocialVerificationService.verifyTelegramMember(taskTarget, telegramUsername);
         } else if (taskType === 'twitter_follow' || taskType === 'twitter' || taskType === 'x') {
             // Twitter/X: honor system + public profile check
             verificationResult = await SocialVerificationService.verifyTwitterFollow(taskTarget);

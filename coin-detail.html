@@ -583,7 +583,65 @@
         </div>
     </div>
 
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <!-- Telegram Username Verification Modal                    -->
+    <!-- ═══════════════════════════════════════════════════════ -->
+    <div class="modal-backdrop" id="telegramVerifyModal">
+        <div class="modal-card" style="max-width: 440px;">
+            <div class="modal-header">
+                <h3><i class="fa-brands fa-telegram" style="color: #229ED9;"></i> Telegram Üyelik Doğrulama</h3>
+                <button class="modal-close" onclick="closeTelegramModal()"><i class="fa-solid fa-xmark"></i></button>
+            </div>
+            <div class="modal-body">
+                <div style="text-align:center; margin-bottom: 20px;">
+                    <div style="width:64px; height:64px; background: rgba(34,158,217,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin: 0 auto 12px; border: 2px solid rgba(34,158,217,0.3);">
+                        <i class="fa-brands fa-telegram" style="font-size:28px; color:#229ED9;"></i>
+                    </div>
+                    <p style="font-size:14px; color:var(--text-secondary); line-height:1.6;">
+                        Gruba katıldıktan sonra Telegram <strong>kullanıcı adınızı</strong> girin.<br>
+                        Bot üyeliğinizi gerçek zamanlı doğrulayacak.
+                    </p>
+                </div>
+
+                <div id="tgVerifyStep1">
+                    <div style="margin-bottom: 16px;">
+                        <label style="font-size:13px; font-weight:700; color:var(--text-primary); display:block; margin-bottom:8px;">
+                            Telegram Kullanıcı Adı
+                        </label>
+                        <div style="display:flex; align-items:center; gap:0; border: 1.5px solid var(--border-subtle); border-radius: 12px; overflow:hidden; background:var(--bg-surface);">
+                            <span style="padding: 12px 14px; font-size:15px; font-weight:700; color:#229ED9; background:rgba(34,158,217,0.08); border-right:1px solid var(--border-subtle);">@</span>
+                            <input type="text" id="tgUsernameInput" placeholder="kullaniciadi"
+                                style="flex:1; border:none; outline:none; padding: 12px 14px; font-size:15px; background:transparent; color:var(--text-primary); font-family:inherit;"
+                                onkeydown="if(event.key==='Enter') submitTelegramVerify()">
+                        </div>
+                        <div id="tgVerifyError" style="display:none; margin-top:8px; padding:10px 12px; background:rgba(239,68,68,0.08); border:1px solid rgba(239,68,68,0.2); border-radius:8px; font-size:13px; color:#EF4444;">
+                        </div>
+                    </div>
+
+                    <button onclick="submitTelegramVerify()" id="tgVerifyBtn"
+                        style="width:100%; padding:14px; background:linear-gradient(135deg,#229ED9,#1a7db5); color:#fff; border:none; border-radius:12px; font-size:15px; font-weight:700; cursor:pointer; display:flex; align-items:center; justify-content:center; gap:10px; transition: opacity 0.2s;">
+                        <i class="fa-solid fa-magnifying-glass"></i> Üyeliği Doğrula
+                    </button>
+
+                    <p style="text-align:center; margin-top:14px; font-size:12px; color:var(--text-tertiary);">
+                        <i class="fa-solid fa-shield-halved" style="color:var(--neon-green);"></i>
+                        Kullanıcı adınız sadece doğrulama için kullanılır, saklanmaz.
+                    </p>
+                </div>
+
+                <div id="tgVerifyStep2" style="display:none; text-align:center; padding: 20px 0;">
+                    <div style="width:64px; height:64px; background:rgba(0,255,135,0.1); border-radius:50%; display:flex; align-items:center; justify-content:center; margin: 0 auto 16px; border: 2px solid rgba(0,255,135,0.3);">
+                        <i class="fa-solid fa-check" style="font-size:28px; color:var(--neon-green);"></i>
+                    </div>
+                    <h4 style="font-size:18px; font-weight:800; color:var(--text-primary); margin-bottom:8px;">Üyelik Onaylandı!</h4>
+                    <p id="tgVerifySuccessMsg" style="font-size:14px; color:var(--text-secondary);"></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
     <script src="store.js"></script>
+
     <script src="app.js"></script>
     <script src="visuals.js"></script>
     <script>
@@ -735,6 +793,9 @@
             }
         }
 
+        // State for active Telegram task being verified
+        let _activeTelegramTask = null;
+
         // ─────────────────────────────────────────────────────
         // Main task verification function
         // ─────────────────────────────────────────────────────
@@ -744,45 +805,57 @@
                 showToast("🔒 Görevi doğrulamak için lütfen hesabınıza giriş yapın!", "warning");
                 return;
             }
-            // Use email if available, fallback to wallet address
             const userEmail = TokenBountyStore.userState.email || TokenBountyStore.userState.connectedWallet;
             if (!userEmail) {
                 showToast("🔒 Lütfen önce hesabınıza giriş yapın!", "warning");
                 return;
             }
 
-            const btn        = document.getElementById(`btn_${taskId}`);
-            const isTwitter  = type && (type.includes('twitter') || type === 'x');
             const isTelegram = type && type.includes('telegram');
+            const isTwitter  = type && (type.includes('twitter') || type === 'x');
 
-            // Build the correct URL to open
+            if (isTelegram) {
+                // ── TELEGRAM: Open group link first, then show username modal ──
+                let url = target.includes('t.me') 
+                    ? (target.startsWith('http') ? target : `https://${target}`)
+                    : `https://t.me/${target.replace('@','')}`;
+
+                const a = document.createElement('a');
+                a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+                document.body.appendChild(a); a.click(); document.body.removeChild(a);
+
+                // Store active task context and show modal
+                _activeTelegramTask = { taskId, target, type, userEmail };
+                document.getElementById('tgUsernameInput').value = '';
+                document.getElementById('tgVerifyError').style.display = 'none';
+                document.getElementById('tgVerifyStep1').style.display = 'block';
+                document.getElementById('tgVerifyStep2').style.display = 'none';
+                document.getElementById('tgVerifyBtn').disabled = false;
+                document.getElementById('tgVerifyBtn').innerHTML = '<i class="fa-solid fa-magnifying-glass"></i> Üyeliği Doğrula';
+                document.getElementById('telegramVerifyModal').classList.add('active');
+                setTimeout(() => document.getElementById('tgUsernameInput').focus(), 300);
+                return;
+            }
+
+            // ── TWITTER / OTHER: Honor system with 5s countdown ──
             let url = target;
             if (isTwitter && !target.startsWith('http')) {
                 url = `https://x.com/${target.replace('@', '')}`;
-            } else if (isTelegram) {
-                if (target.includes('t.me')) url = target.startsWith('http') ? target : `https://${target}`;
-                else url = `https://t.me/${target.replace('@', '')}`;
             } else if (!target.startsWith('http')) {
                 url = `https://${target}`;
             }
 
-            // Open link using anchor trick to bypass popup blockers
             const a = document.createElement('a');
-            a.href = url;
-            a.target = '_blank';
-            a.rel = 'noopener noreferrer';
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
+            a.href = url; a.target = '_blank'; a.rel = 'noopener noreferrer';
+            document.body.appendChild(a); a.click(); document.body.removeChild(a);
 
-            showToast(`${isTelegram ? "📬 Telegram" : isTwitter ? "🐦 X (Twitter)" : "🌐"} sayfası açıldı. 5 saniye sonra otomatik doğrulanacak...`, "info");
+            showToast(`🐦 X (Twitter) sayfası açıldı. 5 saniye sonra otomatik doğrulanacak...`, "info");
 
+            const btn = document.getElementById(`btn_${taskId}`);
             if (!btn) return;
-
-            btn.disabled     = true;
+            btn.disabled = true;
             btn.style.opacity = "0.85";
 
-            // Animated countdown
             let secs = 5;
             btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Doğrulanıyor (${secs}s)`;
             const tick = setInterval(() => {
@@ -791,32 +864,6 @@
                 else clearInterval(tick);
             }, 1000);
 
-            // After countdown, call the backend
-            setTimeout(async () => {
-                clearInterval(tick);
-                btn.innerHTML = `<i class="fa-solid fa-spinner fa-spin"></i> Sunucu kontrol ediyor...`;
-
-                try {
-                    const res = await fetch(`${API_BASE_URL}/api/user/verify-task`, {
-                        method: 'POST',
-                        headers: { 'Content-Type': 'application/json' },
-                        body: JSON.stringify({
-                            email:      userEmail,
-                            projectId:  currentProj._id,
-                            taskId:     taskId,
-                            taskType:   type,
-                            taskTarget: target
-                        })
-                    });
-                    const data = await res.json();
-
-                    if (data.success) {
-                        if (!completedLocalTasks.includes(taskId)) completedLocalTasks.push(taskId);
-                        markTaskDone(taskId, true);
-                        checkAllTasksCompleted();
-                    } else {
-                        showToast(`⚠️ ${data.error || "Doğrulama başarısız. Tekrar deneyin."}`, "error");
-                        btn.innerHTML    = `<i class="fa-solid fa-rotate-right"></i> Tekrar Dene`;
                         btn.disabled     = false;
                         btn.style.opacity = "1";
                     }

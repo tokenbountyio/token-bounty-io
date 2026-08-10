@@ -247,12 +247,80 @@ app.get('/api/user/profile', async (req, res) => {
                 balances: user.balances || {}, // Raw map
                 populatedBalances: populatedBalances, // Array for UI
                 completedProjects: user.completedProjects || [],
+                completedTasks: user.completedTasks || [],
                 streak: user.streak || { count: 0, lastClaimed: null }
             }
         });
     } catch (err) {
         console.error(err);
         res.status(500).json({ success: false, error: "Failed to fetch profile" });
+    }
+});
+
+// ─────────────────────────────────────────────────────────────────────────────
+// TASK VERIFICATION: Telegram membership & Twitter follow
+// ─────────────────────────────────────────────────────────────────────────────
+app.post('/api/user/verify-task', async (req, res) => {
+    try {
+        const { email, projectId, taskId, taskType, taskTarget } = req.body;
+
+        if (!email || !projectId || !taskId || !taskType) {
+            return res.status(400).json({ success: false, error: "Eksik parametreler" });
+        }
+
+        const user = await User.findOne({ email: email.toLowerCase() });
+        if (!user) return res.status(404).json({ success: false, error: "Kullanıcı bulunamadı" });
+
+        // Check if this task is already verified
+        const alreadyDone = (user.completedTasks || []).some(
+            t => t.projectId === projectId && t.taskId === taskId
+        );
+        if (alreadyDone) {
+            return res.json({ success: true, alreadyCompleted: true, message: "Bu görev zaten doğrulanmış." });
+        }
+
+        // --- VERIFICATION LOGIC ---
+        let verificationResult = { verified: false, message: "Bilinmeyen görev tipi" };
+
+        if (taskType === 'telegram' || taskType === 'telegram_group' || taskType === 'telegram_channel') {
+            // Telegram: verify group/channel is real and accessible
+            verificationResult = await SocialVerificationService.verifyTelegramMember(taskTarget, email);
+        } else if (taskType === 'twitter_follow' || taskType === 'twitter' || taskType === 'x') {
+            // Twitter/X: honor system + public profile check
+            verificationResult = await SocialVerificationService.verifyTwitterFollow(taskTarget);
+        } else {
+            // Generic tasks (website visit, etc.) — auto-accept
+            verificationResult = { verified: true, status: "auto_accepted", message: "Görev tamamlandı." };
+        }
+
+        if (!verificationResult.verified) {
+            return res.status(400).json({
+                success: false,
+                error: verificationResult.message || "Görev doğrulanamadı. Lütfen tekrar deneyin."
+            });
+        }
+
+        // Save to DB
+        if (!user.completedTasks) user.completedTasks = [];
+        user.completedTasks.push({
+            projectId,
+            taskId,
+            taskType,
+            verifiedAt: new Date()
+        });
+        user.markModified('completedTasks');
+        await user.save();
+
+        res.json({
+            success: true,
+            message: verificationResult.message || "Görev başarıyla doğrulandı!",
+            status: verificationResult.status,
+            completedTasks: user.completedTasks
+        });
+
+    } catch (err) {
+        console.error("verify-task error:", err);
+        res.status(500).json({ success: false, error: "Sunucu hatası" });
     }
 });
 

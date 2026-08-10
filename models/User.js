@@ -24,6 +24,12 @@ const UserSchema = new mongoose.Schema({
         lastClaimed: { type: Date, default: null }
     },
     completedProjects: [{ type: String }], // Stores project IDs that the user has completed tasks for
+    completedTasks: [{
+        projectId: { type: String },
+        taskId: { type: String },
+        taskType: { type: String },
+        verifiedAt: { type: Date, default: Date.now }
+    }],
     lastLoginDate: { type: Date, default: Date.now }
 });
 

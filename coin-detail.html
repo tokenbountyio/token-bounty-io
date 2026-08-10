@@ -739,8 +739,15 @@
         // Main task verification function
         // ─────────────────────────────────────────────────────
         async function verifySingleTask(taskId, target, type) {
-            if (!TokenBountyStore.userState.isLoggedIn) {
+            // Allow if logged in with email OR if wallet is connected
+            if (!TokenBountyStore.userState.isLoggedIn && !TokenBountyStore.userState.connectedWallet) {
                 showToast("🔒 Görevi doğrulamak için lütfen hesabınıza giriş yapın!", "warning");
+                return;
+            }
+            // Use email if available, fallback to wallet address
+            const userEmail = TokenBountyStore.userState.email || TokenBountyStore.userState.connectedWallet;
+            if (!userEmail) {
+                showToast("🔒 Lütfen önce hesabınıza giriş yapın!", "warning");
                 return;
             }
 
@@ -759,8 +766,15 @@
                 url = `https://${target}`;
             }
 
-            // Open the link first
-            window.open(url, "_blank");
+            // Open link using anchor trick to bypass popup blockers
+            const a = document.createElement('a');
+            a.href = url;
+            a.target = '_blank';
+            a.rel = 'noopener noreferrer';
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+
             showToast(`${isTelegram ? "📬 Telegram" : isTwitter ? "🐦 X (Twitter)" : "🌐"} sayfası açıldı. 5 saniye sonra otomatik doğrulanacak...`, "info");
 
             if (!btn) return;
@@ -787,7 +801,7 @@
                         method: 'POST',
                         headers: { 'Content-Type': 'application/json' },
                         body: JSON.stringify({
-                            email:      TokenBountyStore.userState.email,
+                            email:      userEmail,
                             projectId:  currentProj._id,
                             taskId:     taskId,
                             taskType:   type,

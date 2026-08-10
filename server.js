@@ -343,6 +343,8 @@ app.post('/api/user/claim-daily', async (req, res) => {
     currentBalance.valueUSD += rewardAmount;
     user.balances.set("Günlük Giriş Bonusu", currentBalance);
 
+    user.markModified('streak');
+    user.markModified('balances');
     await user.save();
 
     res.json({ 
